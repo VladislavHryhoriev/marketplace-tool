@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

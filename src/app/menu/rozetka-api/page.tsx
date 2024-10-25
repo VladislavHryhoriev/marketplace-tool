@@ -1,8 +1,8 @@
 "use client";
 import { List } from "@/components/shared/list";
 import { Button } from "@/components/ui/button";
-import { getProducts } from "@/lib/get-products";
-import { setStatus } from "@/lib/set-status";
+import { getProducts } from "@/lib/rozetka/get-products";
+import { setStatus } from "@/lib/rozetka/set-status";
 
 const Page = () => {
   return (
