@@ -1,9 +1,13 @@
 "use client";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  const open = window.localStorage.getItem("open");
+import { useEffect, useState } from "react";
 
-  return <>{open && children}</>;
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => setToken(localStorage.getItem("token")), []);
+
+  return <>{token && children}</>;
 };
 
 export default Layout;
