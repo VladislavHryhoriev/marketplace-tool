@@ -1,6 +1,7 @@
 "use client";
 import clsx from "clsx";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 interface Props {
@@ -10,16 +11,17 @@ interface Props {
 const routes = [
   {
     title: "API",
-    path: "/rozetka-api",
+    path: "/menu/rozetka-api",
   },
   {
     title: "Шаблоны",
-    path: "/templates",
+    path: "/menu/templates",
   },
 ];
 
 export const Menu = ({ className }: Props) => {
-  const [activePath, setActivePath] = useState("/rozetka-api");
+  const path = usePathname();
+  const [activePath, setActivePath] = useState(path);
 
   return (
     <div className={className}>
