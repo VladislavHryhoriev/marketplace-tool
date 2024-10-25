@@ -1,7 +1,7 @@
 "use client";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const open = localStorage.getItem("open");
+  const open = window.localStorage.getItem("open");
 
   return <>{open && children}</>;
 };
