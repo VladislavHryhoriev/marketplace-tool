@@ -2,7 +2,9 @@ export const getTokenRozetka = async () => {
   const username = process.env.ROZETKA_USERNAME;
   const password = process.env.ROZETKA_PASSWORD!;
 
-  if (window.localStorage) {
+  const isBrowser = typeof window !== "undefined";
+
+  if (isBrowser) {
     const token_time = Number(localStorage.getItem("token_time"));
     const token = localStorage.getItem("token");
 
@@ -22,7 +24,7 @@ export const getTokenRozetka = async () => {
 
   const json = await response.json();
 
-  if (window.localStorage) {
+  if (isBrowser) {
     localStorage.setItem("token", json.content.access_token);
     localStorage.setItem("token_time", Date.now().toString());
   }
