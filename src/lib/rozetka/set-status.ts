@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import { getNewOrders } from "./get-new-orders";
 
 export const setStatus = async () => {
@@ -8,7 +9,7 @@ export const setStatus = async () => {
 
   orders.forEach(async (order) => {
     try {
-      await fetch(`/api/rozetka/orders/${order.id}`, {
+      await fetch(`${BASE_URL}/api/rozetka/orders/${order.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

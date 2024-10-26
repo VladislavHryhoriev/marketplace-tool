@@ -1,3 +1,5 @@
+import { BASE_URL } from "@/constants";
+
 export const getTokenRozetka = async () => {
   const username = process.env.ROZETKA_USERNAME;
   const password = process.env.ROZETKA_PASSWORD!;
@@ -13,7 +15,7 @@ export const getTokenRozetka = async () => {
     }
   }
 
-  const response = await fetch(`/api/rozetka/sites`, {
+  const response = await fetch(`${BASE_URL}/api/rozetka/sites`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

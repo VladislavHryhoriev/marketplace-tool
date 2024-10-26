@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import { getTokenRozetka } from "./get-token-rozetka";
 
 interface Order {
@@ -34,7 +35,7 @@ export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
   try {
     const token = await getTokenRozetka();
     const response: Response = await fetch(
-      `/api/rozetka/orders/${id}?expand=delivery`,
+      `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
     const { content }: ApiResponse = await response.json();
