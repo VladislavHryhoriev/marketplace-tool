@@ -14,12 +14,10 @@ export const setStatus = async () => {
         },
         body: JSON.stringify(requestBody),
       });
-
-      return orders;
     } catch (error) {
       console.error(error);
-
-      return { error };
     }
   });
+
+  return { orders };
 };
