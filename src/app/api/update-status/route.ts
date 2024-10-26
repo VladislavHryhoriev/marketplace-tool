@@ -1,10 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-	try {
-		return NextResponse.json({ ok: 1, message: 'ok' }, { status: 200 });
-	} catch (error) {
-		console.log(error);
-		return NextResponse.json({ ok: false }, { status: 500 });
-	}
+export async function GET(req: NextRequest) {
+  const token = req.nextUrl.searchParams.get("token");
+  const internalToken = "token123";
+
+  if (token === internalToken) {
+    try {
+      return NextResponse.json(
+        { ok: 1, message: { token, internalToken } },
+        { status: 200 },
+      );
+    } catch (error) {
+      console.log(error);
+      return NextResponse.json({ ok: false }, { status: 500 });
+    }
+  }
+
+  return NextResponse.json({ ok: false }, { status: 401 });
 }
