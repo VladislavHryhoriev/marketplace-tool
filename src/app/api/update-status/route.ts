@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
-  const internalToken = "token123";
+  const internalToken = "token3301";
 
   if (token === internalToken) {
     try {
