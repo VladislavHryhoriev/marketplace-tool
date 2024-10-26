@@ -4,8 +4,6 @@ export const setStatus = async () => {
   const { orders, token } = await getNewOrders();
   const requestBody = { status: 26 }; // 26 - Обрабатывается менеджером
 
-  console.log(orders);
-
   orders.forEach(async (order) => {
     try {
       await fetch(`/api/rozetka/orders/${order.id}`, {
@@ -16,8 +14,12 @@ export const setStatus = async () => {
         },
         body: JSON.stringify(requestBody),
       });
+
+      return orders;
     } catch (error) {
-      console.log(error);
+      console.error(error);
+
+      return { error };
     }
   });
 };

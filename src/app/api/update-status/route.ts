@@ -1,3 +1,4 @@
+import { setStatus } from "@/lib/rozetka/set-status";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, res: NextResponse) {
@@ -6,6 +7,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
   if (token === internalToken) {
     try {
+      await setStatus();
+
       return NextResponse.json(
         { ok: 1, message: { token, internalToken } },
         { status: 200 },
