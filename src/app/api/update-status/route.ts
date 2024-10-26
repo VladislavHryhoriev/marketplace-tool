@@ -6,8 +6,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
   const internalToken = "token123";
 
   if (token === internalToken) {
+    console.log("token === internalToken");
+
     try {
+      console.log(1);
       await setStatus();
+      console.log(2);
 
       return NextResponse.json(
         { ok: 1, message: { token, internalToken } },
