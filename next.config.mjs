@@ -6,7 +6,6 @@ const nextConfig = {
     ROZETKA_PASSWORD: process.env.ROZETKA_PASSWORD,
     EPICENTR_TOKEN: process.env.EPICENTR_TOKEN,
     BASE_URL: process.env.BASE_URL,
-    NOVA_POCHTA_API_URL: process.env.NOVA_POCHTA_API_URL,
   },
   async rewrites() {
     return [

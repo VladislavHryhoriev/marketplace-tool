@@ -15,7 +15,7 @@ const Page = () => {
     if (inputID.startsWith("8")) {
       const { order } = await getOrderInfo(inputID);
 
-      const text = getTemplate(templateName, order);
+      const text = await getTemplate(templateName, order);
 
       setAreaText(text);
     }

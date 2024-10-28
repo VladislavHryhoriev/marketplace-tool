@@ -1,18 +1,9 @@
-import { NOVA_POCHTA_API_URL } from "@/constants";
-
 export const getTTNInfo = async (ttn: string) => {
   try {
-    const body = {
-      apiKey: "",
-      modelName: "TrackingDocumentGeneral",
-      calledMethod: "getStatusDocuments",
-      methodProperties: { Documents: [{ DocumentNumber: ttn }] },
-    };
-
-    const response = await fetch(`${NOVA_POCHTA_API_URL}`, {
+    const response = await fetch("/api/nova-poshta", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ ttn }),
     });
 
     const json = await response.json();

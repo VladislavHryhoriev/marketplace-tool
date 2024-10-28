@@ -8,7 +8,7 @@ export interface Order {
   products: { item_name: number; item_price: number }[];
   address: string;
   deliveryName: string;
-  getTTNInfo: () => Promise<string>;
+  ttn: string;
 }
 
 interface ApiResponse {
@@ -42,13 +42,12 @@ export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
 
     console.log(content);
 
-    console.log(await getTTNInfo(content.ttn));
-
     const order = {
       id: content.id,
       fullname: content.recipient_title.full_name,
       products: content.items_photos,
       deliveryName: content.delivery.name_logo,
+      ttn: content.ttn,
 
       get address() {
         const deliveryService = content.delivery.delivery_service_name;
@@ -69,14 +68,6 @@ export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
 
         return `${deliveryMethod}`;
       },
-
-      getTTNInfo: async () => {
-        const ttn = content.ttn;
-        const info = await getTTNInfo(ttn);
-        console.log(info);
-
-        return "1-2 дні";
-      },
     };
 
     return { order };
@@ -89,7 +80,7 @@ export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
         products: [],
         address: "",
         deliveryName: "",
-        getTTNInfo: async () => "",
+        ttn: "",
       },
     };
   }
