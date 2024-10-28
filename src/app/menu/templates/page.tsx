@@ -1,24 +1,23 @@
 "use client";
 import { List } from "@/components/shared/list";
-import { Button } from "@/components/ui/button";
-import { getEpicentrInfo } from "@/lib/epicentr/get-order-info";
-import { getRozetkaInfo } from "@/lib/rozetka/get-order-info";
+import { AutoConfirm } from "@/components/shared/templates/autoconfirm";
+import { MissedCall } from "@/components/shared/templates/missed-call";
+import { Uncollected } from "@/components/shared/templates/uncollected";
+import { getTemplate, TemplateNames } from "@/get-template";
+import { getOrderInfo } from "@/lib/rozetka/get-order-info";
 import { useState } from "react";
-import { FaTelegram, FaViber } from "react-icons/fa";
 
 const Page = () => {
   const [inputID, setInputID] = useState("");
   const [areaText, setAreaText] = useState("");
 
-  const handler = async (type?: string) => {
-    // rozetka
+  const handler = async (templateName: TemplateNames) => {
     if (inputID.startsWith("8")) {
-      getRozetkaInfo({ inputID, setAreaText, type });
-    }
+      const { order } = await getOrderInfo(inputID);
 
-    // epicentr
-    if (inputID.startsWith("4")) {
-      getEpicentrInfo({ inputID, setAreaText, type });
+      const text = getTemplate(templateName, order);
+
+      setAreaText(text);
     }
   };
 
@@ -31,26 +30,22 @@ const Page = () => {
     <List title="Шаблоны">
       <div className="mt-4 flex justify-between gap-2">
         <div>
-          <div>
-            <p>Недозвон</p>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                className="min-w-20 rounded-md bg-zinc-600 p-2 outline-none"
-                placeholder="Rozetka ID"
-                value={inputID}
-                onChange={clearStringsHandler}
-              />
-              <Button handler={() => handler("viber")}>
-                <FaTelegram />
-              </Button>
-              <Button handler={() => handler()}>
-                <FaViber />
-              </Button>
-            </div>
-            <div>1</div>
+          <input
+            type="text"
+            className="min-w-60 rounded-md bg-zinc-600 p-2 outline-none"
+            placeholder="Номер заказа"
+            name="inputID"
+            value={inputID}
+            onChange={clearStringsHandler}
+          />
+
+          <div className="mt-4 flex flex-col gap-4">
+            <MissedCall handler={() => handler("missed-call")} />
+            <AutoConfirm handler={() => handler("auto-confirm")} />
+            <Uncollected handler={() => handler("uncollected")} />
           </div>
         </div>
+
         <div>
           <textarea
             className="bg-zinc-600 p-2 text-sm outline-none"

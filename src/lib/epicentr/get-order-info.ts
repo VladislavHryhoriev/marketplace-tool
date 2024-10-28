@@ -5,7 +5,6 @@ export interface Order {
 interface GetEpicentrInfoTypes {
   inputID: string;
   setAreaText: React.Dispatch<React.SetStateAction<string>>;
-  type?: string;
 }
 
 export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
@@ -36,7 +35,6 @@ export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
 export const getEpicentrInfo = async ({
   inputID,
   setAreaText,
-  type,
 }: GetEpicentrInfoTypes) => {
   await getOrderInfo(inputID);
 

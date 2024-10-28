@@ -1,15 +1,19 @@
 import { BASE_URL } from "@/constants";
+import { getTTNInfo } from "../get-ttn-info";
 import { getTokenRozetka } from "./get-token-rozetka";
 
-interface Order {
+export interface Order {
+  id: number;
   fullname: string;
   products: { item_name: number; item_price: number }[];
   address: string;
   deliveryName: string;
+  getTTNInfo: () => Promise<string>;
 }
 
 interface ApiResponse {
   content: {
+    id: number;
     recipient_title: { full_name: string };
     items_photos: { item_name: number; item_price: number }[];
     delivery: {
@@ -22,13 +26,8 @@ interface ApiResponse {
       place_flat: string;
       name_logo: string;
     };
+    ttn: string;
   };
-}
-
-interface GetRozetkaInfoTypes {
-  inputID: string;
-  setAreaText: React.Dispatch<React.SetStateAction<string>>;
-  type?: string;
 }
 
 export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
@@ -38,11 +37,15 @@ export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
       `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
+
     const { content }: ApiResponse = await response.json();
 
     console.log(content);
 
-    const order: Order = {
+    console.log(await getTTNInfo(content.ttn));
+
+    const order = {
+      id: content.id,
       fullname: content.recipient_title.full_name,
       products: content.items_photos,
       deliveryName: content.delivery.name_logo,
@@ -66,34 +69,28 @@ export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
 
         return `${deliveryMethod}`;
       },
+
+      getTTNInfo: async () => {
+        const ttn = content.ttn;
+        const info = await getTTNInfo(ttn);
+        console.log(info);
+
+        return "1-2 дні";
+      },
     };
 
     return { order };
   } catch (error) {
     console.error(error);
     return {
-      order: { fullname: "", products: [], address: "", deliveryName: "" },
+      order: {
+        id: -1,
+        fullname: "",
+        products: [],
+        address: "",
+        deliveryName: "",
+        getTTNInfo: async () => "",
+      },
     };
   }
-};
-
-export const getRozetkaInfo = async ({
-  inputID,
-  setAreaText,
-  type,
-}: GetRozetkaInfoTypes) => {
-  const { order } = await getOrderInfo(inputID);
-  const cost = order.deliveryName === "nova-pochta" ? [105, 80] : [60, 45];
-
-  const text = `
-Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні. 
-Будь ласка, зателефонуйте нам для підтвердження замовлення 
-(068)554-40-46 (063)969-68-29 (099)566-45-21
-
-*Замовили:* ${order.products.map((product) => `${order.products.length > 1 ? "\n- " : ""}${product.item_name}`)}
-*Отримувач:* ${order.fullname}
-*Адрес доставки:* ${order.address}
-*Вартість доставки:* ~${cost[0]}грн (якщо хочете по передоплаті то буде ~${cost[1]}грн)`.trim();
-
-  setAreaText(type !== "viber" ? text : text.replaceAll("*", ""));
 };
