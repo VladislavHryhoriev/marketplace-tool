@@ -27,6 +27,7 @@ export const getTemplate = async (type: TemplateNames, order: Order) => {
   if (type === "auto-confirm") {
     return `
 Доброго дня, Ваше оплачене замовлення №${order.id} на сайті Розетка підтверджене автоматично.
+
 **Замовили:** ${productsText}
 **Отримувач:** ${order.fullname}
 **Адрес доставки:** ${order.address}
