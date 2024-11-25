@@ -3,7 +3,7 @@ import { Order } from "./lib/rozetka/get-order-info";
 export type TemplateNames = "missed-call" | "auto-confirm" | "uncollected";
 
 export const getTemplate = async (type: TemplateNames, order: Order) => {
-  const cost = order.deliveryName === "nova-pochta" ? [105, 80] : [60, 45];
+  const cost = order.deliveryName === "ukr-pochta" ? [60, 45] : [105, 80];
 
   const productsText = order.products.map(
     (product) =>
