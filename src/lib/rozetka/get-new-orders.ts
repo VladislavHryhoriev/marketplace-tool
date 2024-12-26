@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/constants";
 import { getTokenRozetka } from "./get-token-rozetka";
 
-export interface Order {
+interface Order {
   orders: { id: number; status: number }[];
   token: string;
 }

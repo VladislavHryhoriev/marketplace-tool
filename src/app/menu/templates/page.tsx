@@ -4,7 +4,8 @@ import { AutoConfirm } from "@/components/shared/templates/autoconfirm";
 import { MissedCall } from "@/components/shared/templates/missed-call";
 import { Uncollected } from "@/components/shared/templates/uncollected";
 import { getTemplate, TemplateNames } from "@/get-template";
-import { getOrderInfo } from "@/lib/rozetka/get-order-info";
+import { getOrderInfoEpicentr as getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
+import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { useState } from "react";
 
 const Page = () => {
@@ -12,11 +13,15 @@ const Page = () => {
   const [areaText, setAreaText] = useState("");
 
   const handler = async (templateName: TemplateNames) => {
-    if (inputID.startsWith("8")) {
-      const { order } = await getOrderInfo(inputID);
-
+    if (inputID.startsWith("4")) {
+      const { order } = await getOrderInfoEpicentr(inputID);
       const text = await getTemplate(templateName, order);
+      setAreaText(text);
+    }
 
+    if (inputID.startsWith("8")) {
+      const { order } = await getOrderInfoRozetka(inputID);
+      const text = await getTemplate(templateName, order);
       setAreaText(text);
     }
   };

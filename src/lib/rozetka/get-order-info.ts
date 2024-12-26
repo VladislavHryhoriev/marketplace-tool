@@ -1,15 +1,6 @@
 import { BASE_URL } from "@/constants";
-import { getTTNInfo } from "../get-ttn-info";
 import { getTokenRozetka } from "./get-token-rozetka";
-
-export interface Order {
-  id: number;
-  fullname: string;
-  products: { item_name: number; item_price: number }[];
-  address: string;
-  deliveryName: string;
-  ttn: string;
-}
+import { Order } from "../types";
 
 interface ApiResponse {
   content: {
@@ -30,7 +21,9 @@ interface ApiResponse {
   };
 }
 
-export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
+export const getOrderInfoRozetka = async (
+  id: string,
+): Promise<{ order: Order }> => {
   try {
     const token = await getTokenRozetka();
     const response: Response = await fetch(
@@ -39,8 +32,6 @@ export const getOrderInfo = async (id: string): Promise<{ order: Order }> => {
     );
 
     const { content }: ApiResponse = await response.json();
-
-    console.log(content);
 
     const order = {
       id: content.id,

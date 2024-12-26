@@ -25,7 +25,10 @@ const nextConfig = {
       {
         source: "/api/:path*",
         headers: [
-          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://rozetka-api.vercel.app",
+          },
           { key: "Access-Control-Allow-Methods", value: "GET,POST" },
         ],
       },
