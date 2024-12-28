@@ -1,12 +1,12 @@
 import { BASE_URL } from "@/constants";
 import { getTokenRozetka } from "./get-token-rozetka";
-import { Order } from "../types";
+import { OrderRozetka } from "../types";
 
 interface ApiResponse {
   content: {
     id: number;
     recipient_title: { full_name: string };
-    items_photos: { item_name: number; item_price: number }[];
+    items_photos: { item_name: string; item_price: string }[];
     delivery: {
       delivery_service_name: string;
       delivery_method_id: number;
@@ -23,7 +23,7 @@ interface ApiResponse {
 
 export const getOrderInfoRozetka = async (
   id: string,
-): Promise<{ order: Order }> => {
+): Promise<{ order: OrderRozetka }> => {
   try {
     const token = await getTokenRozetka();
     const response: Response = await fetch(

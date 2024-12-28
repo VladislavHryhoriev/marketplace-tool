@@ -1,66 +1,65 @@
-import { Order } from "../types";
+import { OrderEpicentr, OrderRozetka } from "../types";
 
 interface ApiResponse {
-  items: {
-    address: {
-      firstName: string;
-      lastName: string;
-      patronymic: string;
-      phone: string;
-    };
-  }[];
+  address: {
+    firstName: string;
+    lastName: string;
+    patronymic: string;
+    phone: string;
+    shipment: { provider: "nova_poshta" | "ukrposhta"; number: string };
+  };
+  number: string;
+  subtotal: number;
+  office: { title: string };
+  items: { title: string; quantity: number; subtotal: number }[];
 }
 
 export const getOrderInfoEpicentr = async (
   id: string,
-): Promise<{ order: Order }> => {
+): Promise<{ order: OrderEpicentr }> => {
   try {
-    const token = process.env.EPICENTR_TOKEN;
+    const headers = {
+      accept: "application/json",
+      Authorization: `Bearer ${process.env.EPICENTR_TOKEN}`,
+      "accept-language": "uk",
+    };
 
-    const response = await fetch(
-      // `/api/epicentr/v3/oms/orders?filter[number]=${id}`,
-      `/api/epicentr/v2/oms/orders/4480f270-2852-447e-a9ba-a70b43c5c865`,
-      {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
+    const orderId = await fetch(
+      `/api/epicentr/v3/oms/orders?filter[number]=${id}`,
+      { headers },
+    ).then((res) => res.json().then((data) => data.items[0].id));
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
+    const response = await fetch(`/api/epicentr/v2/oms/orders/${orderId}`, {
+      headers,
+    });
 
-    const json: ApiResponse = await response.json();
+    if (!response.ok) throw new Error(`Error: ${response.statusText}`);
 
-    console.log(json);
+    const orderData: ApiResponse = await response.json();
+
+    console.log(orderData);
 
     const order = {
-      id: 0,
-      fullname: "",
-      products: [],
-      deliveryName: "",
-      ttn: "",
+      id: orderData.number,
+      fullname: `${orderData.address.firstName} ${orderData.address.lastName} ${orderData.address.patronymic}`,
+      products: [
+        ...orderData.items.map((item) => ({
+          title: item.title,
+          quantity: item.quantity,
+          subtotal: item.subtotal,
+        })),
+      ],
+      deliveryName: orderData.address.shipment.provider,
+      ttn: orderData.address.shipment.number,
 
       get address() {
-        const deliveryService = "";
-        const deliveryMethod = 1;
-        const city = "";
-        const street = "";
-        const house = "";
-        const departmentNumber = "";
-        const flat = "";
+        const service =
+          orderData.address.shipment.provider === "nova_poshta"
+            ? "Нова Пошта"
+            : "УкрПошта";
+        const office = orderData.office.title;
 
-        if (deliveryMethod === 1) {
-          return `(${deliveryService}) ${city}, ${street} ${house}, Відділення №${departmentNumber}`;
-        }
-
-        if (deliveryMethod === 2) {
-          return `Адресна: (${deliveryService}) ${city}, ${street} ${house}, кв. ${flat}`;
-        }
-
-        return `${deliveryMethod}`;
+        return `${service} ${office}`;
       },
     };
 
@@ -70,7 +69,7 @@ export const getOrderInfoEpicentr = async (
 
     return {
       order: {
-        id: -1,
+        id: "-1",
         fullname: "",
         products: [],
         address: "",

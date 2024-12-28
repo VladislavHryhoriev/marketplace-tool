@@ -3,7 +3,11 @@ import { List } from "@/components/shared/list";
 import { AutoConfirm } from "@/components/shared/templates/autoconfirm";
 import { MissedCall } from "@/components/shared/templates/missed-call";
 import { Uncollected } from "@/components/shared/templates/uncollected";
-import { getTemplate, TemplateNames } from "@/get-template";
+import {
+  getTemplateEpicentr,
+  getTemplateRozetka,
+  TemplateNames,
+} from "@/get-template";
 import { getOrderInfoEpicentr as getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { useState } from "react";
@@ -15,13 +19,13 @@ const Page = () => {
   const handler = async (templateName: TemplateNames) => {
     if (inputID.startsWith("4")) {
       const { order } = await getOrderInfoEpicentr(inputID);
-      const text = await getTemplate(templateName, order);
+      const text = await getTemplateEpicentr(templateName, order);
       setAreaText(text);
     }
 
     if (inputID.startsWith("8")) {
       const { order } = await getOrderInfoRozetka(inputID);
-      const text = await getTemplate(templateName, order);
+      const text = await getTemplateRozetka(templateName, order);
       setAreaText(text);
     }
   };
