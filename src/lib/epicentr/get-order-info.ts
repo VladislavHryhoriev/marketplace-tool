@@ -1,4 +1,4 @@
-import { OrderEpicentr, OrderRozetka } from "../types";
+import { OrderEpicentr } from "../types";
 
 interface ApiResponse {
   address: {
