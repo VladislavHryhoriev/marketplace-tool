@@ -13,7 +13,7 @@ export const getTemplateRozetka = async (
 
   const productsText = order.products.map(
     (product) =>
-      `${order.products.length > 1 ? "\n- " : ""} ${product.item_name}`,
+      `${order.products.length > 1 ? "\n- " : ""} ${product.item_name} = ${Math.round(+product.item_price)}грн`,
   );
 
   if (type === "missed-call") {
