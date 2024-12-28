@@ -6,7 +6,7 @@ interface ApiResponse {
   content: {
     id: number;
     recipient_title: { full_name: string };
-    items_photos: { item_name: string; item_price: string }[];
+    purchases: { item_name: string; cost: string; quantity: number }[];
     delivery: {
       delivery_service_name: string;
       delivery_method_id: number;
@@ -17,6 +17,7 @@ interface ApiResponse {
       place_flat: string;
       name_logo: string;
     };
+    total_quantity: number;
     ttn: string;
   };
 }
@@ -27,17 +28,20 @@ export const getOrderInfoRozetka = async (
   try {
     const token = await getTokenRozetka();
     const response: Response = await fetch(
-      `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery`,
+      `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery,purchases`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
     const { content }: ApiResponse = await response.json();
 
+    console.log(content);
+
     const order = {
       id: content.id,
       fullname: content.recipient_title.full_name,
-      products: content.items_photos,
+      products: content.purchases,
       deliveryName: content.delivery.name_logo,
+      total_quantity: content.total_quantity,
       ttn: content.ttn,
 
       get address() {
@@ -71,6 +75,7 @@ export const getOrderInfoRozetka = async (
         products: [],
         address: "",
         deliveryName: "",
+        total_quantity: -1,
         ttn: "",
       },
     };

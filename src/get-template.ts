@@ -11,10 +11,9 @@ export const getTemplateRozetka = async (
       ? [60, 45]
       : [105, 80];
 
-  const productsText = order.products.map(
-    (product) =>
-      `${order.products.length > 1 ? "\n- " : ""} ${product.item_name} = ${Math.round(+product.item_price)}грн`,
-  );
+  const productsText = order.products.map((product) => {
+    return `${order.products.length > 1 ? "\n- " : ""} ${product.item_name} = ${Math.round(+product.cost)}грн (${product.quantity}шт)`;
+  });
 
   if (type === "missed-call") {
     return `
@@ -66,10 +65,9 @@ export const getTemplateEpicentr = async (
       ? [60, 45]
       : [105, 80];
 
-  const productsText = order.products.map(
-    (product) =>
-      `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн`,
-  );
+  const productsText = order.products.map((product) => {
+    return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}шт)`;
+  });
 
   if (type === "missed-call") {
     return `

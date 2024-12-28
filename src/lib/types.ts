@@ -1,9 +1,10 @@
 export interface OrderRozetka {
   id: number;
   fullname: string;
-  products: { item_name: string; item_price: string }[];
+  products: { item_name: string; cost: string; quantity: number }[];
   get address(): string;
   deliveryName: string;
+  total_quantity: number;
   ttn: string;
 }
 
