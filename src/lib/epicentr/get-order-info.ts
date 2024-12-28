@@ -37,8 +37,6 @@ export const getOrderInfoEpicentr = async (
 
     const orderData: ApiResponse = await response.json();
 
-    console.log(orderData);
-
     const order = {
       id: orderData.number,
       fullname: `${orderData.address.firstName} ${orderData.address.lastName} ${orderData.address.patronymic}`,
