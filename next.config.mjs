@@ -27,7 +27,7 @@ const nextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "https://rozetka-api.vercel.app",
+            value: "https://seller.rozetka.com.ua",
           },
           { key: "Access-Control-Allow-Methods", value: "GET,POST" },
         ],
