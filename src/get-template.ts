@@ -44,7 +44,7 @@ export const getTemplateRozetka = async (
 
   if (type === "uncollected") {
     return `
-Доброго дня, ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
+Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 
 **Адрес доставки:** ${order.address}
 **ТТН:** ${order.ttn}
