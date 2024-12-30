@@ -11,6 +11,10 @@ import {
 import { getOrderInfoEpicentr as getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+
+const copyToClipboard = async (text: string) =>
+  await navigator.clipboard.writeText(text);
 
 const Page = () => {
   const [inputID, setInputID] = useState("");
@@ -21,16 +25,25 @@ const Page = () => {
       const { order } = await getOrderInfoEpicentr(inputID);
       const text = await getTemplateEpicentr(templateName, order);
       setAreaText(text);
+
+      copyToClipboard(text);
     }
 
     if (inputID.startsWith("8")) {
       const { order } = await getOrderInfoRozetka(inputID);
       const text = await getTemplateRozetka(templateName, order);
       setAreaText(text);
+
+      copyToClipboard(text);
     }
+
+    toast.success("Шаблон скопирован в буфер обмена", {
+      theme: "dark",
+      position: "bottom-right",
+    });
   };
 
-  const clearStringsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const filterNumInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const numbersOnly = e.target.value.replace(/[^0-9]/g, "");
     if (e.target.value.length < 20) setInputID(numbersOnly);
   };
@@ -45,7 +58,7 @@ const Page = () => {
             placeholder="Номер заказа"
             name="inputID"
             value={inputID}
-            onChange={clearStringsHandler}
+            onChange={filterNumInput}
           />
 
           <div className="mt-4 flex flex-col gap-4">
@@ -67,6 +80,7 @@ const Page = () => {
           />
         </div>
       </div>
+      <ToastContainer />
     </List>
   );
 };
