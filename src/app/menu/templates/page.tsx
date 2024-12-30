@@ -85,6 +85,7 @@ const Page = () => {
         theme="dark"
         position="bottom-right"
         closeOnClick
+        pauseOnFocusLoss={false}
       />
     </List>
   );
