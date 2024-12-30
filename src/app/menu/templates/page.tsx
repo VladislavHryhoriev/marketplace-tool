@@ -7,14 +7,17 @@ import {
   getTemplateEpicentr,
   getTemplateRozetka,
   TemplateNames,
-} from "@/get-template";
+} from "@/lib/get-template";
 import { getOrderInfoEpicentr as getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
+import { ClipboardCopy } from "lucide-react";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
-const copyToClipboard = async (text: string) =>
+const copyToClipboard = async (text: string) => {
   await navigator.clipboard.writeText(text);
+  toast.success("Шаблон скопирован в буфер обмена");
+};
 
 const Page = () => {
   const [inputID, setInputID] = useState("");
@@ -25,22 +28,13 @@ const Page = () => {
       const { order } = await getOrderInfoEpicentr(inputID);
       const text = await getTemplateEpicentr(templateName, order);
       setAreaText(text);
-
-      copyToClipboard(text);
     }
 
     if (inputID.startsWith("8")) {
       const { order } = await getOrderInfoRozetka(inputID);
       const text = await getTemplateRozetka(templateName, order);
       setAreaText(text);
-
-      copyToClipboard(text);
     }
-
-    toast.success("Шаблон скопирован в буфер обмена", {
-      theme: "dark",
-      position: "bottom-right",
-    });
   };
 
   const filterNumInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +62,7 @@ const Page = () => {
           </div>
         </div>
 
-        <div>
+        <div className="relative">
           <textarea
             className="bg-zinc-600 p-2 text-sm outline-none"
             name="edit"
@@ -78,9 +72,20 @@ const Page = () => {
             value={areaText}
             onChange={(e) => setAreaText(e.target.value)}
           />
+          <button
+            className="absolute right-0 m-2 rounded-md bg-zinc-600 p-1 hover:text-green-500 active:translate-y-0.5"
+            onClick={() => copyToClipboard(areaText)}
+          >
+            <ClipboardCopy />
+          </button>
         </div>
       </div>
-      <ToastContainer />
+      <ToastContainer
+        hideProgressBar
+        theme="dark"
+        position="bottom-right"
+        closeOnClick
+      />
     </List>
   );
 };

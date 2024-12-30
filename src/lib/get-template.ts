@@ -1,4 +1,4 @@
-import { OrderEpicentr, OrderRozetka } from "./lib/types";
+import { OrderEpicentr, OrderRozetka } from "./types";
 
 export type TemplateNames = "missed-call" | "auto-confirm" | "uncollected";
 
