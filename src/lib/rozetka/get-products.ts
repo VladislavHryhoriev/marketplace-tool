@@ -10,15 +10,14 @@ import { getTokenRozetka } from "./get-token-rozetka";
 export const getProducts = async () /*: Promise<Product> */ => {
   try {
     const token = await getTokenRozetka();
-    const response = await fetch(`${BASE_URL}/api/rozetka/items`, {
+    const response = await fetch(`${BASE_URL}/api/rozetka/goods/on-sale`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const json = await response.json();
-    const content = json.content;
 
-    console.log(content);
+    console.log(json);
 
-    return { content, token };
+    return { content: json, token };
   } catch (error) {
     console.log(error);
   }
