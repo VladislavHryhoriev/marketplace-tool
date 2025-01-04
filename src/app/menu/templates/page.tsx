@@ -53,13 +53,9 @@ const Page = () => {
             onChange={filterNumInput}
           />
 
-          <div className="mt-4 flex gap-2">
+          {/* <div className="mt-4 flex gap-2">
             <RadioButton handler={() => handler("call")} title="Звонок" />
-            <TemplateButton
-              handler={() => handler("call-without-order")}
-              title="Звонок без заказа"
-            />
-          </div>
+          </div> */}
 
           <div className="mt-4 flex flex-col gap-4">
             <TemplateButton
