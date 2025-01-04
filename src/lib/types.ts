@@ -16,3 +16,5 @@ export interface OrderEpicentr {
   deliveryName: string;
   ttn: string;
 }
+
+export type TemplateNames = "missed-call" | "auto-confirm" | "uncollected";

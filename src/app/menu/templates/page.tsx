@@ -1,15 +1,11 @@
 "use client";
 import { List } from "@/components/shared/list";
-import { AutoConfirm } from "@/components/shared/templates/autoconfirm";
-import { MissedCall } from "@/components/shared/templates/missed-call";
-import { Uncollected } from "@/components/shared/templates/uncollected";
-import {
-  getTemplateEpicentr,
-  getTemplateRozetka,
-  TemplateNames,
-} from "@/lib/get-template";
-import { getOrderInfoEpicentr as getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
+import { TemplateButton } from "@/components/shared/templates/button";
+import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
+import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
+import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
+import { TemplateNames } from "@/lib/types";
 import { ClipboardCopy } from "lucide-react";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -24,6 +20,8 @@ const Page = () => {
   const [areaText, setAreaText] = useState("");
 
   const handler = async (templateName: TemplateNames) => {
+    setAreaText("");
+
     if (inputID.startsWith("4")) {
       const { order } = await getOrderInfoEpicentr(inputID);
       const text = await getTemplateEpicentr(templateName, order);
@@ -55,10 +53,27 @@ const Page = () => {
             onChange={filterNumInput}
           />
 
+          <div className="mt-4 flex gap-2">
+            <RadioButton handler={() => handler("call")} title="Звонок" />
+            <TemplateButton
+              handler={() => handler("call-without-order")}
+              title="Звонок без заказа"
+            />
+          </div>
+
           <div className="mt-4 flex flex-col gap-4">
-            <MissedCall handler={() => handler("missed-call")} />
-            <AutoConfirm handler={() => handler("auto-confirm")} />
-            <Uncollected handler={() => handler("uncollected")} />
+            <TemplateButton
+              handler={() => handler("missed-call")}
+              title="Недозвон"
+            />
+            <TemplateButton
+              handler={() => handler("auto-confirm")}
+              title="Автоподтверждение"
+            />
+            <TemplateButton
+              handler={() => handler("uncollected")}
+              title="Не забирает заказ"
+            />
           </div>
         </div>
 
