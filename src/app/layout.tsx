@@ -1,5 +1,5 @@
 import Container from "@/components/shared/container";
-import { Menu } from "@/components/shared/menu";
+import { Tabs } from "@/components/shared/tabs";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -11,10 +11,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`bg-zinc-700 text-white ${inter.className}`}>
+    <html lang="ru" className="dark">
+      <body className={`bg-background ${inter.className}`}>
         <Container className="mt-4">
-          <Menu />
+          <Tabs />
           <div>{children}</div>
         </Container>
       </body>

@@ -4,6 +4,8 @@ const nextConfig = {
   env: {
     ROZETKA_USERNAME: process.env.ROZETKA_USERNAME,
     ROZETKA_PASSWORD: process.env.ROZETKA_PASSWORD,
+    ALLO_USERNAME: process.env.ALLO_USERNAME,
+    ALLO_PASSWORD: process.env.ALLO_PASSWORD,
     EPICENTR_TOKEN: process.env.EPICENTR_TOKEN,
     BASE_URL: process.env.BASE_URL,
   },
@@ -16,6 +18,10 @@ const nextConfig = {
       {
         source: "/api/rozetka/:path*",
         destination: "https://api-seller.rozetka.com.ua/:path*",
+      },
+      {
+        source: "/api/allo/:path*",
+        destination: "https://allo.ua/ua/api/public/:path*",
       },
     ];
   },

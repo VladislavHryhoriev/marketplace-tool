@@ -11,7 +11,7 @@ interface Props {
 const routes = [
   {
     title: "API",
-    path: "/menu/rozetka-api",
+    path: "/menu/api",
   },
   {
     title: "Шаблоны",
@@ -19,24 +19,19 @@ const routes = [
   },
 ];
 
-export const Menu = ({ className }: Props) => {
+export const Tabs = ({ className }: Props) => {
   const path = usePathname();
   const [activePath, setActivePath] = useState(path);
 
   return (
-    <div className={className}>
-      <ul className="flex">
+    <div className={clsx("border-b-2 border-indigo-500", className)}>
+      <ul className="grid max-w-fit grid-cols-2 overflow-hidden rounded-t-md">
         {routes.map((route) => (
-          <li
-            key={route.path}
-            className="overflow-hidden first:rounded-tl-lg last:rounded-tr-lg"
-          >
+          <li key={route.path}>
             <Link
               className={clsx(
-                "min-w-20 p-2 text-center",
-                activePath === route.path
-                  ? "bg-orange-500"
-                  : "bg-zinc-600 hover:bg-zinc-500",
+                "px-3 py-1 text-center transition-colors",
+                activePath === route.path ? "bg-indigo-500" : "bg-zinc-700",
               )}
               href={route.path}
               onClick={() => setActivePath(route.path)}

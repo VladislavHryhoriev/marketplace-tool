@@ -8,7 +8,7 @@ interface Props {
 export const TemplateButton = ({ handler, title }: Props) => {
   return (
     <input type="radio">
-      <Button handler={handler}>{title}</Button>
+      {/* <Button handler={handler}>{title}</Button> */}
     </input>
   );
 };

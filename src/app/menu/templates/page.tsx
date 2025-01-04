@@ -1,12 +1,23 @@
 "use client";
 import { List } from "@/components/shared/list";
-import { TemplateButton } from "@/components/shared/templates/button";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { getOrderInfoAllo } from "@/lib/allo/get-order-info";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
 import { TemplateNames } from "@/lib/types";
-import { ClipboardCopy } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  CircleCheckBig,
+  ClipboardCopy,
+  ClockArrowDown,
+  PhoneMissed,
+} from "lucide-react";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -15,23 +26,47 @@ const copyToClipboard = async (text: string) => {
   toast.success("Шаблон скопирован в буфер обмена");
 };
 
+const checkMarket = (inputID: string, strArr: string[]) => {
+  for (const el of strArr) if (inputID.startsWith(el)) return true;
+};
+
 const Page = () => {
   const [inputID, setInputID] = useState("");
   const [areaText, setAreaText] = useState("");
+  const [selectedOpt, setSelectedOpt] = useState("Rozetka");
 
   const handler = async (templateName: TemplateNames) => {
     setAreaText("");
 
-    if (inputID.startsWith("4")) {
+    // Rozetka
+    if (checkMarket(inputID, ["83", "84"])) {
+      setSelectedOpt("Rozetka");
+
+      const { order } = await getOrderInfoRozetka(inputID);
+      const text = await getTemplateRozetka(templateName, order);
+      setAreaText(text);
+    }
+
+    // Epicentr
+    if (checkMarket(inputID, ["43", "44"])) {
+      setSelectedOpt("Epicentr");
+
       const { order } = await getOrderInfoEpicentr(inputID);
       const text = await getTemplateEpicentr(templateName, order);
       setAreaText(text);
     }
 
-    if (inputID.startsWith("8")) {
-      const { order } = await getOrderInfoRozetka(inputID);
-      const text = await getTemplateRozetka(templateName, order);
-      setAreaText(text);
+    // Allo
+    if (
+      checkMarket(inputID, ["10", "11", "40", "41", "30", "31", "50", "51"])
+    ) {
+      setSelectedOpt("Allo");
+
+      const { order } = await getOrderInfoAllo(inputID);
+      console.log(order);
+
+      // const text = await getTemplateAllo(templateName, order);
+      // setAreaText(text);
     }
   };
 
@@ -41,50 +76,74 @@ const Page = () => {
   };
 
   return (
-    <List title="Шаблоны">
-      <div className="mt-4 flex justify-between gap-2">
+    <List>
+      <div className="flex justify-between gap-4">
         <div>
-          <input
+          <Input
             type="text"
-            className="min-w-60 rounded-md bg-zinc-600 p-2 outline-none"
-            placeholder="Номер заказа"
             name="inputID"
             value={inputID}
             onChange={filterNumInput}
+            placeholder="Номер заказа"
+            autoComplete="off"
           />
 
-          {/* <div className="mt-4 flex gap-2">
-            <RadioButton handler={() => handler("call")} title="Звонок" />
-          </div> */}
+          <div className="mt-4">
+            <RadioGroup
+              value={selectedOpt}
+              onValueChange={setSelectedOpt}
+              className="grid grid-cols-3 gap-0 overflow-hidden rounded-md bg-zinc-700 text-center"
+            >
+              {["Rozetka", "Epicentr", "Allo"].map((opt) => (
+                <div key={opt}>
+                  <RadioGroupItem
+                    value={opt}
+                    id={opt}
+                    checked={selectedOpt === opt}
+                    className="hidden"
+                    disabled
+                  />
+                  <Label
+                    htmlFor={opt}
+                    className={cn("block p-2 transition-colors", {
+                      "bg-indigo-500": selectedOpt === opt,
+                    })}
+                  >
+                    {opt}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
 
-          <div className="mt-4 flex flex-col gap-4">
-            <TemplateButton
-              handler={() => handler("missed-call")}
-              title="Недозвон"
-            />
-            <TemplateButton
-              handler={() => handler("auto-confirm")}
-              title="Автоподтверждение"
-            />
-            <TemplateButton
-              handler={() => handler("uncollected")}
-              title="Не забирает заказ"
-            />
+          <div className="mt-4 flex flex-col gap-2">
+            <Button onClick={() => handler("missed-call")}>
+              <PhoneMissed />
+              Недозвон
+            </Button>
+            <Button onClick={() => handler("auto-confirm")}>
+              <CircleCheckBig />
+              Автоподтверждение
+            </Button>
+            <Button onClick={() => handler("uncollected")}>
+              <ClockArrowDown />
+              Не забирает заказ
+            </Button>
           </div>
         </div>
 
         <div className="relative">
-          <textarea
-            className="bg-zinc-600 p-2 text-sm outline-none"
+          <Textarea
+            className="p-2 text-sm outline outline-2 outline-indigo-500"
             name="edit"
             id="edit"
-            cols={60}
+            cols={70}
             rows={20}
             value={areaText}
             onChange={(e) => setAreaText(e.target.value)}
           />
           <button
-            className="absolute right-0 m-2 rounded-md bg-zinc-600 p-1 hover:text-green-500 active:translate-y-0.5"
+            className="bg-background absolute right-0 top-0 m-2 rounded-md p-1 hover:text-green-500 active:translate-y-0.5"
             onClick={() => copyToClipboard(areaText)}
           >
             <ClipboardCopy />
