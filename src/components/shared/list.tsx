@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import { Separator } from "../ui/separator";
 
 interface Props {
   children: React.ReactNode;

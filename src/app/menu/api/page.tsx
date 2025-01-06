@@ -6,7 +6,7 @@ import { setStatus } from "@/lib/rozetka/set-status";
 
 const Page = () => {
   return (
-    <List title="Rozetka.Api">
+    <List>
       <div className="flex gap-2">
         <Button onClick={setStatus}>Кинуть в обработку</Button>
         <Button onClick={getProducts}>Поиск</Button>
