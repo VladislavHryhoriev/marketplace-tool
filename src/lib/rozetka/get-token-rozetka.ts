@@ -1,5 +1,3 @@
-import { BASE_URL } from "@/constants";
-
 interface Response {
   content: { access_token: string };
 }

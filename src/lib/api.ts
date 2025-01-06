@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export const epicentrApi = axios.create({
-  baseURL: process.env.BASE_URL,
   headers: {
     accept: "application/json",
     Authorization: `Bearer ${process.env.EPICENTR_TOKEN}`,
@@ -10,9 +9,7 @@ export const epicentrApi = axios.create({
 });
 
 export const rozetkaApi = axios.create({
-  baseURL: process.env.BASE_URL,
   headers: {
     accept: "application/json",
-    "Content-Type": "application/json",
   },
 });

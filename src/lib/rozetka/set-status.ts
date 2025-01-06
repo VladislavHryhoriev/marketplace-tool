@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/constants";
 import { getNewOrders } from "./get-new-orders";
 
 export const setStatus = async () => {

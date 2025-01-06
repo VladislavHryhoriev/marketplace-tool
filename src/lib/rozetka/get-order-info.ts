@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/constants";
 import { OrderRozetka } from "../types";
 import { getTokenRozetka } from "./get-token-rozetka";
 
@@ -33,7 +32,7 @@ export const getOrderInfoRozetka = async (
 ): Promise<{ order: OrderRozetka }> => {
   try {
     const token = await getTokenRozetka();
-    const response: Response = await fetch(
+    const response = await fetch(
       `/api/rozetka/orders/${id}?expand=delivery,purchases`,
       { headers: { Authorization: `Bearer ${token}` } },
     );

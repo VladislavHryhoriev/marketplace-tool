@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/constants";
 import { getTokenRozetka } from "./get-token-rozetka";
 
 // export interface Product {
