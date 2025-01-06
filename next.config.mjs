@@ -33,7 +33,7 @@ const nextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "https://seller.rozetka.com.ua",
+            value: "*",
           },
           { key: "Access-Control-Allow-Methods", value: "GET,POST" },
         ],
