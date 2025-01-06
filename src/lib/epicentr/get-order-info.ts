@@ -24,12 +24,14 @@ export const getOrderInfoEpicentr = async (
       "accept-language": "uk",
     };
 
-    const orderId = await fetch(
+    const orders = await fetch(
       `/api/epicentr/v3/oms/orders?filter[number]=${id}`,
       { headers },
     ).then((res) => res.json().then((data) => data.items[0].id));
 
-    const response = await fetch(`/api/epicentr/v2/oms/orders/${orderId}`, {
+    console.log(orders);
+
+    const response = await fetch(`/api/epicentr/v2/oms/orders/${orders}`, {
       headers,
     });
 

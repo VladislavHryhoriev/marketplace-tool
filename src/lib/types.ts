@@ -17,15 +17,4 @@ export interface OrderEpicentr {
   ttn: string;
 }
 
-export interface OrderAllo {
-  id: string;
-  fullname: string;
-
-  products: { item_name: string; cost: string; quantity: number }[];
-
-  get address(): string;
-  deliveryName: string;
-  ttn: string;
-}
-
 export type TemplateNames = "missed-call" | "auto-confirm" | "uncollected";

@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { getOrderInfoAllo } from "@/lib/allo/get-order-info";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
@@ -55,24 +54,15 @@ const Page = () => {
       const text = await getTemplateEpicentr(templateName, order);
       setAreaText(text);
     }
-
-    // Allo
-    if (
-      checkMarket(inputID, ["10", "11", "40", "41", "30", "31", "50", "51"])
-    ) {
-      setSelectedOpt("Allo");
-
-      const { order } = await getOrderInfoAllo(inputID);
-      console.log(order);
-
-      // const text = await getTemplateAllo(templateName, order);
-      // setAreaText(text);
-    }
   };
 
   const filterNumInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const numbersOnly = e.target.value.replace(/[^0-9]/g, "");
     if (e.target.value.length < 20) setInputID(numbersOnly);
+
+    setSelectedOpt("");
+    checkMarket(numbersOnly, ["83", "84"]) && setSelectedOpt("Rozetka");
+    checkMarket(numbersOnly, ["43", "44"]) && setSelectedOpt("Epicentr");
   };
 
   return (
@@ -92,9 +82,9 @@ const Page = () => {
             <RadioGroup
               value={selectedOpt}
               onValueChange={setSelectedOpt}
-              className="grid grid-cols-3 gap-0 overflow-hidden rounded-md bg-zinc-700 text-center"
+              className="grid grid-cols-2 gap-0 overflow-hidden rounded-md bg-zinc-700 text-center"
             >
-              {["Rozetka", "Epicentr", "Allo"].map((opt) => (
+              {["Rozetka", "Epicentr"].map((opt) => (
                 <div key={opt}>
                   <RadioGroupItem
                     value={opt}
@@ -143,7 +133,7 @@ const Page = () => {
             onChange={(e) => setAreaText(e.target.value)}
           />
           <button
-            className="bg-background absolute right-0 top-0 m-2 rounded-md p-1 hover:text-green-500 active:translate-y-0.5"
+            className="absolute right-0 top-0 m-2 rounded-md bg-background p-1 hover:text-green-500 active:translate-y-0.5"
             onClick={() => copyToClipboard(areaText)}
           >
             <ClipboardCopy />

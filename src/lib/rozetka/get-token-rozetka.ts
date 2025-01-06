@@ -1,9 +1,7 @@
-import { BASE_URL, ROZETKA_PASSWORD, ROZETKA_USERNAME } from "@/constants";
+import { BASE_URL } from "@/constants";
 
 interface Response {
-  content: {
-    access_token: string;
-  };
+  content: { access_token: string };
 }
 
 export const getTokenRozetka = async () => {
@@ -16,12 +14,12 @@ export const getTokenRozetka = async () => {
     if (Date.now() - token_time < 1000 * 60 * 60 * 24 && token) return token;
   }
 
-  const response = await fetch(`${BASE_URL}/api/rozetka/sites`, {
+  const response = await fetch(`/api/rozetka/sites`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      username: ROZETKA_USERNAME,
-      password: Buffer.from(ROZETKA_PASSWORD).toString("base64"),
+      username: process.env.ROZETKA_USERNAME,
+      password: Buffer.from(process.env.ROZETKA_PASSWORD!).toString("base64"),
     }),
   });
 

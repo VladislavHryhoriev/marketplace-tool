@@ -1,8 +1,14 @@
 import { BASE_URL } from "@/constants";
-import { getTokenRozetka } from "./get-token-rozetka";
 import { OrderRozetka } from "../types";
+import { getTokenRozetka } from "./get-token-rozetka";
 
 interface ApiResponse {
+  errors: {
+    message: string;
+    description: string;
+    details: { value: string };
+  };
+  success: boolean;
   content: {
     id: number;
     recipient_title: { full_name: string };
@@ -28,13 +34,13 @@ export const getOrderInfoRozetka = async (
   try {
     const token = await getTokenRozetka();
     const response: Response = await fetch(
-      `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery,purchases`,
+      `/api/rozetka/orders/${id}?expand=delivery,purchases`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
-    const { content }: ApiResponse = await response.json();
+    const { success, content, errors }: ApiResponse = await response.json();
 
-    console.log(content);
+    if (!success) throw new Error(`${errors.message} | ${errors.description}`);
 
     const order = {
       id: content.id,

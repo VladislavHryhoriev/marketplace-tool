@@ -7,7 +7,7 @@ export const setStatus = async () => {
 
   orders.forEach(async (order) => {
     try {
-      await fetch(`${BASE_URL}/api/rozetka/orders/${order.id}`, {
+      await fetch(`/api/rozetka/orders/${order.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
