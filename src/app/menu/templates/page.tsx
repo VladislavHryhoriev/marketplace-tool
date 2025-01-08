@@ -21,6 +21,11 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 const copyToClipboard = async (text: string) => {
+  if (!text) {
+    toast.error("Нет текста для копирования");
+    return;
+  }
+
   await navigator.clipboard.writeText(text);
   toast.success("Шаблон скопирован в буфер обмена");
 };
@@ -32,7 +37,7 @@ const checkMarket = (inputID: string, strArr: string[]) => {
 const Page = () => {
   const [inputID, setInputID] = useState("");
   const [areaText, setAreaText] = useState("");
-  const [selectedOpt, setSelectedOpt] = useState("Rozetka");
+  const [selectedOpt, setSelectedOpt] = useState("");
 
   const handler = async (templateName: TemplateNames) => {
     setAreaText("");
@@ -41,7 +46,12 @@ const Page = () => {
     if (checkMarket(inputID, ["83", "84"])) {
       setSelectedOpt("Rozetka");
 
-      const { order } = await getOrderInfoRozetka(inputID);
+      const { order, ok } = await getOrderInfoRozetka(inputID);
+      if (!ok) {
+        setAreaText("Заказ не найден");
+        return;
+      }
+
       const text = await getTemplateRozetka(templateName, order);
       setAreaText(text);
     }
@@ -50,10 +60,17 @@ const Page = () => {
     if (checkMarket(inputID, ["43", "44"])) {
       setSelectedOpt("Epicentr");
 
-      const { order } = await getOrderInfoEpicentr(inputID);
+      const { order, ok } = await getOrderInfoEpicentr(inputID);
+      if (!ok) {
+        setAreaText("Заказ не найден");
+        return;
+      }
+
       const text = await getTemplateEpicentr(templateName, order);
       setAreaText(text);
     }
+
+    toast.warn("Введите номер заказа");
   };
 
   const filterNumInput = (e: React.ChangeEvent<HTMLInputElement>) => {
