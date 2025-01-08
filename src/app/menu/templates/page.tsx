@@ -42,6 +42,8 @@ const Page = () => {
   const handler = async (templateName: TemplateNames) => {
     setAreaText("");
 
+    if (!inputID) toast.warn("Введите номер заказа");
+
     // Rozetka
     if (checkMarket(inputID, ["83", "84"])) {
       setSelectedOpt("Rozetka");
@@ -69,8 +71,6 @@ const Page = () => {
       const text = await getTemplateEpicentr(templateName, order);
       setAreaText(text);
     }
-
-    toast.warn("Введите номер заказа");
   };
 
   const filterNumInput = (e: React.ChangeEvent<HTMLInputElement>) => {
