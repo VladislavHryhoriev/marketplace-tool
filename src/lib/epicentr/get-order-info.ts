@@ -47,9 +47,7 @@ export const getOrderInfoEpicentr = async (
 
     const response = await fetch(
       `${BASE_URL}/api/epicentr/v2/oms/orders/${orders.id}`,
-      {
-        headers,
-      },
+      { headers },
     );
 
     const orderData: EpicentrOrderResponse = await response.json();

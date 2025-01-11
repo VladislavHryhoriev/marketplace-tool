@@ -23,15 +23,15 @@ export async function POST(req: NextRequest) {
 
     const json: DeliveryInfoResponse = await response.json();
 
-    const deliveryTime = json.data[0].ActualDeliveryDate.split(" ")[1].slice(
+    const deliveryTime = json.data[0].ActualDeliveryDate.split(" ")[1]?.slice(
       0,
       5,
     );
 
-    console.log(json);
-
     const [deliveryYear, deliveryMonth, deliveryDay] =
       json.data[0].ActualDeliveryDate.split(" ")[0].split("-");
+
+    const isValidDelivery = deliveryDay && deliveryMonth && deliveryYear;
 
     const [returnYear, returnMonth, returnDay] =
       json.data[0]?.DateReturnCargo?.split("-") || [];
@@ -41,7 +41,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json<DeliveryResponse>({
       ok: true,
       ttn,
-      deliveryDate: `${deliveryTime} ${deliveryDay}.${deliveryMonth}.${deliveryYear}`,
+      deliveryDate: isValidDelivery
+        ? `${deliveryTime} ${deliveryDay}.${deliveryMonth}.${deliveryYear}`
+        : "",
       returnDate: isValid
         ? `${+returnDay - 1}.${returnMonth}.${returnYear}`
         : "",

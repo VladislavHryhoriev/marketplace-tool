@@ -43,7 +43,7 @@ export const getTemplateEpicentr = async (
 **Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.deliveryDate}` : ""}
 **ТТН:** ${order.ttn}
 
-Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.ok ? `${ttnInfo.returnDate} ввечері` : ""}
+Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.ok ? `${ttnInfo.returnDate} в кінці дня` : ""}
 `.trim();
   }
 
