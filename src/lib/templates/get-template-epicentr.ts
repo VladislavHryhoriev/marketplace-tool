@@ -1,9 +1,10 @@
 import { toast } from "react-toastify";
-import { OrderEpicentr, TemplateNames } from "../types";
+import { DeliveryResponse, OrderEpicentr, TemplateNames } from "../types";
 
 export const getTemplateEpicentr = async (
   type: TemplateNames,
   order: OrderEpicentr,
+  ttnInfo: DeliveryResponse,
 ) => {
   const cost =
     order.deliveryName === "ukr-pochta" || order.deliveryName === "ukrposhta"
@@ -32,29 +33,17 @@ export const getTemplateEpicentr = async (
     toast.error(
       "Эпицентр не предполагает автоматическое подтверждение заказов",
     );
-
     return "";
-
-    //     return `
-    // Доброго дня, Ваше оплачене замовлення №${order.id} на сайті Епіцентр підтверджене автоматично.
-
-    // **Замовили:** ${productsText}
-    // **Отримувач:** ${order.fullname}
-    // **Адреса доставки:** ${order.address}
-    // **Вартість доставки:** ~${cost[1]}грн
-
-    // Очікуйте СМС повідомлення з номером ТТН після 18:00 в день відправки.
-    // `.trim();
   }
 
   if (type === "uncollected") {
     return `
-Доброго дня, ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
+Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 
-**Адреса доставки:** ${order.address}
+**Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.deliveryDate}` : ""}
 **ТТН:** ${order.ttn}
 
-Встигніть забрати посилку, бо відбудеться автоматичне повернення.
+Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.ok ? `${ttnInfo.returnDate} ввечері` : ""}
 `.trim();
   }
 

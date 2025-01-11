@@ -2,19 +2,21 @@ export interface OrderRozetka {
   id: number;
   fullname: string;
   products: { item_name: string; cost: string; quantity: number }[];
-  get address(): string;
   deliveryName: string;
-  total_quantity: number;
+  totalQuantity: number;
   ttn: string;
+  phone: string;
+  get address(): string;
 }
 
 export interface OrderEpicentr {
   id: string;
   fullname: string;
   products: { title: string; quantity: number; subtotal: number }[];
-  get address(): string;
   deliveryName: string;
   ttn: string;
+  get address(): string;
+  phone: string;
 }
 
 export interface RozetkaOrderResponse {
@@ -38,8 +40,9 @@ export interface RozetkaOrderResponse {
       place_flat: string;
       name_logo: string;
     };
-    total_quantity: number;
+    totalQuantity: number;
     ttn: string;
+    recipient_phone: string;
   };
 }
 
@@ -58,3 +61,14 @@ export interface EpicentrOrderResponse {
 }
 
 export type TemplateNames = "missed-call" | "auto-confirm" | "uncollected";
+
+export interface DeliveryInfoResponse {
+  data: { ActualDeliveryDate: string; DateReturnCargo: string }[];
+}
+
+export interface DeliveryResponse {
+  ok: boolean;
+  ttn: string;
+  deliveryDate: string;
+  returnDate: string;
+}

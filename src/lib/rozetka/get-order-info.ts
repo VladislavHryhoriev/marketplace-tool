@@ -9,8 +9,9 @@ const getOrderTemplate = (content: RozetkaOrderResponse["content"]) => {
     fullname: content.recipient_title.full_name,
     products: content.purchases,
     deliveryName: content.delivery.name_logo,
-    total_quantity: content.total_quantity,
+    totalQuantity: content.totalQuantity,
     ttn: content.ttn,
+    phone: content.recipient_phone,
 
     get address() {
       const deliveryService = content.delivery.delivery_service_name;
@@ -22,7 +23,7 @@ const getOrderTemplate = (content: RozetkaOrderResponse["content"]) => {
       const flat = content.delivery.place_flat;
 
       if (deliveryMethod === 1) {
-        return `(${deliveryService}) ${city}, ${street} ${house}, Відділення №${departmentNumber}`;
+        return `(${deliveryService}) Відділення №${departmentNumber} ${city}, ${street} ${house}`;
       }
 
       if (deliveryMethod === 2) {
@@ -62,8 +63,9 @@ export const getOrderInfoRozetka = async (
         products: [],
         address: "",
         deliveryName: "",
-        total_quantity: -1,
+        totalQuantity: -1,
         ttn: "",
+        phone: "",
       },
       ok: false,
     };

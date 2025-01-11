@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
+import { getTTNInfo } from "@/lib/get-ttn-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
@@ -54,7 +55,9 @@ const Page = () => {
         return;
       }
 
-      const text = await getTemplateRozetka(templateName, order);
+      const ttnInfo = await getTTNInfo(order.ttn, order.phone);
+
+      const text = await getTemplateRozetka(templateName, order, ttnInfo);
       setAreaText(text);
     }
 
@@ -68,7 +71,9 @@ const Page = () => {
         return;
       }
 
-      const text = await getTemplateEpicentr(templateName, order);
+      const ttnInfo = await getTTNInfo(order.ttn, order.phone);
+
+      const text = await getTemplateEpicentr(templateName, order, ttnInfo);
       setAreaText(text);
     }
   };

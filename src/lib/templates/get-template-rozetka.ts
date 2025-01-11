@@ -1,8 +1,9 @@
-import { OrderRozetka, TemplateNames } from "../types";
+import { DeliveryResponse, OrderRozetka, TemplateNames } from "../types";
 
 export const getTemplateRozetka = async (
   type: TemplateNames,
   order: OrderRozetka,
+  ttnInfo: DeliveryResponse,
 ) => {
   const cost =
     order.deliveryName === "ukr-pochta" || order.deliveryName === "ukrposhta"
@@ -45,10 +46,10 @@ export const getTemplateRozetka = async (
     return `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 
-**Адреса доставки:** ${order.address}
+**Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.deliveryDate}` : ""}
 **ТТН:** ${order.ttn}
 
-Встигніть забрати посилку, бо відбудеться автоматичне повернення.
+Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.ok ? `${ttnInfo.returnDate} ввечері` : ""}
 `.trim();
   }
 
