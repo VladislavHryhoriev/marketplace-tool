@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { OrderRozetka, RozetkaOrderResponse } from "../types";
 import { getTokenRozetka } from "./get-token-rozetka";
+import { BASE_URL } from "@/constants";
 
 const getOrderTemplate = (content: RozetkaOrderResponse["content"]) => {
   return {
@@ -39,7 +40,7 @@ export const getOrderInfoRozetka = async (
   try {
     const token = await getTokenRozetka();
     const response = await fetch(
-      `/api/rozetka/orders/${id}?expand=delivery,purchases`,
+      `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery,purchases`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
 

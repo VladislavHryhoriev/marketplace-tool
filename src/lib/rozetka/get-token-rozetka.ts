@@ -1,3 +1,5 @@
+import { BASE_URL } from "@/constants";
+
 interface Response {
   content: { access_token: string };
 }
@@ -12,7 +14,7 @@ export const getTokenRozetka = async () => {
     if (Date.now() - token_time < 1000 * 60 * 60 * 24 && token) return token;
   }
 
-  const response = await fetch(`/api/rozetka/sites`, {
+  const response = await fetch(`${BASE_URL}/api/rozetka/sites`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
