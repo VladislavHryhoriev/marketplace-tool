@@ -56,7 +56,6 @@ const Page = () => {
       }
 
       const ttnInfo = await getTTNInfo(order.ttn, order.phone);
-
       const text = await getTemplateRozetka(templateName, order, ttnInfo);
       setAreaText(text);
     }
@@ -72,7 +71,6 @@ const Page = () => {
       }
 
       const ttnInfo = await getTTNInfo(order.ttn, order.phone);
-
       const text = await getTemplateEpicentr(templateName, order, ttnInfo);
       setAreaText(text);
     }
