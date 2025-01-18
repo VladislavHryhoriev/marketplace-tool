@@ -17,22 +17,25 @@ const Page = () => {
 
   useEffect(() => {
     if (isActive) {
-      intervalRef.current = setInterval(async () => {
-        const { orders } = await getNewOrders();
+      intervalRef.current = setInterval(
+        async () => {
+          const { orders } = await getNewOrders();
 
-        if (orders.length === 0) return;
+          if (orders.length === 0) return;
 
-        Notification.requestPermission().then((result) => {
-          if (result === "granted") {
-            const notification = new Notification("Новый заказ");
-            notification.onclick = () => {
-              window.open(
-                `https://seller.rozetka.com.ua/main/orders/all?page=1&sort=-id&pageSize=50&id=${orders[0].id}&types=1`,
-              );
-            };
-          }
-        });
-      }, 5 * 1000);
+          Notification.requestPermission().then((result) => {
+            if (result === "granted") {
+              const notification = new Notification("Новый заказ");
+              notification.onclick = () => {
+                window.open(
+                  `https://seller.rozetka.com.ua/main/orders/all?page=1&sort=-id&pageSize=50&id=${orders[0].id}&types=1`,
+                );
+              };
+            }
+          });
+        },
+        3 * 60 * 1000,
+      );
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
