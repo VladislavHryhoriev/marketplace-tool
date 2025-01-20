@@ -1,4 +1,4 @@
-import { twMerge } from "tailwind-merge";
+import { cn } from "@/lib/utils";
 
 interface Props {
   children: React.ReactNode;
@@ -8,10 +8,7 @@ interface Props {
 export const List = ({ children, className }: Props) => {
   return (
     <div
-      className={twMerge(
-        "mt-6 min-h-[500px] rounded-md rounded-tl-none",
-        className,
-      )}
+      className={cn("mt-6 min-h-[500px] rounded-md rounded-tl-none", className)}
     >
       <div>{children}</div>
     </div>

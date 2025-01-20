@@ -1,11 +1,13 @@
+import { BASE_URL } from "@/constants";
 import { DeliveryResponse } from "./types";
 
-export const getTTNInfo = async (ttn: string, phone: string) => {
+export const getDeliveryDate = async (ttn: string, phone: string) => {
   try {
-    const response = await fetch("/api/nova-poshta", {
+    const response = await fetch(`${BASE_URL}/api/nova-poshta`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ttn, phone }),
+      next: { revalidate: 10 },
     });
 
     const json: DeliveryResponse = await response.json();

@@ -1,8 +1,8 @@
 "use client";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { twMerge } from "tailwind-merge";
 
 interface Props {
   className?: string;
@@ -24,14 +24,14 @@ export const Tabs = ({ className }: Props) => {
   const [activePath, setActivePath] = useState(path);
 
   return (
-    <div className={twMerge("border-b-2 border-indigo-500", className)}>
+    <div className={cn("border-b-2 border-indigo-500", className)}>
       <ul className="grid max-w-fit grid-cols-2 overflow-hidden rounded-t-md">
         {routes.map((route) => (
           <li key={route.path}>
             <Link
-              className={twMerge(
-                "px-3 py-1 text-center transition-colors",
-                activePath === route.path ? "bg-indigo-500" : "bg-zinc-700",
+              className={cn(
+                "bg-zinc-700 px-3 py-1 text-center transition-colors",
+                activePath === route.path && "bg-indigo-500",
               )}
               href={route.path}
               onClick={() => setActivePath(route.path)}

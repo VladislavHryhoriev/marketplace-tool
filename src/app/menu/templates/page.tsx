@@ -1,25 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { List } from "@/components/shared/list";
-import { Button } from "@/components/ui/button";
+import TemplateButtons from "@/components/shared/templates/template-buttons";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
-import { getTTNInfo } from "@/lib/get-ttn-info";
-import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
-import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
-import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
-import { TemplateNames } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import {
-  CircleCheckBig,
-  ClipboardCopy,
-  ClockArrowDown,
-  PhoneMissed,
-} from "lucide-react";
-import { useState } from "react";
+import { ClipboardCopy } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+
+const MAX_INPUT_LENGTH = 15;
 
 const copyToClipboard = async (text: string) => {
   if (!text) {
@@ -27,63 +16,50 @@ const copyToClipboard = async (text: string) => {
     return;
   }
 
-  await navigator.clipboard.writeText(text);
-  toast.success("Шаблон скопирован в буфер обмена");
-};
-
-const checkMarket = (inputID: string, strArr: string[]) => {
-  for (const el of strArr) if (inputID.startsWith(el)) return true;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success("Шаблон скопирован в буфер обмена");
+  } catch (error) {
+    console.error(error);
+    toast.error("Ошибка копирования");
+  }
 };
 
 const Page = () => {
   const [inputID, setInputID] = useState("");
   const [areaText, setAreaText] = useState("");
-  const [selectedOpt, setSelectedOpt] = useState("");
+  const areaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handler = async (templateName: TemplateNames) => {
-    setAreaText("");
-
-    if (!inputID) toast.warn("Введите номер заказа");
-
-    // Rozetka
-    if (checkMarket(inputID, ["83", "84"])) {
-      setSelectedOpt("Rozetka");
-
-      const { order, ok } = await getOrderInfoRozetka(inputID);
-      if (!ok) {
-        setAreaText("Заказ не найден");
-        return;
-      }
-
-      const ttnInfo = await getTTNInfo(order.ttn, order.phone);
-      const text = await getTemplateRozetka(templateName, order, ttnInfo);
-      setAreaText(text);
+  const filterNumInput = useCallback((text: string) => {
+    const numbersOnly = text.replace(/[^0-9]/g, "");
+    if (text.length < MAX_INPUT_LENGTH) {
+      setInputID(numbersOnly);
+      return numbersOnly;
     }
 
-    // Epicentr
-    if (checkMarket(inputID, ["43", "44"])) {
-      setSelectedOpt("Epicentr");
+    return inputID;
+  }, []);
 
-      const { order, ok } = await getOrderInfoEpicentr(inputID);
-      if (!ok) {
-        setAreaText("Заказ не найден");
-        return;
+  const handleKeyDown = useCallback(async (e: KeyboardEvent) => {
+    if (
+      e.ctrlKey &&
+      e.code === "KeyV" &&
+      document.activeElement !== areaRef.current
+    ) {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) setInputID(filterNumInput(text));
+      } catch (error) {
+        console.error(error);
+        toast.error("Ошибка копирования");
       }
-
-      const ttnInfo = await getTTNInfo(order.ttn, order.phone);
-      const text = await getTemplateEpicentr(templateName, order, ttnInfo);
-      setAreaText(text);
     }
-  };
+  }, []);
 
-  const filterNumInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numbersOnly = e.target.value.replace(/[^0-9]/g, "");
-    if (e.target.value.length < 20) setInputID(numbersOnly);
-
-    setSelectedOpt("");
-    checkMarket(numbersOnly, ["83", "84"]) && setSelectedOpt("Rozetka");
-    checkMarket(numbersOnly, ["43", "44"]) && setSelectedOpt("Epicentr");
-  };
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <List>
@@ -93,57 +69,17 @@ const Page = () => {
             type="text"
             name="inputID"
             value={inputID}
-            onChange={filterNumInput}
+            onChange={(e) => filterNumInput(e.target.value)}
             placeholder="Номер заказа"
             autoComplete="off"
           />
 
-          <div className="mt-4">
-            <RadioGroup
-              value={selectedOpt}
-              onValueChange={setSelectedOpt}
-              className="grid grid-cols-2 gap-0 overflow-hidden rounded-md bg-zinc-700 text-center"
-            >
-              {["Rozetka", "Epicentr"].map((opt) => (
-                <div key={opt}>
-                  <RadioGroupItem
-                    value={opt}
-                    id={opt}
-                    checked={selectedOpt === opt}
-                    className="hidden"
-                    disabled
-                  />
-                  <Label
-                    htmlFor={opt}
-                    className={cn("block p-2 transition-colors", {
-                      "bg-indigo-500": selectedOpt === opt,
-                    })}
-                  >
-                    {opt}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-2">
-            <Button onClick={() => handler("missed-call")}>
-              <PhoneMissed />
-              Недозвон
-            </Button>
-            <Button onClick={() => handler("auto-confirm")}>
-              <CircleCheckBig />
-              Автоподтверждение
-            </Button>
-            <Button onClick={() => handler("uncollected")}>
-              <ClockArrowDown />
-              Не забирает заказ
-            </Button>
-          </div>
+          <TemplateButtons {...{ inputID, setAreaText }} />
         </div>
 
         <div className="relative">
           <Textarea
+            ref={areaRef}
             className="p-2 text-sm outline outline-2 outline-indigo-500"
             name="edit"
             id="edit"
