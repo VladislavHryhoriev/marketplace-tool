@@ -2,8 +2,13 @@ import Container from "@/components/shared/container";
 import { Tabs } from "@/components/shared/tabs";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "UkrStore Templates",
+};
 
 export default function RootLayout({
   children,

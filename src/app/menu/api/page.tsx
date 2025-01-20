@@ -11,9 +11,7 @@ const Page = () => {
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const toggleHandler = () => {
-    setIsActive((prev) => !prev);
-  };
+  const toggleHandler = () => setIsActive((prev) => !prev);
 
   useEffect(() => {
     if (isActive) {
