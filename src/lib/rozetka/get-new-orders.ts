@@ -16,8 +16,7 @@ export const getNewOrders = async (): Promise<Order> => {
     const token = await getTokenRozetka();
     const response = await fetch(
       // ? Проверка ?status=1
-      // `${BASE_URL}/api/rozetka/orders/search?types=4`,
-      `${BASE_URL}/api/rozetka/orders/search?types=3`,
+      `${BASE_URL}/api/rozetka/orders/search?types=4`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
