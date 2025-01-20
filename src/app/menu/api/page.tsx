@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import { List } from "@/components/shared/list";
 import { Button } from "@/components/ui/button";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { setStatus } from "@/lib/rozetka/set-status";
-import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 const Page = () => {
   const [isActive, setIsActive] = useState(false);
@@ -54,7 +54,7 @@ const Page = () => {
         <Button onClick={setStatus}>Кинуть в обработку</Button>
         <Button
           onClick={toggleHandler}
-          className={clsx(isActive && "bg-green-500")}
+          className={twMerge(isActive && "bg-green-500")}
         >
           Проверять новые заказы
           {isActive ? " ON" : " OFF"}

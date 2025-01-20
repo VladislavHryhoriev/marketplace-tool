@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
 
 interface Props {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ interface Props {
 export const List = ({ children, className }: Props) => {
   return (
     <div
-      className={clsx(
+      className={twMerge(
         "mt-6 min-h-[500px] rounded-md rounded-tl-none",
         className,
       )}
