@@ -34,7 +34,7 @@ const Page = () => {
             }
           });
         },
-        3 * 60 * 1000,
+        10 * 60 * 1000,
       );
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
