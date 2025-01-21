@@ -1,8 +1,9 @@
-import { DeliveryResponse, OrderRozetka, TemplateNames } from "../types";
+import { DeliveryResponse, TemplateNames } from "../types";
+import { IOrderRozetkaTemplate } from "../types/rozetka";
 
 export const getTemplateRozetka = async (
   type: TemplateNames,
-  order: OrderRozetka,
+  order: IOrderRozetkaTemplate,
   ttnInfo: DeliveryResponse,
 ) => {
   const cost =

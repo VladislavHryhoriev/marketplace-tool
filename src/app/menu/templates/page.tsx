@@ -4,11 +4,10 @@ import { List } from "@/components/shared/list";
 import TemplateButtons from "@/components/shared/templates/template-buttons";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { MAX_INPUT_LENGTH } from "@/constants";
 import { ClipboardCopy } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-
-const MAX_INPUT_LENGTH = 15;
+import { toast } from "react-toastify";
 
 const copyToClipboard = async (text: string) => {
   if (!text) {
@@ -96,13 +95,6 @@ const Page = () => {
           </button>
         </div>
       </div>
-      <ToastContainer
-        hideProgressBar
-        theme="dark"
-        position="bottom-right"
-        closeOnClick
-        pauseOnFocusLoss={false}
-      />
     </List>
   );
 };

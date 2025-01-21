@@ -1,15 +1,23 @@
-import { toast } from "react-toastify";
-import { OrderRozetka, RozetkaOrderResponse } from "../types";
-import { getTokenRozetka } from "./get-token-rozetka";
 import { BASE_URL } from "@/constants";
+import { toast } from "react-toastify";
+import {
+  IExtendDelivery,
+  IExtendPurchases,
+  IOrder,
+  IOrderResponse,
+  IOrderRozetkaTemplate,
+} from "../types/rozetka";
+import { getTokenRozetka } from "./get-token-rozetka";
 
-const getOrderTemplate = (content: RozetkaOrderResponse["content"]) => {
+const getOrderTemplate = (
+  content: IOrder & IExtendDelivery & IExtendPurchases,
+) => {
   return {
     id: content.id,
-    fullname: content.recipient_title.full_name,
+    fullname: content.delivery.recipient_title,
     products: content.purchases,
     deliveryName: content.delivery.name_logo,
-    totalQuantity: content.totalQuantity,
+    totalQuantity: content.total_quantity,
     ttn: content.ttn,
     phone: content.recipient_phone,
 
@@ -35,9 +43,9 @@ const getOrderTemplate = (content: RozetkaOrderResponse["content"]) => {
   };
 };
 
-export const getOrderInfoRozetka = async (
+export const getOrderInfo = async (
   id: string,
-): Promise<{ order: OrderRozetka; ok: boolean }> => {
+): Promise<{ order: IOrderRozetkaTemplate; success: boolean }> => {
   try {
     const token = await getTokenRozetka();
     const response = await fetch(
@@ -45,15 +53,18 @@ export const getOrderInfoRozetka = async (
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
-    const { success, content, errors }: RozetkaOrderResponse =
-      await response.json();
+    const { success, content, errors }: IOrderResponse = await response.json();
 
-    if (!success) {
+    if (!success && errors) {
       toast.error(errors.description);
       throw new Error(`${errors.message} | ${errors.description}`);
     }
 
-    return { order: getOrderTemplate(content), ok: true };
+    const order = getOrderTemplate(content);
+
+    console.log(order, content);
+
+    return { order, success: true };
   } catch (error) {
     console.error(error);
     return {
@@ -67,7 +78,7 @@ export const getOrderInfoRozetka = async (
         ttn: "",
         phone: "",
       },
-      ok: false,
+      success: false,
     };
   }
 };

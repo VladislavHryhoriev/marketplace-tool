@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getDeliveryDate } from "@/lib/get-delivery-date";
-import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
+import { getOrderInfo } from "@/lib/rozetka/get-order-info";
 import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
 import { TemplateNames } from "@/lib/types";
@@ -25,8 +25,9 @@ const TemplateButtons = ({ inputID, setAreaText }: Props) => {
 
     // Rozetka
     if (checkMarket(inputID, ["83", "84"])) {
-      const { order, ok } = await getOrderInfoRozetka(inputID);
-      if (!ok) {
+      const { order, success } = await getOrderInfo(inputID);
+
+      if (!success) {
         setAreaText("Заказ не найден");
         return;
       }

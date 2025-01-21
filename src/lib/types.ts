@@ -1,14 +1,3 @@
-export interface OrderRozetka {
-  id: number;
-  fullname: string;
-  products: { item_name: string; cost: string; quantity: number }[];
-  deliveryName: string;
-  totalQuantity: number;
-  ttn: string;
-  phone: string;
-  get address(): string;
-}
-
 export interface OrderEpicentr {
   id: string;
   fullname: string;
@@ -17,33 +6,6 @@ export interface OrderEpicentr {
   ttn: string;
   get address(): string;
   phone: string;
-}
-
-export interface RozetkaOrderResponse {
-  errors: {
-    message: string;
-    description: string;
-    details: { value: string };
-  };
-  success: boolean;
-  content: {
-    id: number;
-    recipient_title: { full_name: string };
-    purchases: { item_name: string; cost: string; quantity: number }[];
-    delivery: {
-      delivery_service_name: string;
-      delivery_method_id: number;
-      city: { name_ua: string };
-      place_street: string;
-      place_house: string;
-      place_number: string;
-      place_flat: string;
-      name_logo: string;
-    };
-    totalQuantity: number;
-    ttn: string;
-    recipient_phone: string;
-  };
 }
 
 export interface EpicentrOrderResponse {

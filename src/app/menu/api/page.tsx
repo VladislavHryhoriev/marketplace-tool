@@ -1,14 +1,17 @@
 "use client";
 
 import { List } from "@/components/shared/list";
+import OrderList from "@/components/shared/templates/order-list";
 import { Button } from "@/components/ui/button";
+import { ROZETKA_FETCH_INTERVAL } from "@/constants";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { setStatus } from "@/lib/rozetka/set-status";
+import { IOrder } from "@/lib/types/rozetka";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
-const sendNotify = async () => {
-  const { orders } = await getNewOrders();
+const sendNotify = async (orders: IOrder[]) => {
   if (orders.length === 0) return;
   const { id, amount, recipient_title } = orders[0];
 
@@ -16,7 +19,6 @@ const sendNotify = async () => {
     if (result === "granted") {
       const notification = new Notification(recipient_title.full_name, {
         body: `${amount} грн`,
-        tag: "rozetka",
       });
       notification.onclick = () => {
         window.open(
@@ -28,14 +30,23 @@ const sendNotify = async () => {
 };
 
 const Page = () => {
+  const [orders, setOrders] = useState<IOrder[]>([]);
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const toggleHandler = () => setIsActive((prev) => !prev);
-
   useEffect(() => {
     if (isActive) {
-      intervalRef.current = setInterval(sendNotify, 1 * 60 * 1000);
+      intervalRef.current = setInterval(async () => {
+        const { orders, success } = await getNewOrders();
+
+        if (!success) {
+          setIsActive(false);
+          return toast.error("Ошибка получения заказов");
+        }
+
+        setOrders(orders);
+        sendNotify(orders);
+      }, ROZETKA_FETCH_INTERVAL);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -51,13 +62,13 @@ const Page = () => {
       <div className="flex gap-2">
         <Button onClick={setStatus}>Кинуть в обработку</Button>
         <Button
-          onClick={toggleHandler}
+          onClick={() => setIsActive((prev) => !prev)}
           className={cn(isActive && "bg-green-500")}
         >
-          Проверять новые заказы
-          {isActive ? " ON" : " OFF"}
+          Проверять новые заказы {isActive ? " ON" : " OFF"}
         </Button>
       </div>
+      <OrderList title="Новые заказы Розетка" orders={orders} />
     </List>
   );
 };

@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+  images: {
+    domains: [
+      "rozetka.com.ua",
+      "content.rozetka.com.ua",
+      "content1.rozetka.com.ua",
+      "content2.rozetka.com.ua",
+    ],
+  },
   env: {
     ROZETKA_USERNAME: process.env.ROZETKA_USERNAME,
     ROZETKA_PASSWORD: process.env.ROZETKA_PASSWORD,
