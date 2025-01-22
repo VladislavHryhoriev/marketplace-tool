@@ -9,7 +9,7 @@ import {
 } from "../types/rozetka";
 import { getTokenRozetka } from "./get-token-rozetka";
 
-const getOrderTemplate = (
+const getOrderRozetkaTemplate = (
   content: IOrder & IExtendDelivery & IExtendPurchases,
 ) => {
   return {
@@ -43,14 +43,17 @@ const getOrderTemplate = (
   };
 };
 
-export const getOrderInfo = async (
+export const getOrderInfoRozetka = async (
   id: string,
 ): Promise<{ order: IOrderRozetkaTemplate; success: boolean }> => {
   try {
     const token = await getTokenRozetka();
     const response = await fetch(
       `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery,purchases`,
-      { headers: { Authorization: `Bearer ${token}` } },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        next: { revalidate: 30 },
+      },
     );
 
     const { success, content, errors }: IOrderResponse = await response.json();
@@ -60,9 +63,7 @@ export const getOrderInfo = async (
       throw new Error(`${errors.message} | ${errors.description}`);
     }
 
-    const order = getOrderTemplate(content);
-
-    console.log(order, content);
+    const order = getOrderRozetkaTemplate(content);
 
     return { order, success: true };
   } catch (error) {

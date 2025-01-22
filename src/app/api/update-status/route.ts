@@ -1,4 +1,4 @@
-import { setStatus } from "@/lib/rozetka/set-status";
+import { updateOrderStatus } from "@/lib/rozetka/set-status";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
 
   if (token === internalToken) {
     try {
-      const { orders } = await setStatus();
+      const { orders } = await updateOrderStatus();
 
       return NextResponse.json({ ok: true, message: orders }, { status: 200 });
     } catch (error) {

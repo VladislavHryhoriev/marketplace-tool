@@ -1,67 +1,97 @@
 import { Button } from "@/components/ui/button";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getDeliveryDate } from "@/lib/get-delivery-date";
-import { getOrderInfo } from "@/lib/rozetka/get-order-info";
-import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
+import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
 import { TemplateNames } from "@/lib/types";
 import { CircleCheckBig, ClockArrowDown, PhoneMissed } from "lucide-react";
+import { useCallback } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
-  inputID: string;
-  setAreaText: (text: string) => void;
+  inputTextOrder: string;
+  setAreaTextOrder: (text: string) => void;
 }
 
-const checkMarket = (inputID: string, strArr: string[]) => {
-  for (const el of strArr) if (inputID.startsWith(el)) return true;
+interface OrderResponse<TOrder = any> {
+  order: TOrder;
+  success: boolean;
+}
+
+type MarketHandler<TOrder = any> = (
+  inputTextOrder: string,
+) => Promise<OrderResponse<TOrder>>;
+
+const marketHandlers: Record<string, MarketHandler> = {
+  83: getOrderInfoRozetka,
+  84: getOrderInfoRozetka,
+  43: getOrderInfoEpicentr,
+  44: getOrderInfoEpicentr,
 };
 
-const TemplateButtons = ({ inputID, setAreaText }: Props) => {
-  const handler = async (templateName: TemplateNames) => {
-    setAreaText("");
+const fetchOrderInfo = async (
+  inputTextOrder: string,
+  setAreaTextOrder: (text: string) => void,
+  templateName: TemplateNames,
+  marketHandlers: Record<string, MarketHandler>,
+) => {
+  for (const [marketCode, handler] of Object.entries(marketHandlers)) {
+    if (inputTextOrder.startsWith(marketCode)) {
+      try {
+        const { order, success } = await handler(inputTextOrder);
 
-    if (!inputID) toast.warn("Введите номер заказа");
+        if (!success) {
+          toast.error("Заказ не найден");
+          return;
+        }
 
-    // Rozetka
-    if (checkMarket(inputID, ["83", "84"])) {
-      const { order, success } = await getOrderInfo(inputID);
+        const ttnInfo = await getDeliveryDate(order.ttn, order.phone);
+        const text = await getTemplateRozetka(templateName, order, ttnInfo);
+        setAreaTextOrder(text);
+        return;
+      } catch (error) {
+        console.error(error);
+        toast.error("Ошибка при получении информации о заказе");
+      }
+    }
+  }
 
-      if (!success) {
-        setAreaText("Заказ не найден");
+  toast.error("Заказ не найден");
+};
+
+const TemplateButtons = ({ inputTextOrder, setAreaTextOrder }: Props) => {
+  const handler = useCallback(
+    async (templateName: TemplateNames, inputTextOrder: string) => {
+      toast.dismiss();
+      setAreaTextOrder("");
+
+      if (!inputTextOrder) {
+        toast.error("Введите номер заказа");
         return;
       }
 
-      const ttnInfo = await getDeliveryDate(order.ttn, order.phone);
-      const text = await getTemplateRozetka(templateName, order, ttnInfo);
-      setAreaText(text);
-    }
-
-    // Epicentr
-    if (checkMarket(inputID, ["43", "44"])) {
-      const { order, ok } = await getOrderInfoEpicentr(inputID);
-      if (!ok) {
-        setAreaText("Заказ не найден");
-        return;
-      }
-
-      const ttnInfo = await getDeliveryDate(order.ttn, order.phone);
-      const text = await getTemplateEpicentr(templateName, order, ttnInfo);
-      setAreaText(text);
-    }
-  };
+      await fetchOrderInfo(
+        inputTextOrder,
+        setAreaTextOrder,
+        templateName,
+        marketHandlers,
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   return (
     <div className="mt-4 flex flex-col gap-2">
-      <Button onClick={() => handler("missed-call")}>
+      <Button onClick={() => handler("missed-call", inputTextOrder)}>
         <PhoneMissed />
         Недозвон
       </Button>
-      <Button onClick={() => handler("auto-confirm")}>
+      <Button onClick={() => handler("auto-confirm", inputTextOrder)}>
         <CircleCheckBig />
         Автоподтверждение
       </Button>
-      <Button onClick={() => handler("uncollected")}>
+      <Button onClick={() => handler("uncollected", inputTextOrder)}>
         <ClockArrowDown />
         Не забирает заказ
       </Button>

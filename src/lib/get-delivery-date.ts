@@ -3,6 +3,10 @@ import { DeliveryResponse } from "./types";
 
 export const getDeliveryDate = async (ttn: string, phone: string) => {
   try {
+    if (!ttn || !phone) {
+      return { ok: false, ttn, deliveryDate: "", returnDate: "" };
+    }
+
     const response = await fetch(`${BASE_URL}/api/nova-poshta`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

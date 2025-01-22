@@ -37,11 +37,11 @@ const getOrderTemplate = (orderData: EpicentrOrderResponse) => {
 
 export const getOrderInfoEpicentr = async (
   id: string,
-): Promise<{ order: OrderEpicentr; ok: boolean }> => {
+): Promise<{ order: OrderEpicentr; success: boolean }> => {
   try {
     const orders = await fetch(
       `${BASE_URL}/api/epicentr/v3/oms/orders?filter[number]=${id}`,
-      { headers },
+      { headers, next: { revalidate: 10 } },
     ).then((res) => res.json().then((data) => data.items[0]));
     if (!orders) throw new Error("Order not found");
 
@@ -53,7 +53,7 @@ export const getOrderInfoEpicentr = async (
     const orderData: EpicentrOrderResponse = await response.json();
     if (!orderData.number) throw new Error("Order not found");
 
-    return { order: getOrderTemplate(orderData), ok: true };
+    return { order: getOrderTemplate(orderData), success: true };
   } catch (error) {
     console.error(error);
     toast.error("Заказ не найден");
@@ -67,7 +67,7 @@ export const getOrderInfoEpicentr = async (
         ttn: "",
         phone: "",
       },
-      ok: false,
+      success: false,
     };
   }
 };

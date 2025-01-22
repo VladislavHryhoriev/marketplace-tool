@@ -1,4 +1,5 @@
-import { BASE_URL, ROZETKA_TOKEN_LIFETIME } from "@/constants";
+import { ROZETKA_TOKEN_LIFETIME } from "@/config";
+import { BASE_URL } from "@/constants";
 
 export interface ITokenResponse {
   success: boolean;
