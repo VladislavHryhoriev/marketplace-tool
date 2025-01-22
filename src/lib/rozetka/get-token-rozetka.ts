@@ -89,7 +89,7 @@ const getToken = (): {
 };
 
 const saveToken = (token: string) => {
-  if (!isBrowser) throw new Error("Not browser");
+  if (!isBrowser) return "Not browser";
 
   try {
     localStorage.setItem("token", token);
