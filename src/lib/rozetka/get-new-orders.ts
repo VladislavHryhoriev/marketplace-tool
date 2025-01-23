@@ -13,7 +13,7 @@ export const getNewOrders = async (): Promise<Orders> => {
     const token = await getTokenRozetka();
     const response = await fetch(
       // ? Проверка ?status=1
-      `${BASE_URL}/api/rozetka/orders/search?types=2`, // 4 - Нові замовлення
+      `${BASE_URL}/api/rozetka/orders/search?types=4`, // 4 - Нові замовлення
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
