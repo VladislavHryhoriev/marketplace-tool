@@ -23,17 +23,18 @@ const sendNotify = async (orders: IOrder[]) => {
     }
   }
 
-  orders.forEach(({ id, amount, recipient_title }) => {
-    const notification = new Notification(recipient_title.full_name, {
-      body: `${amount} грн`,
-    });
-
-    notification.onclick = () => {
-      window.open(
-        `https://seller.rozetka.com.ua/main/orders/all?page=1&sort=-id&pageSize=50&id=${id}&types=1`,
-      );
-    };
+  const notification = new Notification(`Новых: ${orders.length}шт`, {
+    body: orders.reduce(
+      (orders, v) => `${orders}\n${v.recipient_title.full_name} - ${v.amount}`,
+      "",
+    ),
   });
+
+  notification.onclick = () => {
+    window.open(
+      `https://seller.rozetka.com.ua/main/orders/new?page=1&sort=-id&pageSize=50&types=4`,
+    );
+  };
 };
 
 const Page = () => {

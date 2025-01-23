@@ -9,6 +9,7 @@ export interface OrderEpicentr {
 }
 
 export interface EpicentrOrderResponse {
+  settlement: { title: string };
   address: {
     firstName: string;
     lastName: string;

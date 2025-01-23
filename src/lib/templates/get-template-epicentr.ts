@@ -6,14 +6,13 @@ export const getTemplateEpicentr = async (
   order: OrderEpicentr,
   ttnInfo: DeliveryResponse,
 ) => {
-  const cost =
-    order.deliveryName === "ukr-pochta" || order.deliveryName === "ukrposhta"
-      ? [60, 45]
-      : [105, 80];
+  const cost = order.deliveryName.includes("ukr") ? [60, 45] : [105, 80];
 
   const productsText = order.products.map((product) => {
     return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}шт)`;
   });
+
+  console.log(order);
 
   if (type === "missed-call") {
     return `
@@ -41,7 +40,7 @@ export const getTemplateEpicentr = async (
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 
 **Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.deliveryDate}` : ""}
-**ТТН:** ${order.ttn}
+**ТТН:** ${order.ttn || ""}
 
 Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.ok ? `${ttnInfo.returnDate} в кінці дня` : ""}
 `.trim();

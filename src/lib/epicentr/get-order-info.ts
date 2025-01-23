@@ -29,8 +29,9 @@ const getOrderTemplate = (orderData: EpicentrOrderResponse) => {
           ? "Нова Пошта"
           : "УкрПошта";
       const office = orderData.office.title;
+      const city = orderData.settlement.title;
 
-      return `${service} ${office}`;
+      return `(${service}) ${city} ${office}`;
     },
   };
 };
@@ -43,6 +44,7 @@ export const getOrderInfoEpicentr = async (
       `${BASE_URL}/api/epicentr/v3/oms/orders?filter[number]=${id}`,
       { headers, next: { revalidate: 10 } },
     ).then((res) => res.json().then((data) => data.items[0]));
+
     if (!orders) throw new Error("Order not found");
 
     const response = await fetch(
@@ -55,8 +57,6 @@ export const getOrderInfoEpicentr = async (
 
     return { order: getOrderTemplate(orderData), success: true };
   } catch (error) {
-    console.error(error);
-    toast.error("Заказ не найден");
     return {
       order: {
         id: "-1",

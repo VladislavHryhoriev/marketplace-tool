@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getDeliveryDate } from "@/lib/get-delivery-date";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
+import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
 import { TemplateNames } from "@/lib/types";
 import { CircleCheckBig, ClockArrowDown, PhoneMissed } from "lucide-react";
@@ -46,17 +47,22 @@ const fetchOrderInfo = async (
         }
 
         const ttnInfo = await getDeliveryDate(order.ttn, order.phone);
-        const text = await getTemplateRozetka(templateName, order, ttnInfo);
-        setAreaTextOrder(text);
-        return;
+
+        if (marketCode === "43" || marketCode === "44") {
+          const text = await getTemplateEpicentr(templateName, order, ttnInfo);
+          setAreaTextOrder(text);
+        }
+
+        if (marketCode === "83" || marketCode === "84") {
+          const text = await getTemplateRozetka(templateName, order, ttnInfo);
+          setAreaTextOrder(text);
+        }
       } catch (error) {
         console.error(error);
         toast.error("Ошибка при получении информации о заказе");
       }
     }
   }
-
-  toast.error("Заказ не найден");
 };
 
 const TemplateButtons = ({ inputTextOrder, setAreaTextOrder }: Props) => {
