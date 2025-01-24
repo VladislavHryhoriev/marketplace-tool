@@ -14,6 +14,7 @@ const nextConfig = {
     ROZETKA_PASSWORD: process.env.ROZETKA_PASSWORD,
     EPICENTR_TOKEN: process.env.EPICENTR_TOKEN,
     BASE_URL: process.env.BASE_URL,
+    BOT_TOKEN: process.env.BOT_TOKEN,
   },
   async rewrites() {
     return [

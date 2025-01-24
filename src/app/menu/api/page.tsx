@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ROZETKA_FETCH_INTERVAL } from "@/config";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/set-status";
+import { sendMessage } from "@/lib/telegram/send-message";
 import { IOrder } from "@/lib/types/rozetka";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/store";
@@ -58,6 +59,14 @@ const Page = () => {
 
         setOrders(orders);
         sendNotify(orders);
+
+        const message = orders.reduce(
+          (orders, v) =>
+            `${orders}\n${v.recipient_title.full_name} - ${v.amount}`,
+          "",
+        );
+
+        sendMessage(901615640, message);
       }, ROZETKA_FETCH_INTERVAL);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -73,6 +82,7 @@ const Page = () => {
   return (
     <List>
       <div className="flex gap-2">
+        {/* <Button onClick={sendMessage}>Кинуть в обработку</Button> */}
         <Button onClick={updateOrderStatus}>Кинуть в обработку</Button>
         <Button
           onClick={() => setIsFindNewOrders(!isFindNewOrders)}
