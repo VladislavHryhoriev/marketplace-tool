@@ -13,3 +13,5 @@ export const ROUTES = [
     path: "/menu/templates",
   },
 ];
+
+export const BOT_OWNER_ID = 901615640;

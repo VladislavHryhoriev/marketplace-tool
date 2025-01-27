@@ -7,29 +7,41 @@ interface GlobalState {
   inputTextOrder: string;
   areaTextOrder: string;
   isFindNewOrders: boolean;
+  notifiedOrdersIds: number[]; // Массив вместо Set
 
   setInputTextOrder: (text: string) => void;
   setOrders: (orders: IOrder[]) => void;
   setAreaTextOrder: (text: string) => void;
   setIsFindNewOrders: (value: boolean) => void;
+  addNotifiedOrderId: (id: number) => void;
+  setNotifiedOrdersIds: (ids: number[]) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
   orders: [],
   inputTextOrder: "",
   areaTextOrder: "",
-
+  notifiedOrdersIds: [],
   isFindNewOrders: false,
 
   setOrders: (orders: IOrder[]) => set({ orders }),
   setInputTextOrder: (text: string) =>
     set((prev) => {
       const numbersOnly = text.replace(/[^0-9]/g, "");
-      if (numbersOnly.length < MAX_INPUT_LENGTH) {
-        return { inputTextOrder: numbersOnly };
-      }
-      return prev;
+      return {
+        inputTextOrder: numbersOnly.slice(0, MAX_INPUT_LENGTH),
+      };
     }),
   setAreaTextOrder: (text: string) => set({ areaTextOrder: text }),
   setIsFindNewOrders: (bool: boolean) => set({ isFindNewOrders: bool }),
+
+  addNotifiedOrderId: (id: number) =>
+    set((prev) => ({
+      notifiedOrdersIds: prev.notifiedOrdersIds.includes(id)
+        ? prev.notifiedOrdersIds
+        : [...prev.notifiedOrdersIds, id],
+    })),
+
+  setNotifiedOrdersIds: (ids: number[]) =>
+    set({ notifiedOrdersIds: Array.from(new Set(ids)) }),
 }));

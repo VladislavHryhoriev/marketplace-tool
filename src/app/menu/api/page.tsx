@@ -3,7 +3,7 @@
 import { List } from "@/components/shared/list";
 import OrderList from "@/components/shared/templates/order-list";
 import { Button } from "@/components/ui/button";
-import { ROZETKA_FETCH_INTERVAL } from "@/config";
+import { BOT_OWNER_ID, ROZETKA_FETCH_INTERVAL } from "@/config";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/set-status";
 import { sendMessage } from "@/lib/telegram/send-message";
@@ -26,7 +26,8 @@ const sendNotify = async (orders: IOrder[]) => {
 
   const notification = new Notification(`Новых: ${orders.length}шт`, {
     body: orders.reduce(
-      (orders, v) => `${orders}\n${v.recipient_title.full_name} - ${v.amount}`,
+      (acc, order) =>
+        `${acc}\n${order.recipient_title.full_name} - ${order.amount}`,
       "",
     ),
   });
@@ -40,33 +41,46 @@ const sendNotify = async (orders: IOrder[]) => {
 
 const Page = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
   const orders = useGlobalStore((state) => state.orders);
   const setOrders = useGlobalStore((state) => state.setOrders);
   const isFindNewOrders = useGlobalStore((state) => state.isFindNewOrders);
   const setIsFindNewOrders = useGlobalStore(
     (state) => state.setIsFindNewOrders,
   );
+  const notifiedOrdersIds = useGlobalStore((state) => state.notifiedOrdersIds);
+  const addNotifiedOrderId = useGlobalStore(
+    (state) => state.addNotifiedOrderId,
+  );
 
   useEffect(() => {
     if (isFindNewOrders) {
       intervalRef.current = setInterval(async () => {
-        const { orders, success } = await getNewOrders();
+        const { orders: newOrders, success } = await getNewOrders();
 
         if (!success) {
           setIsFindNewOrders(false);
           return toast.error("Ошибка получения заказов");
         }
 
-        setOrders(orders);
-        sendNotify(orders);
+        const uniqueOrders = newOrders.filter(
+          (order) => !notifiedOrdersIds.includes(order.id),
+        );
 
-        const message = orders.reduce(
-          (orders, v) =>
-            `${orders}\n${v.recipient_title.full_name} - ${v.amount}`,
+        if (uniqueOrders.length === 0) return;
+
+        uniqueOrders.forEach((order) => addNotifiedOrderId(order.id));
+        sendNotify(uniqueOrders);
+
+        const message = uniqueOrders.reduce(
+          (acc, order) =>
+            `${acc}\n${order.recipient_title.full_name} - ${order.amount}`,
           "",
         );
 
-        sendMessage(901615640, message);
+        sendMessage(BOT_OWNER_ID, message);
+
+        setOrders(newOrders);
       }, ROZETKA_FETCH_INTERVAL);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -77,18 +91,17 @@ const Page = () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFindNewOrders]);
+  }, [isFindNewOrders, notifiedOrdersIds]);
 
   return (
     <List>
       <div className="flex gap-2">
-        {/* <Button onClick={sendMessage}>Кинуть в обработку</Button> */}
         <Button onClick={updateOrderStatus}>Кинуть в обработку</Button>
         <Button
           onClick={() => setIsFindNewOrders(!isFindNewOrders)}
           className={cn(isFindNewOrders && "bg-green-500")}
         >
-          Проверять новые заказы {isFindNewOrders ? " ON" : " OFF"}
+          Проверять новые заказы {isFindNewOrders ? "ON" : "OFF"}
         </Button>
       </div>
       <OrderList title="Новые заказы Розетка" orders={orders} />
