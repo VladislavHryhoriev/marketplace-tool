@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { DeliveryResponse, OrderEpicentr, TemplateNames } from "../types";
+import { templateTypes } from "@/config";
 
 export const getTemplateEpicentr = async (
   type: TemplateNames,
@@ -12,9 +13,7 @@ export const getTemplateEpicentr = async (
     return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}шт)`;
   });
 
-  console.log(order);
-
-  if (type === "missed-call") {
+  if (type === templateTypes.missedCall) {
     return `
 Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті Епіцентр. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
@@ -25,17 +24,32 @@ export const getTemplateEpicentr = async (
 **Адреса доставки:** ${order.address}
 **Вартість доставки:** Грошовим переказом ~${cost[0]}грн (При передоплаті ~${cost[1]}грн)
 
-Який спосіб оплати вам підходить?`.trim();
+Який спосіб оплати вам підходить?
+`.trim();
   }
 
-  if (type === "auto-confirm") {
+  if (type === templateTypes.autoconfirm) {
     toast.error(
       "Эпицентр не предполагает автоматическое подтверждение заказов",
     );
     return "";
   }
 
-  if (type === "uncollected") {
+  if (type === templateTypes.confirmWithoutCall) {
+    return `
+Доброго дня, Ваше замовлення №${order.id} на сайті Епіцентр прийнято.
+
+**Замовили:** ${productsText}
+**Отримувач:** ${order.fullname}
+**Адреса доставки:** ${order.address}	
+**Вартість доставки:** За тарифами перевізника ~${cost[0]}грн
+**Спосіб оплати:** Оплата під час отримання товару
+
+Чи підтверджуєте замовлення?
+`.trim();
+  }
+
+  if (type === templateTypes.uncollected) {
     return `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 

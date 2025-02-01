@@ -1,3 +1,4 @@
+import { templateTypes } from "@/config";
 import { DeliveryResponse, TemplateNames } from "../types";
 import { IOrderRozetkaTemplate } from "../types/rozetka";
 
@@ -15,7 +16,7 @@ export const getTemplateRozetka = async (
     return `${order.products.length > 1 ? "\n- " : ""} ${product.item_name} = ${Math.round(+product.cost)}грн (${product.quantity}шт)`;
   });
 
-  if (type === "missed-call") {
+  if (type === templateTypes.missedCall) {
     return `
 Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті Розетка. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
@@ -29,7 +30,7 @@ export const getTemplateRozetka = async (
 Який спосіб оплати вам підходить?`.trim();
   }
 
-  if (type === "auto-confirm") {
+  if (type === templateTypes.autoconfirm) {
     return `
 Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
 
@@ -43,7 +44,21 @@ export const getTemplateRozetka = async (
 `.trim();
   }
 
-  if (type === "uncollected") {
+  if (type === templateTypes.confirmWithoutCall) {
+    return `
+Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
+
+**Замовили:** ${productsText}
+**Отримувач:** ${order.fullname}
+**Адреса доставки:** ${order.address}	
+**Вартість доставки:** За тарифами перевізника ~${cost[0]}грн
+**Спосіб оплати:** Оплата під час отримання товару
+
+Чи підтверджуєте замовлення?
+`.trim();
+  }
+
+  if (type === templateTypes.uncollected) {
     return `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 

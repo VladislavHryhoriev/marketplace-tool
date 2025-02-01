@@ -1,3 +1,5 @@
+import { templateTypes } from "@/config";
+
 export interface OrderEpicentr {
   id: string;
   fullname: string;
@@ -23,7 +25,7 @@ export interface EpicentrOrderResponse {
   items: { title: string; quantity: number; subtotal: number }[];
 }
 
-export type TemplateNames = "missed-call" | "auto-confirm" | "uncollected";
+export type TemplateNames = (typeof templateTypes)[keyof typeof templateTypes];
 
 export interface DeliveryInfoResponse {
   data: { ActualDeliveryDate: string; DateReturnCargo: string }[];

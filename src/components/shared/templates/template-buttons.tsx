@@ -1,11 +1,17 @@
 import { Button } from "@/components/ui/button";
+import { templateTypes } from "@/config";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getDeliveryDate } from "@/lib/get-delivery-date";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
 import { TemplateNames } from "@/lib/types";
-import { CircleCheckBig, ClockArrowDown, PhoneMissed } from "lucide-react";
+import {
+  CircleCheckBig,
+  ClockArrowDown,
+  PhoneMissed,
+  PhoneOff,
+} from "lucide-react";
 import { useCallback } from "react";
 import { toast } from "react-toastify";
 
@@ -89,15 +95,27 @@ const TemplateButtons = ({ inputTextOrder, setAreaTextOrder }: Props) => {
 
   return (
     <div className="mt-4 flex flex-col gap-2">
-      <Button onClick={() => handler("missed-call", inputTextOrder)}>
+      <Button onClick={() => handler(templateTypes.missedCall, inputTextOrder)}>
         <PhoneMissed />
         Недозвон
       </Button>
-      <Button onClick={() => handler("auto-confirm", inputTextOrder)}>
+      <Button
+        onClick={() => handler(templateTypes.autoconfirm, inputTextOrder)}
+      >
         <CircleCheckBig />
         Автоподтверждение
       </Button>
-      <Button onClick={() => handler("uncollected", inputTextOrder)}>
+      <Button
+        onClick={() =>
+          handler(templateTypes.confirmWithoutCall, inputTextOrder)
+        }
+      >
+        <PhoneOff />
+        Потдверждение без звонка
+      </Button>
+      <Button
+        onClick={() => handler(templateTypes.uncollected, inputTextOrder)}
+      >
         <ClockArrowDown />
         Не забирает заказ
       </Button>
