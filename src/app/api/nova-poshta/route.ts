@@ -1,3 +1,4 @@
+import { API_URLS } from "@/constants";
 import { DeliveryInfoResponse, DeliveryResponse } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
       methodProperties: { Documents: [{ DocumentNumber: ttn, Phone: phone }] },
     };
 
-    const response = await fetch("https://api.novaposhta.ua/v2.0/json/", {
+    const response = await fetch(API_URLS.novaPoshta.api, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -38,15 +39,19 @@ export async function POST(req: NextRequest) {
 
     const isValid = returnDay && returnMonth && returnYear;
 
+    const deliveryDate = isValidDelivery
+      ? `${deliveryTime} ${deliveryDay}.${deliveryMonth}.${deliveryYear}`
+      : "";
+
+    const returnDate = isValid
+      ? `${+returnDay - 1}.${returnMonth}.${returnYear}`
+      : "";
+
     return NextResponse.json<DeliveryResponse>({
       ok: true,
       ttn,
-      deliveryDate: isValidDelivery
-        ? `${deliveryTime} ${deliveryDay}.${deliveryMonth}.${deliveryYear}`
-        : "",
-      returnDate: isValid
-        ? `${+returnDay - 1}.${returnMonth}.${returnYear}`
-        : "",
+      deliveryDate,
+      returnDate,
     });
   } catch (error) {
     console.error(error);

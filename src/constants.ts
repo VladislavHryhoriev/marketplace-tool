@@ -25,6 +25,7 @@ export const API_URLS = {
   },
 
   novaPoshta: {
+    api: `https://api.novaposhta.ua/v2.0/json/`,
     route: `${BASE_URL}/api/nova-poshta`,
   },
 };
