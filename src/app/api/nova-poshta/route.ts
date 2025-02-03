@@ -1,4 +1,4 @@
-import { API_URLS } from "@/constants";
+import { API_URLS, LINKS } from "@/constants";
 import { DeliveryInfoResponse, DeliveryResponse } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       methodProperties: { Documents: [{ DocumentNumber: ttn, Phone: phone }] },
     };
 
-    const response = await fetch(API_URLS.novaPoshta.api, {
+    const response = await fetch(LINKS.novaPoshta.api, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),

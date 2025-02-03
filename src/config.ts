@@ -8,16 +8,3 @@ export const ROUTES = [
   { title: "API", path: "/menu/api" },
   { title: "Шаблоны", path: "/menu/templates" },
 ];
-
-export const LINKS = {
-  rozetka: {
-    new: "https://seller.rozetka.com.ua/main/orders/new",
-  },
-};
-
-export const templateTypes = {
-  autoconfirm: "AUTOCONFIRM",
-  missedCall: "MISSED_CALL",
-  uncollected: "UNCOLLECTED",
-  confirmWithoutCall: "CONFIRM_WITHOUT_CALL",
-};

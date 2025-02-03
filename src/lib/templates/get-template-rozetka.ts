@@ -1,4 +1,4 @@
-import { templateTypes } from "@/config";
+import { TEMPLATE_TYPES } from "@/constants";
 import { DeliveryResponse, TemplateNames } from "../types";
 import { IOrderRozetkaTemplate } from "../types/rozetka";
 
@@ -16,7 +16,7 @@ export const getTemplateRozetka = async (
     return `${order.products.length > 1 ? "\n- " : ""} ${product.item_name} = ${Math.round(+product.cost)}грн (${product.quantity}шт)`;
   });
 
-  if (type === templateTypes.missedCall) {
+  if (type === TEMPLATE_TYPES.missedCall) {
     return `
 Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті Розетка. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
@@ -30,7 +30,7 @@ export const getTemplateRozetka = async (
 Який спосіб оплати вам підходить?`.trim();
   }
 
-  if (type === templateTypes.autoconfirm) {
+  if (type === TEMPLATE_TYPES.autoconfirm) {
     return `
 Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
 
@@ -44,7 +44,7 @@ export const getTemplateRozetka = async (
 `.trim();
   }
 
-  if (type === templateTypes.confirmWithoutCall) {
+  if (type === TEMPLATE_TYPES.confirmWithoutCall) {
     return `
 Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
 
@@ -58,7 +58,7 @@ export const getTemplateRozetka = async (
 `.trim();
   }
 
-  if (type === templateTypes.uncollected) {
+  if (type === TEMPLATE_TYPES.uncollected) {
     return `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 

@@ -1,4 +1,5 @@
 "use client";
+import { ROUTES } from "@/config";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,17 +9,6 @@ interface Props {
   className?: string;
 }
 
-const routes = [
-  {
-    title: "API",
-    path: "/menu/api",
-  },
-  {
-    title: "Шаблоны",
-    path: "/menu/templates",
-  },
-];
-
 export const Tabs = ({ className }: Props) => {
   const path = usePathname();
   const [activePath, setActivePath] = useState(path);
@@ -26,7 +16,7 @@ export const Tabs = ({ className }: Props) => {
   return (
     <div className={cn("border-b-2 border-indigo-500", className)}>
       <ul className="grid max-w-fit grid-cols-2 overflow-hidden rounded-t-md">
-        {routes.map((route) => (
+        {ROUTES.map((route) => (
           <li key={route.path}>
             <Link
               className={cn(

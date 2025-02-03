@@ -25,7 +25,22 @@ export const API_URLS = {
   },
 
   novaPoshta: {
-    api: `https://api.novaposhta.ua/v2.0/json/`,
     route: `${BASE_URL}/api/nova-poshta`,
   },
+};
+
+export const LINKS = {
+  rozetka: {
+    new: "https://seller.rozetka.com.ua/main/orders/new",
+  },
+  novaPoshta: {
+    api: `https://api.novaposhta.ua/v2.0/json/`,
+  },
+};
+
+export const TEMPLATE_TYPES = {
+  autoconfirm: "AUTOCONFIRM",
+  missedCall: "MISSED_CALL",
+  uncollected: "UNCOLLECTED",
+  confirmWithoutCall: "CONFIRM_WITHOUT_CALL",
 };

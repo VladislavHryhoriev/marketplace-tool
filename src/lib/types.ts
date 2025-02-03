@@ -1,4 +1,4 @@
-import { templateTypes } from "@/config";
+import { TEMPLATE_TYPES } from "@/constants";
 
 export interface OrderEpicentr {
   id: string;
@@ -25,7 +25,8 @@ export interface EpicentrOrderResponse {
   items: { title: string; quantity: number; subtotal: number }[];
 }
 
-export type TemplateNames = (typeof templateTypes)[keyof typeof templateTypes];
+export type TemplateNames =
+  (typeof TEMPLATE_TYPES)[keyof typeof TEMPLATE_TYPES];
 
 export interface DeliveryInfoResponse {
   data: { ActualDeliveryDate: string; DateReturnCargo: string }[];

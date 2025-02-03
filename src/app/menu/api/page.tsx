@@ -3,7 +3,8 @@
 import { List } from "@/components/shared/list";
 import OrderList from "@/components/shared/templates/order-list";
 import { Button } from "@/components/ui/button";
-import { BOT_OWNER_ID, LINKS, ROZETKA_FETCH_INTERVAL } from "@/config";
+import { BOT_OWNER_ID } from "@/config";
+import { LINKS } from "@/constants";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/set-status";
 import { sendMessage } from "@/lib/telegram/send-message";

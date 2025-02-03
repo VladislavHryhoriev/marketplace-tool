@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { DeliveryResponse, OrderEpicentr, TemplateNames } from "../types";
-import { templateTypes } from "@/config";
+import { TEMPLATE_TYPES } from "@/constants";
 
 export const getTemplateEpicentr = async (
   type: TemplateNames,
@@ -13,7 +13,7 @@ export const getTemplateEpicentr = async (
     return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}шт)`;
   });
 
-  if (type === templateTypes.missedCall) {
+  if (type === TEMPLATE_TYPES.missedCall) {
     return `
 Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті Епіцентр. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
@@ -28,14 +28,14 @@ export const getTemplateEpicentr = async (
 `.trim();
   }
 
-  if (type === templateTypes.autoconfirm) {
+  if (type === TEMPLATE_TYPES.autoconfirm) {
     toast.error(
       "Эпицентр не предполагает автоматическое подтверждение заказов",
     );
     return "";
   }
 
-  if (type === templateTypes.confirmWithoutCall) {
+  if (type === TEMPLATE_TYPES.confirmWithoutCall) {
     return `
 Доброго дня, Ваше замовлення №${order.id} на сайті Епіцентр прийнято.
 
@@ -49,7 +49,7 @@ export const getTemplateEpicentr = async (
 `.trim();
   }
 
-  if (type === templateTypes.uncollected) {
+  if (type === TEMPLATE_TYPES.uncollected) {
     return `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 

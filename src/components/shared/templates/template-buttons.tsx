@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { templateTypes } from "@/config";
+import { TEMPLATE_TYPES } from "@/constants";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getDeliveryDate } from "@/lib/get-delivery-date";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
@@ -95,26 +95,28 @@ const TemplateButtons = ({ inputTextOrder, setAreaTextOrder }: Props) => {
 
   return (
     <div className="mt-4 flex flex-col gap-2">
-      <Button onClick={() => handler(templateTypes.missedCall, inputTextOrder)}>
+      <Button
+        onClick={() => handler(TEMPLATE_TYPES.missedCall, inputTextOrder)}
+      >
         <PhoneMissed />
         Недозвон
       </Button>
       <Button
-        onClick={() => handler(templateTypes.autoconfirm, inputTextOrder)}
+        onClick={() => handler(TEMPLATE_TYPES.autoconfirm, inputTextOrder)}
       >
         <CircleCheckBig />
         Автоподтверждение
       </Button>
       <Button
         onClick={() =>
-          handler(templateTypes.confirmWithoutCall, inputTextOrder)
+          handler(TEMPLATE_TYPES.confirmWithoutCall, inputTextOrder)
         }
       >
         <PhoneOff />
         Потдверждение без звонка
       </Button>
       <Button
-        onClick={() => handler(templateTypes.uncollected, inputTextOrder)}
+        onClick={() => handler(TEMPLATE_TYPES.uncollected, inputTextOrder)}
       >
         <ClockArrowDown />
         Не забирает заказ
