@@ -7,12 +7,18 @@ export type ResponseMessage = {
   };
 };
 
-export type Message = { chatId: number; message: string };
+export type Message = {
+  msg: {
+    msg_id: number;
+    chat_id: number;
+    orderId: number;
+  };
+};
 
-export const sendMessage = async ({ message, chatId }: Message) => {
-  const response = await fetch(API_URLS.telegram.sendMessage, {
+export const sendMessage = async ({ msg }: Message) => {
+  const response = await fetch(API_URLS.telegram.deleteMessage, {
     method: "POST",
-    body: JSON.stringify({ chatId, message }),
+    body: JSON.stringify({ msg }),
   });
 
   const json: ResponseMessage = await response.json();

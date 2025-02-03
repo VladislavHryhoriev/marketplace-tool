@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/constants";
+import { API_URLS } from "@/constants";
 import { toast } from "react-toastify";
 import {
   IExtendDelivery,
@@ -48,13 +48,10 @@ export const getOrderInfoRozetka = async (
 ): Promise<{ order: IOrderRozetkaTemplate; success: boolean }> => {
   try {
     const token = await getTokenRozetka();
-    const response = await fetch(
-      `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery,purchases`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-        next: { revalidate: 30 },
-      },
-    );
+    const response = await fetch(API_URLS.rozetka.orderInfo(id), {
+      headers: { Authorization: `Bearer ${token}` },
+      next: { revalidate: 30 },
+    });
 
     const { success, content, errors }: IOrderResponse = await response.json();
 

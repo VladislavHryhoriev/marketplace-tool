@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/constants";
+import { API_URLS } from "@/constants";
 import { IOrder, IOrdersResponse } from "../types/rozetka";
 import { getTokenRozetka } from "./get-token-rozetka";
 
@@ -11,15 +11,13 @@ export interface Orders {
 export const getNewOrders = async (): Promise<Orders> => {
   try {
     const token = await getTokenRozetka();
-    const response = await fetch(
-      // ? Проверка ?status=1
-      `${BASE_URL}/api/rozetka/orders/search?types=4`, // 4 - Нові замовлення
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
+    const response = await fetch(API_URLS.rozetka.newOrders, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     const { content, success }: IOrdersResponse = await response.json();
 
-    if (!success) throw new Error("Помилка при отриманні замовлень");
+    if (!success) throw new Error("Ошибка получения заказов");
 
     return { success, orders: content.orders, token };
   } catch (error) {

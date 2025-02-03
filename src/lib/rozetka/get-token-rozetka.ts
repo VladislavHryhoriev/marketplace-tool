@@ -1,5 +1,5 @@
 import { ROZETKA_TOKEN_LIFETIME } from "@/config";
-import { BASE_URL } from "@/constants";
+import { API_URLS } from "@/constants";
 
 export interface ITokenResponse {
   success: boolean;
@@ -48,7 +48,7 @@ const isBrowser = typeof window !== "undefined";
 
 const fetchToken = async (): Promise<string> => {
   try {
-    const response = await fetch(`${BASE_URL}/api/rozetka/sites`, {
+    const response = await fetch(API_URLS.rozetka.token, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

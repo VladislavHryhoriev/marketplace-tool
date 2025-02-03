@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/constants";
+import { API_URLS } from "@/constants";
 import { getTokenRozetka } from "./get-token-rozetka";
 
 // export interface Product {
@@ -7,10 +7,10 @@ import { getTokenRozetka } from "./get-token-rozetka";
 // 	token: string;
 // }
 
-export const getProducts = async () /*: Promise<Product> */ => {
+export const getOrders = async () /*: Promise<Product> */ => {
   try {
     const token = await getTokenRozetka();
-    const response = await fetch(`${BASE_URL}/api/rozetka/orders`, {
+    const response = await fetch(API_URLS.rozetka.orders, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const json = await response.json();

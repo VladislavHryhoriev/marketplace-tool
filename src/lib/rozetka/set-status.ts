@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/constants";
+import { API_URLS } from "@/constants";
 import { IOrder } from "../types/rozetka";
 import { getNewOrders } from "./get-new-orders";
 
@@ -8,7 +8,7 @@ export const updateOrderStatus = async (): Promise<{ orders: IOrder[] }> => {
 
   orders.forEach(async (order) => {
     try {
-      await fetch(`${BASE_URL}/api/rozetka/orders/${order.id}`, {
+      await fetch(API_URLS.rozetka.updateOrderStatus(order.id), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

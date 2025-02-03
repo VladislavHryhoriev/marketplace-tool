@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/constants";
+import { API_URLS } from "@/constants";
 import { DeliveryResponse } from "./types";
 
 export const getDeliveryDate = async (ttn: string, phone: string) => {
@@ -7,7 +7,7 @@ export const getDeliveryDate = async (ttn: string, phone: string) => {
       return { ok: false, ttn, deliveryDate: "", returnDate: "" };
     }
 
-    const response = await fetch(`${BASE_URL}/api/nova-poshta`, {
+    const response = await fetch(API_URLS.novaPoshta.route, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ttn, phone }),

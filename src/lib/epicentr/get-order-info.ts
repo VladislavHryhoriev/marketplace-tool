@@ -1,6 +1,5 @@
-import { toast } from "react-toastify";
+import { API_URLS } from "@/constants";
 import { EpicentrOrderResponse, OrderEpicentr } from "../types";
-import { BASE_URL } from "@/constants";
 
 const headers = {
   accept: "application/json",
@@ -40,17 +39,16 @@ export const getOrderInfoEpicentr = async (
   id: string,
 ): Promise<{ order: OrderEpicentr; success: boolean }> => {
   try {
-    const orders = await fetch(
-      `${BASE_URL}/api/epicentr/v3/oms/orders?filter[number]=${id}`,
-      { headers, next: { revalidate: 10 } },
-    ).then((res) => res.json().then((data) => data.items[0]));
+    const orders = await fetch(API_URLS.epicentr.orders(id), {
+      headers,
+      next: { revalidate: 10 },
+    }).then((res) => res.json().then((data) => data.items[0]));
 
     if (!orders) throw new Error("Order not found");
 
-    const response = await fetch(
-      `${BASE_URL}/api/epicentr/v2/oms/orders/${orders.id}`,
-      { headers },
-    );
+    const response = await fetch(API_URLS.epicentr.orderInfo(orders.id), {
+      headers,
+    });
 
     const orderData: EpicentrOrderResponse = await response.json();
     if (!orderData.number) throw new Error("Order not found");
