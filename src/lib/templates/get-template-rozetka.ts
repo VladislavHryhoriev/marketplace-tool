@@ -16,8 +16,8 @@ export const getTemplateRozetka = async (
     return `${order.products.length > 1 ? "\n- " : ""} ${product.item_name} = ${Math.round(+product.cost)}грн (${product.quantity}шт)`;
   });
 
-  if (type === TEMPLATE_TYPES.missedCall) {
-    return `
+  const templates = {
+    [TEMPLATE_TYPES.missedCall]: `
 Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті Розетка. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
 (068)554-40-46 (063)969-68-29 (099)566-45-21 або напишіть нам у вайбер.
@@ -27,11 +27,9 @@ export const getTemplateRozetka = async (
 **Адреса доставки:** ${order.address}
 **Вартість доставки:** Грошовим переказом ~${cost[0]}грн (При передоплаті ~${cost[1]}грн)
 
-Який спосіб оплати вам підходить?`.trim();
-  }
+Який спосіб оплати вам підходить?`.trim(),
 
-  if (type === TEMPLATE_TYPES.autoconfirm) {
-    return `
+    [TEMPLATE_TYPES.autoconfirm]: `
 Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
 
 **Замовили:** ${productsText}
@@ -41,11 +39,8 @@ export const getTemplateRozetka = async (
 **Спосіб оплати:** На рахунок продавця
 
 Реквізити для оплати:
-`.trim();
-  }
-
-  if (type === TEMPLATE_TYPES.confirmWithoutCall) {
-    return `
+`.trim(),
+    [TEMPLATE_TYPES.confirmWithoutCall]: `
 Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
 
 **Замовили:** ${productsText}
@@ -55,19 +50,17 @@ export const getTemplateRozetka = async (
 **Спосіб оплати:** Оплата під час отримання товару
 
 Чи підтверджуєте замовлення?
-`.trim();
-  }
+`.trim(),
 
-  if (type === TEMPLATE_TYPES.uncollected) {
-    return `
+    [TEMPLATE_TYPES.uncollected]: `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 
 **Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.deliveryDate}` : ""}
 **ТТН:** ${order.ttn}
 
 Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.ok ? `${ttnInfo.returnDate} в кінці дня` : ""}
-`.trim();
-  }
+`.trim(),
+  };
 
-  return "";
+  return templates[type] || "";
 };
