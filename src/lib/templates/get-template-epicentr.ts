@@ -13,8 +13,8 @@ export const getTemplateEpicentr = async (
     return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}шт)`;
   });
 
-  if (type === TEMPLATE_TYPES.missedCall) {
-    return `
+  const templates = {
+    [TEMPLATE_TYPES.missedCall]: `
 Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті Епіцентр. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
 (068)554-40-46 (063)969-68-29 (099)566-45-21 або напишіть нам у вайбер.
@@ -25,18 +25,11 @@ export const getTemplateEpicentr = async (
 **Вартість доставки:** Грошовим переказом ~${cost[0]}грн (При передоплаті ~${cost[1]}грн)
 
 Який спосіб оплати вам підходить?
-`.trim();
-  }
+`.trim(),
 
-  if (type === TEMPLATE_TYPES.autoconfirm) {
-    toast.error(
-      "Эпицентр не предполагает автоматическое подтверждение заказов",
-    );
-    return "";
-  }
+    [TEMPLATE_TYPES.autoconfirm]: ``.trim(),
 
-  if (type === TEMPLATE_TYPES.confirmWithoutCall) {
-    return `
+    [TEMPLATE_TYPES.confirmWithoutCall]: `
 Доброго дня, Ваше замовлення №${order.id} на сайті Епіцентр прийнято.
 
 **Замовили:** ${productsText}
@@ -46,19 +39,21 @@ export const getTemplateEpicentr = async (
 **Спосіб оплати:** Оплата під час отримання товару
 
 Чи підтверджуєте замовлення?
-`.trim();
-  }
+`.trim(),
 
-  if (type === TEMPLATE_TYPES.uncollected) {
-    return `
+    [TEMPLATE_TYPES.uncollected]: `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 
 **Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.deliveryDate}` : ""}
 **ТТН:** ${order.ttn || ""}
 
 Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.ok ? `${ttnInfo.returnDate} в кінці дня` : ""}
-`.trim();
+`.trim(),
+  };
+
+  if (!templates[type]) {
+    toast.error("Неправильный шаблон");
   }
 
-  return "";
+  return templates[type] || "";
 };

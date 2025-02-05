@@ -1,4 +1,4 @@
-import { MAX_INPUT_LENGTH } from "@/config";
+import { config } from "@/config";
 import { IOrder } from "@/lib/types/rozetka";
 import { create } from "zustand";
 
@@ -29,7 +29,7 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     set((prev) => {
       const numbersOnly = text.replace(/[^0-9]/g, "");
       return {
-        inputTextOrder: numbersOnly.slice(0, MAX_INPUT_LENGTH),
+        inputTextOrder: numbersOnly.slice(0, config.MAX_INPUT_LENGTH),
       };
     }),
   setAreaTextOrder: (text: string) => set({ areaTextOrder: text }),

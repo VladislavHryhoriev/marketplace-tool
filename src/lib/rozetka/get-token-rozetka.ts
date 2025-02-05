@@ -1,4 +1,4 @@
-import { ROZETKA_TOKEN_LIFETIME } from "@/config";
+import { config } from "@/config";
 import { API_URLS } from "@/constants";
 
 export interface ITokenResponse {
@@ -107,7 +107,8 @@ const isValidToken = (storedTime: number, lifetime: number): boolean => {
 export const getTokenRozetka = async (): Promise<string> => {
   const { token, time } = getToken();
 
-  if (token && time && isValidToken(time, ROZETKA_TOKEN_LIFETIME)) return token;
+  if (token && time && isValidToken(time, config.ROZETKA_TOKEN_LIFETIME))
+    return token;
 
   const newToken = await fetchToken();
   saveToken(newToken);
