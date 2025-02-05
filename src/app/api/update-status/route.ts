@@ -7,9 +7,12 @@ export async function GET(req: NextRequest) {
 
   if (token === internalToken) {
     try {
-      const { orders } = await updateOrderStatus();
+      const { updatedOrders } = await updateOrderStatus();
 
-      return NextResponse.json({ ok: true, message: orders }, { status: 200 });
+      return NextResponse.json(
+        { ok: true, message: updatedOrders },
+        { status: 200 },
+      );
     } catch (error) {
       console.log(error);
       return NextResponse.json({ ok: false, message: error }, { status: 500 });
