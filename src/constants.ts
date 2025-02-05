@@ -10,7 +10,7 @@ export const API_URLS = {
   },
 
   rozetka: {
-    newOrders: `${BASE_URL}/api/rozetka/orders/search?types=2`,
+    newOrders: `${BASE_URL}/api/rozetka/orders/search?types=4`,
     orderInfo: (id: string) =>
       `${BASE_URL}/api/rozetka/orders/${id}?expand=delivery,purchases`,
     orders: `${BASE_URL}/api/rozetka/orders`,

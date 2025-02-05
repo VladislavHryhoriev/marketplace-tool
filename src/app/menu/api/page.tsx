@@ -3,7 +3,7 @@
 import { List } from "@/components/shared/list";
 import OrderList from "@/components/shared/templates/order-list";
 import { Button } from "@/components/ui/button";
-import { BOT_OWNER_ID } from "@/config";
+import { BOT_OWNER_ID, ROZETKA_FETCH_INTERVAL } from "@/config";
 import { LINKS } from "@/constants";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/set-status";
@@ -79,7 +79,7 @@ const Page = () => {
         await sendMessage({ message: msg.join("\n"), chatId: BOT_OWNER_ID });
 
         setOrders(newOrders);
-      }, 1000); /// TIMER
+      }, ROZETKA_FETCH_INTERVAL); /// TIMER
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
