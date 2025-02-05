@@ -3,29 +3,54 @@ import { toast } from "react-toastify";
 import { IOrder } from "../types/rozetka";
 import { getNewOrders } from "./get-new-orders";
 
-export const updateOrderStatus = async (): Promise<{ orders: IOrder[] }> => {
+export const updateOrderStatus = async (): Promise<{
+  updatedOrders: IOrder[];
+}> => {
+  toast.dismiss();
   const { orders, token } = await getNewOrders();
+
+  if (!orders.length) {
+    toast.warn("Новых заказов нет");
+    return { updatedOrders: [] };
+  }
+
+  const ordersToUpdate = orders.filter(
+    (order) => order.status === 1 || order.status === 7,
+  );
+
+  if (!ordersToUpdate.length) {
+    toast.error("Нет заказов со статусом 1 или 7");
+    return { updatedOrders: [] };
+  }
+
   const requestBody = { status: 26 }; // 26 - Обрабатывается менеджером
 
-  orders.forEach(async (order) => {
-    if (order.status !== 1 && order.status !== 7) {
-      toast.error("Статус заказа не равен 1 или 7");
-      return;
-    }
+  try {
+    await Promise.all(
+      ordersToUpdate.map(async (order) => {
+        const response = await fetch(
+          API_URLS.rozetka.updateOrderStatus(order.id),
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(requestBody),
+          },
+        );
 
-    try {
-      await fetch(API_URLS.rozetka.updateOrderStatus(order.id), {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(requestBody),
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  });
+        if (!response.ok) {
+          throw new Error(`Ошибка при обновлении заказа ${order.id}`);
+        }
+      }),
+    );
 
-  return { orders };
+    toast.success(`Обновлено: ${ordersToUpdate.length} шт`);
+  } catch (error) {
+    console.error(error);
+    toast.error("Ошибка при обновлении заказов");
+  }
+
+  return { updatedOrders: ordersToUpdate };
 };
