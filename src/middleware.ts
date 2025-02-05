@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("auth-token")?.value;
+  const isAuthPage = req.nextUrl.pathname.startsWith("/auth");
+
+  if (req.nextUrl.pathname.startsWith("/menu") && token !== "token3301") {
+    return NextResponse.redirect(new URL("/auth", req.url));
+  }
+
+  if (!token) return NextResponse.redirect(new URL("/auth", req.url));
+  if (isAuthPage && token) return NextResponse.redirect(new URL("/", req.url));
+
   return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: "/menu/:path*",
+  matcher: ["/menu/:path*"],
 };

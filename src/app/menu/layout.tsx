@@ -1,12 +1,22 @@
 "use client";
-import { useEffect, useState } from "react";
+import Container from "@/components/shared/container";
+import { Tabs } from "@/components/shared/tabs";
+import { ToastContainer } from "react-toastify";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => setToken(localStorage.getItem("token_in")), []);
-
-  return <>{token && children}</>;
+  return (
+    <Container className="mt-4">
+      <Tabs />
+      <div>{children}</div>
+      <ToastContainer
+        hideProgressBar
+        theme="dark"
+        position="bottom-right"
+        closeOnClick
+        pauseOnFocusLoss={false}
+      />
+    </Container>
+  );
 };
 
 export default Layout;
