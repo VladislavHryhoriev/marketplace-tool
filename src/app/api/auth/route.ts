@@ -4,7 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const { authToken } = await req.json();
-    cookies().set("auth-token", authToken, { httpOnly: true });
+    cookies().set("auth-token", authToken, {
+      httpOnly: true,
+      maxAge: 31 * 24 * 60 * 60 * 1000,
+    });
 
     console.log(cookies().get("auth-token"));
 
