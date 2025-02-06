@@ -1,4 +1,3 @@
-"use client";
 import Container from "@/components/shared/container";
 import { Tabs } from "@/components/shared/tabs";
 import { ToastContainer } from "react-toastify";

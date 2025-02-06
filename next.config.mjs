@@ -15,6 +15,7 @@ const nextConfig = {
     EPICENTR_TOKEN: process.env.EPICENTR_TOKEN,
     BASE_URL: process.env.BASE_URL,
     BOT_TOKEN: process.env.BOT_TOKEN,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
   async rewrites() {
     return [

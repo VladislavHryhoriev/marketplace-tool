@@ -7,36 +7,14 @@ import { config } from "@/config";
 import { LINKS } from "@/constants";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/set-status";
+import { sendNotify } from "@/lib/send-notify";
 import { sendMessage } from "@/lib/telegram/send-message";
-import { IOrder } from "@/lib/types/rozetka";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/store";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
-
-const sendNotify = async (orders: IOrder[]) => {
-  if (orders.length === 0) return;
-
-  if (Notification.permission !== "granted") {
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") {
-      console.warn("Уведомления запрещены пользователем");
-      return;
-    }
-  }
-
-  const notification = new Notification(`Новых: ${orders.length}шт`, {
-    body: orders.reduce(
-      (acc, order) =>
-        `${acc}\n${order.recipient_title.full_name} - ${order.amount}`,
-      "",
-    ),
-  });
-
-  notification.onclick = () => {
-    window.open(`${LINKS.rozetka.new}?page=1&sort=-id&pageSize=50&types=4`);
-  };
-};
 
 const Page = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);

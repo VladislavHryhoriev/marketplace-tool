@@ -1,16 +1,11 @@
-import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-export function middleware(req: NextRequest) {
-  const token = req.cookies.get("auth-token")?.value;
-  const isAuthPage = req.nextUrl.pathname.startsWith("/auth");
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  if (req.nextUrl.pathname.startsWith("/menu") && token !== "token3301") {
-    return NextResponse.redirect(new URL("/auth", req.url));
-  }
-
-  if (!token) return NextResponse.redirect(new URL("/auth", req.url));
-  if (isAuthPage && token) return NextResponse.redirect(new URL("/", req.url));
+  if (!token) return NextResponse.redirect(new URL("/login", req.url));
 
   return NextResponse.next();
 }

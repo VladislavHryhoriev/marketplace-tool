@@ -1,3 +1,4 @@
+import AuthProvider from "@/components/shared/auth-provider";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -15,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru" className="dark">
-      <body className={`bg-background ${inter.className}`}>{children}</body>
+      <body className={`bg-background ${inter.className}`}>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

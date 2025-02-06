@@ -2,7 +2,7 @@ const min = 60 * 1000;
 const hour = 60 * 60 * 1000;
 
 export const ROUTES = [
-  { title: "API", path: "/menu/api" },
+  { title: "Main", path: "/menu/main" },
   { title: "Шаблоны", path: "/menu/templates" },
 ];
 

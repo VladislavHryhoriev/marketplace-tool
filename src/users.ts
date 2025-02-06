@@ -1,7 +1,7 @@
 export const users = [
   {
-    id: 0,
+    id: "0",
     name: "admin",
-    password: "token3301",
+    authToken: "token3301",
   },
 ];
