@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ROUTES } from "@/config";
 import { signIn, useSession } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [token, setToken] = useState("");
@@ -12,9 +12,11 @@ export default function Home() {
   const router = useRouter();
   const session = useSession();
 
-  if (session.status === "authenticated") {
-    router.replace(ROUTES[0].path);
-  }
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      redirect(ROUTES[0].path);
+    }
+  }, [session.status, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +32,7 @@ export default function Home() {
       return;
     }
 
-    router.replace(ROUTES[0].path);
+    redirect(ROUTES[0].path);
   };
 
   return (
@@ -52,7 +54,7 @@ export default function Home() {
           />
           {error && <p className="text-center text-xs text-red-500">{error}</p>}
           <Button type="submit" className="mt-4 w-full">
-            Войти
+            Войти
           </Button>
         </div>
       </form>

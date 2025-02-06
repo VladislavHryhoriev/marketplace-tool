@@ -11,8 +11,6 @@ import { sendNotify } from "@/lib/send-notify";
 import { sendMessage } from "@/lib/telegram/send-message";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/store/store";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
