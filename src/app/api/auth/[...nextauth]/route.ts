@@ -32,7 +32,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.authToken) throw new Error("Token is required");
 
         const token = users.find((u) => u.authToken === credentials.authToken);
-        if (!token) throw new Error("Token not found");
+        if (!token) return null;
 
         return { id: token.id, name: token.name };
       },
