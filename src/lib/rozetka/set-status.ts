@@ -6,7 +6,6 @@ import { getNewOrders } from "./get-new-orders";
 export const updateOrderStatus = async (): Promise<{
   updatedOrders: IOrder[];
 }> => {
-  toast.dismiss();
   const { orders, token } = await getNewOrders();
 
   if (!orders.length) {
