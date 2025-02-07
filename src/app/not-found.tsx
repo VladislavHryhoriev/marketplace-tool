@@ -7,7 +7,7 @@ const NotFound = () => {
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center">
       <h1>404</h1>
-      <Button className="mt-2" onClick={() => router.push("/")}>
+      <Button className="mt-2" onClick={() => router.back()}>
         Back
       </Button>
     </div>

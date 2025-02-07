@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { DeliveryResponse, OrderEpicentr, TemplateNames } from "../types";
-import { TEMPLATE_TYPES } from "@/constants";
+import { TEMPLATES } from "@/constants";
 
 export const getTemplateEpicentr = async (
   type: TemplateNames,
@@ -13,27 +13,42 @@ export const getTemplateEpicentr = async (
     return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}шт)`;
   });
 
+  const fullName = order.fullname
+    .split(" ")
+    .map((name) => name.charAt(0).toUpperCase() + name.slice(1))
+    .join(" ");
+
   const templates = {
-    [TEMPLATE_TYPES.missedCall]: `
+    [TEMPLATES.missedCall]: `
 Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті Епіцентр. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
 (068)554-40-46 (063)969-68-29 (099)566-45-21 або напишіть нам у вайбер.
 
 **Замовили:** ${productsText}
-**Отримувач:** ${order.fullname}
+**Отримувач:** ${fullName}
 **Адреса доставки:** ${order.address}
 **Вартість доставки:** Грошовим переказом ~${cost[0]}грн (При передоплаті ~${cost[1]}грн)
 
 Який спосіб оплати вам підходить?
 `.trim(),
 
-    [TEMPLATE_TYPES.autoconfirm]: ``.trim(),
+    [TEMPLATES.autoconfirm]: `
+Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
 
-    [TEMPLATE_TYPES.confirmWithoutCall]: `
+**Замовили:** ${productsText}
+**Отримувач:** ${fullName}
+**Адреса доставки:** ${order.address}
+**Вартість доставки:** ~${cost[1]}грн
+**Спосіб оплати:** На рахунок продавця
+
+Реквізити для оплати:
+`.trim(),
+
+    [TEMPLATES.confirmWithoutCall]: `
 Доброго дня, Ваше замовлення №${order.id} на сайті Епіцентр прийнято.
 
 **Замовили:** ${productsText}
-**Отримувач:** ${order.fullname}
+**Отримувач:** ${fullName}
 **Адреса доставки:** ${order.address}	
 **Вартість доставки:** За тарифами перевізника ~${cost[0]}грн
 **Спосіб оплати:** Оплата під час отримання товару
@@ -41,7 +56,7 @@ export const getTemplateEpicentr = async (
 Чи підтверджуєте замовлення?
 `.trim(),
 
-    [TEMPLATE_TYPES.uncollected]: `
+    [TEMPLATES.uncollected]: `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 
 **Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.deliveryDate}` : ""}

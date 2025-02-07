@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ROUTES } from "@/config";
 import { signIn, useSession } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [token, setToken] = useState("");
@@ -14,7 +14,7 @@ export default function Home() {
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      redirect(ROUTES[0].path);
+      router.push(ROUTES[0].path);
     }
   }, [session.status, router]);
 
@@ -32,7 +32,7 @@ export default function Home() {
       return;
     }
 
-    redirect(ROUTES[0].path);
+    router.push(ROUTES[0].path);
   };
 
   return (

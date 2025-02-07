@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { TEMPLATE_TYPES } from "@/constants";
+import { TEMPLATES } from "@/constants";
+import { useFetchOrderInfo } from "@/hooks/useFetchOrderInfo";
 import { TemplateNames } from "@/lib/types";
 import {
   CircleCheckBig,
@@ -7,35 +8,32 @@ import {
   PhoneMissed,
   PhoneOff,
 } from "lucide-react";
-import { useFetchOrderInfo } from "@/hooks/useFetchOrderInfo";
 
 interface Props {
   inputTextOrder: string;
   setAreaTextOrder: (text: string) => void;
 }
 
-const buttonsConfig: {
-  type: TemplateNames;
-  icon: JSX.Element;
-  label: string;
-}[] = [
+type ButtonConfig = { type: TemplateNames; icon: JSX.Element; label: string };
+
+const buttonsConfig: ButtonConfig[] = [
   {
-    type: TEMPLATE_TYPES.missedCall,
+    type: TEMPLATES.missedCall,
     icon: <PhoneMissed />,
     label: "Недозвон",
   },
   {
-    type: TEMPLATE_TYPES.autoconfirm,
+    type: TEMPLATES.autoconfirm,
     icon: <CircleCheckBig />,
     label: "Автоподтверждение",
   },
   {
-    type: TEMPLATE_TYPES.confirmWithoutCall,
+    type: TEMPLATES.confirmWithoutCall,
     icon: <PhoneOff />,
     label: "Подтверждение без звонка",
   },
   {
-    type: TEMPLATE_TYPES.uncollected,
+    type: TEMPLATES.uncollected,
     icon: <ClockArrowDown />,
     label: "Не забирает заказ",
   },

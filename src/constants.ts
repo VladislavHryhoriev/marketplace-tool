@@ -38,7 +38,7 @@ export const LINKS = {
   },
 };
 
-export const TEMPLATE_TYPES = {
+export const TEMPLATES = {
   autoconfirm: "AUTOCONFIRM",
   missedCall: "MISSED_CALL",
   uncollected: "UNCOLLECTED",
