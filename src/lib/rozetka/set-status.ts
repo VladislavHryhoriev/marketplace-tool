@@ -9,7 +9,6 @@ export const updateOrderStatus = async (): Promise<{
   const { orders, token } = await getNewOrders();
 
   if (!orders.length) {
-    toast.warn("Новых заказов нет");
     return { updatedOrders: [] };
   }
 
