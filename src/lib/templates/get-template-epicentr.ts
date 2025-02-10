@@ -15,7 +15,7 @@ export const getTemplateEpicentr = async (
 
   const fullName = order.fullname
     .split(" ")
-    .map((name) => name.charAt(0).toUpperCase() + name.slice(1))
+    .map((name) => name.charAt(0).toUpperCase() + name.slice(1).toLowerCase())
     .join(" ");
 
   const templates = {

@@ -51,10 +51,7 @@ const Templates = () => {
             autoComplete="off"
           />
 
-          <TemplateButtons
-            inputTextOrder={inputTextOrder}
-            setAreaTextOrder={setAreaTextOrder}
-          />
+          <TemplateButtons />
         </div>
 
         <div className="relative">

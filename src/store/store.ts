@@ -7,7 +7,7 @@ interface GlobalState {
   inputTextOrder: string;
   areaTextOrder: string;
   isFindNewOrders: boolean;
-  notifiedOrdersIds: number[]; // Массив вместо Set
+  notifiedOrdersIds: number[];
 
   setInputTextOrder: (text: string) => void;
   setOrders: (orders: IOrder[]) => void;
@@ -28,9 +28,7 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   setInputTextOrder: (text: string) =>
     set((prev) => {
       const numbersOnly = text.replace(/[^0-9]/g, "");
-      return {
-        inputTextOrder: numbersOnly.slice(0, config.MAX_INPUT_LENGTH),
-      };
+      return { inputTextOrder: numbersOnly.slice(0, config.MAX_INPUT_LENGTH) };
     }),
   setAreaTextOrder: (text: string) => set({ areaTextOrder: text }),
   setIsFindNewOrders: (bool: boolean) => set({ isFindNewOrders: bool }),
