@@ -3,7 +3,12 @@ import { TEMPLATES } from "@/constants";
 export interface OrderEpicentr {
   id: string;
   fullname: string;
-  products: { title: string; quantity: number; subtotal: number }[];
+  products: {
+    title: string;
+    quantity: number;
+    subtotal: number;
+    measure: string;
+  }[];
   deliveryName: string;
   ttn: string;
   get address(): string;
@@ -22,7 +27,12 @@ export interface EpicentrOrderResponse {
   number: string;
   subtotal: number;
   office: { title: string };
-  items: { title: string; quantity: number; subtotal: number }[];
+  items: {
+    title: string;
+    quantity: number;
+    subtotal: number;
+    measure: string;
+  }[];
 }
 
 export type TemplateNames = (typeof TEMPLATES)[keyof typeof TEMPLATES];

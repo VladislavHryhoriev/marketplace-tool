@@ -10,7 +10,7 @@ export const getTemplateEpicentr = async (
   const cost = order.deliveryName.includes("ukr") ? [60, 45] : [105, 80];
 
   const productsText = order.products.map((product) => {
-    return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}шт)`;
+    return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}${product.measure})`;
   });
 
   const fullName = order.fullname

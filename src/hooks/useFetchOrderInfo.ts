@@ -48,7 +48,7 @@ export const useFetchOrderInfo = (setAreaTextOrder: (text: string) => void) => {
             const ttnInfo = await getDeliveryDate(order.ttn, order.phone);
 
             const templateText =
-              marketCode === "43" || marketCode === "44"
+              marketCode === "43" || marketCode === "44" || marketCode === "45"
                 ? await getTemplateEpicentr(templateName, order, ttnInfo)
                 : await getTemplateRozetka(templateName, order, ttnInfo);
 
