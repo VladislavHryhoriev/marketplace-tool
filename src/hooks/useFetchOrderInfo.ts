@@ -21,6 +21,7 @@ const marketHandlers: Record<string, MarketHandler> = {
   84: getOrderInfoRozetka,
   43: getOrderInfoEpicentr,
   44: getOrderInfoEpicentr,
+  45: getOrderInfoEpicentr,
 };
 
 export const useFetchOrderInfo = (setAreaTextOrder: (text: string) => void) => {
