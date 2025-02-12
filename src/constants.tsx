@@ -4,7 +4,6 @@ import {
   PhoneMissed,
   PhoneOff,
 } from "lucide-react";
-import { ButtonConfig } from "./lib/types";
 
 export const BASE_URL =
   process.env.NODE_ENV === "production"
@@ -47,7 +46,7 @@ export const TEMPLATES = {
   confirmWithoutCall: "CONFIRM_WITHOUT_CALL",
 } as const;
 
-export const BUTTONS_CONFIG: ButtonConfig[] = [
+export const BUTTONS_CONFIG = [
   {
     type: TEMPLATES.missedCall,
     icon: <PhoneMissed />,

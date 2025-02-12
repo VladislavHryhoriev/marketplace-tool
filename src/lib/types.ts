@@ -47,9 +47,3 @@ export interface DeliveryResponse {
   deliveryDate: string;
   returnDate: string;
 }
-
-export type ButtonConfig = {
-  type: TemplateNames;
-  icon: JSX.Element;
-  label: string;
-};
