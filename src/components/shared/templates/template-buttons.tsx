@@ -5,7 +5,7 @@ import { getDeliveryDate } from "@/lib/get-delivery-date";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
-import { TemplateNames } from "@/lib/types";
+import { TemplateNames } from "@/lib/types/types";
 import { useGlobalStore } from "@/store/store";
 import { toast } from "react-toastify";
 

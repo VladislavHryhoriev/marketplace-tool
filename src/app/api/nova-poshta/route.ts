@@ -1,5 +1,5 @@
 import { LINKS } from "@/constants";
-import { DeliveryInfoResponse, DeliveryResponse } from "@/lib/types";
+import { DeliveryInfoResponse, DeliveryResponse } from "@/lib/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

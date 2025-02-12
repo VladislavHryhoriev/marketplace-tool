@@ -1,5 +1,5 @@
 import { API_URLS } from "@/constants";
-import { DeliveryResponse } from "./types";
+import { DeliveryResponse } from "./types/types";
 
 export const getDeliveryDate = async (ttn: string, phone: string) => {
   try {

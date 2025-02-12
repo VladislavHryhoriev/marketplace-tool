@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { DeliveryResponse, OrderEpicentr, TemplateNames } from "../types";
+import { DeliveryResponse, OrderEpicentr, TemplateNames } from "../types/types";
 import { TEMPLATES } from "@/constants";
 
 export const getTemplateEpicentr = async (

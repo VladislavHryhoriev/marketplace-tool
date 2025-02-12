@@ -1,5 +1,5 @@
 import { TEMPLATES } from "@/constants";
-import { DeliveryResponse, TemplateNames } from "../types";
+import { DeliveryResponse, TemplateNames } from "../types/types";
 import { IOrderRozetkaTemplate } from "../types/rozetka";
 
 export const getTemplateRozetka = async (

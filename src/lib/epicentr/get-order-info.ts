@@ -1,5 +1,5 @@
 import { API_URLS } from "@/constants";
-import { EpicentrOrderResponse, OrderEpicentr } from "../types";
+import { EpicentrOrderResponse, OrderEpicentr } from "../types/types";
 
 const headers = {
   accept: "application/json",
