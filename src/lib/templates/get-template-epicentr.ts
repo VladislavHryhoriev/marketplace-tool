@@ -33,7 +33,7 @@ export const getTemplateEpicentr = async (
 `.trim(),
 
     [TEMPLATES.autoconfirm]: `
-Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
+Доброго дня, Ваше замовлення №${order.id} на сайті Епіцентр прийнято.
 
 **Замовили:** ${productsText}
 **Отримувач:** ${fullName}
