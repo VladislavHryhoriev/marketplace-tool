@@ -41,7 +41,7 @@ export const getTemplateEpicentr = async (
 **Вартість доставки:** ~${cost[1]}грн
 **Спосіб оплати:** На рахунок продавця
 
-Реквізити для оплати:
+**Реквізити для оплати:**
 `.trim(),
 
     [TEMPLATES.confirmWithoutCall]: `
