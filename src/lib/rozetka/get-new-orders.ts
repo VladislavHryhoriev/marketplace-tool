@@ -16,6 +16,10 @@ export const getNewOrders = async (): Promise<Orders> => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    if (!response.ok) {
+      throw new Error("Ошибка получения заказов");
+    }
+
     if (!API_URLS.rozetka.newOrders.includes("types=4")) {
       toast.error("Тип заказов != 4");
     }

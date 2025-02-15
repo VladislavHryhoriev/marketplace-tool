@@ -1,13 +1,15 @@
-import { updateOrderStatus } from "@/lib/rozetka/set-status";
+import { getNewOrders } from "@/lib/rozetka/get-new-orders";
+import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const token = req.nextUrl.searchParams.get("token");
+  const tokenUrl = req.nextUrl.searchParams.get("token");
   const internalToken = "token3301";
+  const { orders, token } = await getNewOrders();
 
-  if (token === internalToken) {
+  if (tokenUrl === internalToken) {
     try {
-      const { updatedOrders } = await updateOrderStatus();
+      const { updatedOrders } = await updateOrderStatus({ orders, token });
 
       return NextResponse.json(
         { ok: true, message: updatedOrders },

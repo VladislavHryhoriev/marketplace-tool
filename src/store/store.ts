@@ -24,7 +24,15 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   notifiedOrdersIds: [],
   isFindNewOrders: false,
 
-  setOrders: (orders: IOrder[]) => set({ orders }),
+  setOrders: (newOrders: IOrder[]) =>
+    set((state) => {
+      const isSame =
+        state.orders.length === newOrders.length &&
+        state.orders.every((order, index) => order.id === newOrders[index].id);
+
+      return isSame ? state : { orders: newOrders };
+    }),
+
   setInputTextOrder: (text: string) =>
     set((prev) => {
       const numbersOnly = text.replace(/[^0-9]/g, "");

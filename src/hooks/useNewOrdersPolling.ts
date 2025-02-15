@@ -1,15 +1,22 @@
 import { config } from "@/config";
 import { LINKS } from "@/constants";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
+import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import { sendNotify } from "@/lib/send-notify";
 import { sendMessage } from "@/lib/telegram/send-message";
+import { IOrder } from "@/lib/types/rozetka";
 import { useGlobalStore } from "@/store/store";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
+const getSmallOrders = (orders: IOrder[]) => {
+  return orders.filter((order) => +order.amount <= 100);
+};
+
 export const useNewOrdersPolling = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const orders = useGlobalStore((state) => state.orders);
   const setOrders = useGlobalStore((state) => state.setOrders);
   const isFindNewOrders = useGlobalStore((state) => state.isFindNewOrders);
   const setIsFindNewOrders = useGlobalStore(
@@ -24,7 +31,7 @@ export const useNewOrdersPolling = () => {
     if (isFindNewOrders) {
       intervalRef.current = setInterval(async () => {
         const { orders: newOrders, success } = await getNewOrders();
-
+        setOrders(newOrders);
         if (!success) {
           setIsFindNewOrders(false);
           return toast.error("Ошибка получения заказов");
@@ -34,7 +41,14 @@ export const useNewOrdersPolling = () => {
           (order) => !notifiedOrdersIds.includes(order.id),
         );
 
-        if (uniqueOrders.length === 0) return;
+        if (uniqueOrders.length === 0) {
+          console.log("Нет новых заказов");
+          return;
+        }
+
+        // Кинуть в обработку заказы до 100 грн
+        const smallOrders = getSmallOrders(newOrders);
+        await updateOrderStatus({ orders: smallOrders });
 
         uniqueOrders.forEach((order) => addNotifiedOrderId(order.id));
         sendNotify(uniqueOrders);
@@ -48,8 +62,6 @@ export const useNewOrdersPolling = () => {
           message: msg.join("\n"),
           chatId: config.BOT_OWNER_ID,
         });
-
-        setOrders(newOrders);
       }, config.ROZETKA_FETCH_INTERVAL); /// TIMER
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -67,5 +79,5 @@ export const useNewOrdersPolling = () => {
     setOrders,
   ]);
 
-  return { isFindNewOrders, setIsFindNewOrders };
+  return { isFindNewOrders, setIsFindNewOrders, orders };
 };

@@ -1,16 +1,18 @@
 import { API_URLS } from "@/constants";
 import { toast } from "react-toastify";
 import { IOrder } from "../types/rozetka";
-import { getNewOrders } from "./get-new-orders";
+import { getTokenRozetka } from "./get-token-rozetka";
 
-export const updateOrderStatus = async (): Promise<{
+export const updateOrderStatus = async ({
+  orders,
+  token,
+}: {
+  orders: IOrder[];
+  token?: string;
+}): Promise<{
   updatedOrders: IOrder[];
 }> => {
-  const { orders, token } = await getNewOrders();
-
-  if (!orders.length) {
-    return { updatedOrders: [] };
-  }
+  if (!orders.length) return { updatedOrders: [] };
 
   const ordersToUpdate = orders.filter(
     (order) => order.status === 1 || order.status === 7,
@@ -24,6 +26,8 @@ export const updateOrderStatus = async (): Promise<{
   const requestBody = { status: 26 }; // 26 - Обрабатывается менеджером
 
   try {
+    const validToken = token || (await getTokenRozetka());
+
     await Promise.all(
       ordersToUpdate.map(async (order) => {
         const response = await fetch(
@@ -32,7 +36,7 @@ export const updateOrderStatus = async (): Promise<{
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${validToken}`,
             },
             body: JSON.stringify(requestBody),
           },
