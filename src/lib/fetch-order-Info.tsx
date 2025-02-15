@@ -21,8 +21,6 @@ export const fetchOrderInfo = async (
         const { order, success } = await getOrderInfoRozetka(inputTextOrder);
         if (!success) return toast.error("Заказ не найден");
         const ttnInfo = await getDeliveryDate(order.ttn, order.phone);
-        console.log(ttnInfo);
-
         const templateText = await getTemplateRozetka(type, order, ttnInfo);
         return setAreaTextOrder(templateText);
       }
