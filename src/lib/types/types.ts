@@ -41,9 +41,10 @@ export interface DeliveryInfoResponse {
   data: { ActualDeliveryDate: string; DateReturnCargo: string }[];
 }
 
-export interface DeliveryResponse {
+export interface TrackingResult {
   ok: boolean;
   ttn: string;
-  deliveryDate: string;
-  returnDate: string;
+  date: string;
+  return: string;
+  message: string | unknown;
 }

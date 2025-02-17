@@ -1,16 +1,13 @@
 import { TEMPLATES } from "@/constants";
-import { DeliveryResponse, TemplateNames } from "../types/types";
 import { IOrderRozetkaTemplate } from "../types/rozetka";
+import { TemplateNames, TrackingResult } from "../types/types";
 
 export const getTemplateRozetka = async (
   type: TemplateNames,
   order: IOrderRozetkaTemplate,
-  ttnInfo: DeliveryResponse,
+  ttnInfo: TrackingResult,
 ) => {
-  const cost =
-    order.deliveryName === "ukr-pochta" || order.deliveryName === "ukrposhta"
-      ? [60, 45]
-      : [105, 80];
+  const cost = order.deliveryName.includes("ukr") ? [60, 45] : [105, 80];
 
   const productsText = order.products.map((product) => {
     return `${order.products.length > 1 ? "\n- " : ""} ${product.item_name} = ${Math.round(+product.cost)}грн (${product.quantity}шт)`;
@@ -32,7 +29,7 @@ export const getTemplateRozetka = async (
 **Адреса доставки:** ${order.address}
 **Вартість доставки:** Грошовим переказом ~${cost[0]}грн (При передоплаті ~${cost[1]}грн)
 
-Який спосіб оплати вам підходить?`.trim(),
+Який спосіб оплати вам підходить?`,
 
     [TEMPLATES.autoconfirm]: `
 Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
@@ -43,8 +40,7 @@ export const getTemplateRozetka = async (
 **Вартість доставки:** ~${cost[1]}грн
 **Спосіб оплати:** На рахунок продавця
 
-**Реквізити для оплати:**
-`.trim(),
+**Реквізити для оплати:**`,
 
     [TEMPLATES.confirmWithoutCall]: `
 Доброго дня, Ваше замовлення №${order.id} на сайті Розетка прийнято.
@@ -55,18 +51,18 @@ export const getTemplateRozetka = async (
 **Вартість доставки:** За тарифами перевізника ~${cost[0]}грн
 **Спосіб оплати:** Оплата під час отримання товару
 
-Чи підтверджуєте замовлення?
-`.trim(),
+Чи підтверджуєте замовлення?`,
 
     [TEMPLATES.uncollected]: `
 Доброго дня, Ваше замовлення №${order.id} вже очікує вас на відділенні пошти.
 
-**Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.deliveryDate}` : ""}
-**ТТН:** ${order.ttn}
+**Адреса доставки:** ${order.address} ${ttnInfo.ok ? `\n**Дата доставки**: ${ttnInfo.date}` : ""}
+**ТТН:** ${order.ttn || ""}
 
-Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.ok ? `${ttnInfo.returnDate} в кінці дня` : ""}
-`.trim(),
+Встигніть забрати посилку, бо відбудеться автоматичне повернення ${ttnInfo.return ?? ""} в кінці дня`,
   };
 
-  return templates[type] || "";
+  if (!templates[type]) console.error("Неправильный шаблон");
+
+  return templates[type].trim() || "";
 };

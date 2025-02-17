@@ -1,5 +1,5 @@
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
-import { getDeliveryDate } from "@/lib/get-delivery-date";
+import { getTrackingInfo } from "@/lib/get-tracking-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
@@ -20,14 +20,14 @@ export const fetchOrderInfo = async (
       case 9: {
         const { order, success } = await getOrderInfoRozetka(inputTextOrder);
         if (!success) return toast.error("Заказ не найден");
-        const ttnInfo = await getDeliveryDate(order.ttn, order.phone);
+        const ttnInfo = await getTrackingInfo(order.ttn, order.phone);
         const templateText = await getTemplateRozetka(type, order, ttnInfo);
         return setAreaTextOrder(templateText);
       }
       case 8: {
         const { order, success } = await getOrderInfoEpicentr(inputTextOrder);
         if (!success) return toast.error("Заказ не найден");
-        const ttnInfo = await getDeliveryDate(order.ttn, order.phone);
+        const ttnInfo = await getTrackingInfo(order.ttn, order.phone);
         const templateText = await getTemplateEpicentr(type, order, ttnInfo);
         return setAreaTextOrder(templateText);
       }

@@ -1,13 +1,23 @@
 import { LINKS } from "@/constants";
-import { DeliveryInfoResponse, DeliveryResponse } from "@/lib/types/types";
+import { getDeliveryInfo } from "@/lib/nova-poshta/get-delivery-info";
+import { TrackingResponse } from "@/lib/types/novaposhta";
+import { TrackingResult } from "@/lib/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest,
+): Promise<NextResponse<TrackingResult>> {
   try {
     const { ttn, phone } = await req.json();
 
     if (ttn.startsWith("050")) {
-      return NextResponse.json({ ok: false, message: "UkrPoshta TTN" });
+      return NextResponse.json({
+        ok: false,
+        message: "UkrPoshta TTN",
+        ttn: "",
+        date: "",
+        return: "",
+      });
     }
 
     const body = {
@@ -22,37 +32,34 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(body),
     });
 
-    const json: DeliveryInfoResponse = await response.json();
-    const data = json?.data[0];
+    const { data, success, errors }: TrackingResponse = await response.json();
 
-    const deliveryTime = data.ActualDeliveryDate.split(" ")[1]?.slice(0, 5);
+    if (!success)
+      return NextResponse.json({
+        ok: false,
+        message: errors,
+        ttn: "",
+        date: "",
+        return: "",
+      });
 
-    const [deliveryYear, deliveryMonth, deliveryDay] =
-      data.ActualDeliveryDate.split(" ")[0].split("-");
+    const deliveryInfo = getDeliveryInfo(data[0]);
 
-    const isValidDelivery = deliveryDay && deliveryMonth && deliveryYear;
-
-    const [returnYear, returnMonth, returnDay] =
-      data?.DateReturnCargo?.split("-") || [];
-
-    const isValid = returnDay && returnMonth && returnYear;
-
-    const deliveryDate = isValidDelivery
-      ? `${deliveryTime} ${deliveryDay}.${deliveryMonth}.${deliveryYear}`
-      : "";
-
-    const returnDate = isValid
-      ? `${+returnDay - 1}.${returnMonth}.${returnYear}`
-      : "";
-
-    return NextResponse.json<DeliveryResponse>({
+    return NextResponse.json<TrackingResult>({
       ok: true,
       ttn,
-      deliveryDate,
-      returnDate,
+      date: deliveryInfo.dateTemplate,
+      return: deliveryInfo.returnTemplate,
+      message: "",
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ ok: false, message: error });
+    return NextResponse.json({
+      ok: false,
+      message: error,
+      ttn: "",
+      date: "",
+      return: "",
+    });
   }
 }

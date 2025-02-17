@@ -1,10 +1,13 @@
 import { API_URLS } from "@/constants";
-import { DeliveryResponse } from "./types/types";
+import { TrackingResult } from "./types/types";
 
-export const getDeliveryDate = async (ttn: string, phone: string) => {
+export const getTrackingInfo = async (
+  ttn: string,
+  phone: string,
+): Promise<TrackingResult> => {
   try {
     if (!ttn || !phone) {
-      return { ok: false, ttn, deliveryDate: "", returnDate: "" };
+      return { ok: false, ttn, date: "", return: "", message: "" };
     }
 
     const response = await fetch(API_URLS.novaPoshta.route, {
@@ -14,11 +17,11 @@ export const getDeliveryDate = async (ttn: string, phone: string) => {
       next: { revalidate: 10 },
     });
 
-    const json: DeliveryResponse = await response.json();
+    const json = await response.json();
 
     return json;
   } catch (error) {
     console.error(error);
-    return { ok: false, ttn: "", deliveryDate: "", returnDate: "" };
+    return { ok: false, ttn: "", date: "", return: "", message: error };
   }
 };
