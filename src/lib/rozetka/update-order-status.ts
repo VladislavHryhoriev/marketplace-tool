@@ -6,13 +6,17 @@ import { getTokenRozetka } from "./get-token-rozetka";
 export const updateOrderStatus = async ({
   orders,
   token,
+  status = 26, // 26 - Обрабатывается менеджером
 }: {
   orders: IOrder[];
   token?: string;
+  status?: number;
 }): Promise<{
   updatedOrders: IOrder[];
 }> => {
   if (!orders.length) return { updatedOrders: [] };
+
+  const requestBody = { status };
 
   const ordersToUpdate = orders.filter(
     (order) => order.status === 1 || order.status === 7,
@@ -22,8 +26,6 @@ export const updateOrderStatus = async ({
     toast.error("Нет заказов со статусом 1 или 7");
     return { updatedOrders: [] };
   }
-
-  const requestBody = { status: 26 }; // 26 - Обрабатывается менеджером
 
   try {
     const validToken = token || (await getTokenRozetka());
