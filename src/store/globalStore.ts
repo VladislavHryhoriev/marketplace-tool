@@ -14,7 +14,7 @@ interface GlobalState {
   setIsFindNewOrders: (value: boolean) => void;
 }
 
-export const useGlobalStore = create<GlobalState>((set) => ({
+const useGlobalStore = create<GlobalState>((set) => ({
   orders: [],
   inputTextOrder: "",
   areaTextOrder: "",
@@ -37,3 +37,5 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   setAreaTextOrder: (text: string) => set({ areaTextOrder: text }),
   setIsFindNewOrders: (bool: boolean) => set({ isFindNewOrders: bool }),
 }));
+
+export default useGlobalStore;

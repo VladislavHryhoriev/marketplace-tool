@@ -1,6 +1,7 @@
-import { TEMPLATES } from "@/constants";
+import { TEMPLATES } from "@/consts/TEMPLATES";
 import { IOrderRozetkaTemplate } from "../types/rozetka";
-import { TemplateNames, TrackingResult } from "../types/types";
+import { TrackingResult } from "../types/types";
+import { TemplateNames } from "@/consts/TEMPLATES";
 
 export const getTemplateRozetka = async (
   type: TemplateNames,

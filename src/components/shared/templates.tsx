@@ -4,7 +4,7 @@ import TemplateButtons from "@/components/shared/templates/template-buttons";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { copyToClipboard } from "@/lib/copy-to-clipboard";
-import { useGlobalStore } from "@/store/globalStore";
+import useGlobalStore from "@/store/globalStore";
 import { ClipboardCopy } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import { toast } from "react-toastify";

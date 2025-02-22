@@ -8,7 +8,7 @@ interface OrdersState {
   fetchNewOrders: () => Promise<{ orders: IOrder[]; success: boolean }>;
 }
 
-export const useOrdersStore = create<OrdersState>((set) => ({
+const useOrdersStore = create<OrdersState>((set, get) => ({
   orders: [],
   setOrders: (orders: IOrder[]) => set({ orders }),
 
@@ -17,7 +17,8 @@ export const useOrdersStore = create<OrdersState>((set) => ({
     if (!success) return { orders: [], success };
 
     set({ orders });
-
     return { orders, success };
   },
 }));
+
+export default useOrdersStore;

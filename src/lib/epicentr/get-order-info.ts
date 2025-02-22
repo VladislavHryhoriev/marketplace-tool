@@ -1,4 +1,4 @@
-import { API_URLS } from "@/constants";
+import { API_URLS } from "@/consts/API_URLS";
 import { EpicentrOrderResponse, OrderEpicentr } from "../types/types";
 
 const headers = {

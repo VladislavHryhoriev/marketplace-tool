@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { BUTTONS_CONFIG } from "@/constants";
-import { fetchOrderInfo } from "@/lib/fetch-order-Info";
-import { useGlobalStore } from "@/store/globalStore";
+import { BUTTONS_CONFIG } from "@/consts/BUTTONS_CONFIG";
+import { fetchOrderInfo } from "@/lib/fetch-order-info";
+
+import useGlobalStore from "@/store/globalStore";
 
 const TemplateButtons = () => {
   const inputTextOrder = useGlobalStore((state) => state.inputTextOrder);

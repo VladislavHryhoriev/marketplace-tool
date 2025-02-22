@@ -1,4 +1,4 @@
-import { API_URLS } from "@/constants";
+import { API_URLS } from "@/consts/API_URLS";
 import { getTokenRozetka } from "./get-token-rozetka";
 
 // export interface Product {

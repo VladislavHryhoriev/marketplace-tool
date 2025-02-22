@@ -1,4 +1,4 @@
-import { API_URLS } from "@/constants";
+import { API_URLS } from "@/consts/API_URLS";
 import { toast } from "react-toastify";
 import { IOrder } from "../types/rozetka";
 import { getTokenRozetka } from "./get-token-rozetka";
@@ -15,8 +15,6 @@ export const updateOrderStatus = async ({
   updatedOrders: IOrder[];
 }> => {
   if (!orders.length) return { updatedOrders: [] };
-
-  const requestBody = { status };
 
   const ordersToUpdate = orders.filter(
     (order) => order.status === 1 || order.status === 7,
@@ -40,7 +38,7 @@ export const updateOrderStatus = async ({
               "Content-Type": "application/json",
               Authorization: `Bearer ${validToken}`,
             },
-            body: JSON.stringify(requestBody),
+            body: JSON.stringify({ status }),
           },
         );
 

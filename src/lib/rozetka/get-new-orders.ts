@@ -1,7 +1,7 @@
-import { API_URLS } from "@/constants";
+import { API_URLS } from "@/consts/API_URLS";
+import { toast } from "react-toastify";
 import { IOrder, IOrdersResponse } from "../types/rozetka";
 import { getTokenRozetka } from "./get-token-rozetka";
-import { toast } from "react-toastify";
 
 export interface Orders {
   success: boolean;
@@ -16,16 +16,13 @@ export const getNewOrders = async (): Promise<Orders> => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    if (!response.ok) {
-      throw new Error("Ошибка получения заказов");
-    }
+    if (!response.ok) throw new Error("Ошибка получения заказов");
 
     if (!API_URLS.rozetka.newOrders.includes("types=4")) {
       toast.error("Тип заказов != 4");
     }
 
     const { content, success }: IOrdersResponse = await response.json();
-
     if (!success) throw new Error("Ошибка получения заказов");
 
     return { success, orders: content.orders, token };

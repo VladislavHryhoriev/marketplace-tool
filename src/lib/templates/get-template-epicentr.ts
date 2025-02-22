@@ -1,5 +1,6 @@
-import { TEMPLATES } from "@/constants";
-import { OrderEpicentr, TemplateNames, TrackingResult } from "../types/types";
+import { TEMPLATES } from "@/consts/TEMPLATES";
+import { OrderEpicentr, TrackingResult } from "../types/types";
+import { TemplateNames } from "@/consts/TEMPLATES";
 
 export const getTemplateEpicentr = async (
   type: TemplateNames,

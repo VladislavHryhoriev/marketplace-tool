@@ -1,4 +1,4 @@
-import { LINKS } from "@/constants";
+import { LINKS } from "@/consts/LINKS";
 import { IOrder } from "./types/rozetka";
 
 export const sendNotify = async (orders: IOrder[]) => {

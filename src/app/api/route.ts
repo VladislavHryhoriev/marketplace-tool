@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/constants";
+import { BASE_URL } from "@/consts/BASE_URL";
 import { getTokenRozetka } from "@/lib/rozetka/get-token-rozetka";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -1,20 +1,27 @@
 import { create } from "zustand";
 
 interface NotificationState {
-  notifiedOrdersIds: number[];
-  addNotifiedOrderId: (id: number) => void;
-  setNotifiedOrdersIds: (ids: number[]) => void;
+  notificationIds: Set<number>;
+  isPolling: boolean;
+  togglePolling: () => void;
+  addNotificationId: (id: number) => void;
+  clearNotifications: () => void;
 }
 
-export const useNotificationStore = create<NotificationState>((set) => ({
-  notifiedOrdersIds: [],
-  addNotifiedOrderId: (id: number) =>
-    set((prev) => ({
-      notifiedOrdersIds: prev.notifiedOrdersIds.includes(id)
-        ? prev.notifiedOrdersIds
-        : [...prev.notifiedOrdersIds, id],
-    })),
+const useNotificationStore = create<NotificationState>((set) => ({
+  notificationIds: new Set([]),
+  isPolling: false,
+  togglePolling: () => set((prev) => ({ isPolling: !prev.isPolling })),
 
-  setNotifiedOrdersIds: (ids: number[]) =>
-    set({ notifiedOrdersIds: Array.from(new Set(ids)) }),
+  addNotificationId: (id: number) => {
+    set((prev) => {
+      const newSet = new Set(prev.notificationIds);
+      newSet.add(id);
+      return { notificationIds: newSet };
+    });
+  },
+
+  clearNotifications: () => set({ notificationIds: new Set([]) }),
 }));
+
+export default useNotificationStore;

@@ -1,5 +1,3 @@
-import { TEMPLATES } from "@/constants";
-
 export interface OrderEpicentr {
   id: string;
   fullname: string;
@@ -34,8 +32,6 @@ export interface EpicentrOrderResponse {
     measure: string;
   }[];
 }
-
-export type TemplateNames = (typeof TEMPLATES)[keyof typeof TEMPLATES];
 
 export interface DeliveryInfoResponse {
   data: { ActualDeliveryDate: string; DateReturnCargo: string }[];

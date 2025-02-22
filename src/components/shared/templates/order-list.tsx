@@ -1,15 +1,12 @@
-import { IOrder } from "@/lib/types/rozetka";
+import useOrdersStore from "@/store/ordersStore";
 import Image from "next/image";
 import Link from "next/link";
 
-interface Props {
-  title: string;
-  orders: IOrder[];
-}
+const OrderList = ({ title }: { title: string }) => {
+  const orders = useOrdersStore((state) => state.orders);
 
-const OrderList = ({ title, orders }: Props) => {
   return (
-    <div className="mt-4">
+    <div className="mt-4 p-2">
       <h2>{title}</h2>
       <ul className="mt-2 grid grid-cols-1 gap-2">
         {orders.map((order) => (

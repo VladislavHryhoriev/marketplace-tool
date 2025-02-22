@@ -1,12 +1,13 @@
 import { config } from "@/config";
-import { LINKS } from "@/constants";
+import { LINKS } from "@/consts/LINKS";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import { sendNotify } from "@/lib/send-notify";
 import { sendMessage } from "@/lib/telegram/send-message";
 import { IOrder } from "@/lib/types/rozetka";
-import { useNotificationStore } from "@/store/notificationStore";
-import { useGlobalStore } from "@/store/globalStore";
+import useGlobalStore from "@/store/globalStore";
+import useNotificationStore from "@/store/notificationStore";
+import usePollingStore from "@/store/pollingStore";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
@@ -14,23 +15,32 @@ const getSmallOrders = (orders: IOrder[]) => {
   return orders.filter((order) => +order.amount <= 100);
 };
 
-export const useNewOrdersPolling = () => {
+export const useOrdersPolling = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const orders = useGlobalStore((state) => state.orders);
+  const startPolling = usePollingStore((state) => state.startPolling);
+  const stopPolling = usePollingStore((state) => state.stopPolling);
+  const isPolling = usePollingStore((state) => state.isPolling);
+  const togglePolling = usePollingStore((state) => state.togglePolling);
+
   const setOrders = useGlobalStore((state) => state.setOrders);
   const isFindNewOrders = useGlobalStore((state) => state.isFindNewOrders);
   const setIsFindNewOrders = useGlobalStore(
     (state) => state.setIsFindNewOrders,
   );
-  const notifiedOrdersIds = useNotificationStore(
-    (state) => state.notifiedOrdersIds,
+  const notificationIds = useNotificationStore(
+    (state) => state.notificationIds,
   );
-  const addNotifiedOrderId = useNotificationStore(
-    (state) => state.addNotifiedOrderId,
+  const addNotificationId = useNotificationStore(
+    (state) => state.addNotificationId,
   );
 
   useEffect(() => {
+    isPolling ? startPolling() : stopPolling();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPolling]);
+
+  const s = useEffect(() => {
     if (isFindNewOrders) {
       intervalRef.current = setInterval(async () => {
         const { orders: newOrders, success } = await getNewOrders();
@@ -41,7 +51,7 @@ export const useNewOrdersPolling = () => {
         }
 
         const uniqueOrders = newOrders.filter(
-          (order) => !notifiedOrdersIds.includes(order.id),
+          (order) => !notificationIds.has(order.id),
         );
 
         if (uniqueOrders.length === 0) {
@@ -53,7 +63,7 @@ export const useNewOrdersPolling = () => {
         const smallOrders = getSmallOrders(newOrders);
         await updateOrderStatus({ orders: smallOrders });
 
-        uniqueOrders.forEach((order) => addNotifiedOrderId(order.id));
+        uniqueOrders.forEach((order) => addNotificationId(order.id));
         sendNotify(uniqueOrders);
 
         const msg = uniqueOrders.map((order) => {
@@ -75,12 +85,12 @@ export const useNewOrdersPolling = () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [
-    addNotifiedOrderId,
+    addNotificationId,
     isFindNewOrders,
-    notifiedOrdersIds,
+    notificationIds,
     setIsFindNewOrders,
     setOrders,
   ]);
 
-  return { isFindNewOrders, setIsFindNewOrders, orders };
+  return { togglePolling, isPolling };
 };
