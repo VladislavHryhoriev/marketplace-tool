@@ -5,7 +5,8 @@ import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import { sendNotify } from "@/lib/send-notify";
 import { sendMessage } from "@/lib/telegram/send-message";
 import { IOrder } from "@/lib/types/rozetka";
-import { useGlobalStore } from "@/store/store";
+import { useNotificationStore } from "@/store/notificationStore";
+import { useGlobalStore } from "@/store/globalStore";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
@@ -22,8 +23,10 @@ export const useNewOrdersPolling = () => {
   const setIsFindNewOrders = useGlobalStore(
     (state) => state.setIsFindNewOrders,
   );
-  const notifiedOrdersIds = useGlobalStore((state) => state.notifiedOrdersIds);
-  const addNotifiedOrderId = useGlobalStore(
+  const notifiedOrdersIds = useNotificationStore(
+    (state) => state.notifiedOrdersIds,
+  );
+  const addNotifiedOrderId = useNotificationStore(
     (state) => state.addNotifiedOrderId,
   );
 

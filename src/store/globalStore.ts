@@ -7,21 +7,17 @@ interface GlobalState {
   inputTextOrder: string;
   areaTextOrder: string;
   isFindNewOrders: boolean;
-  notifiedOrdersIds: number[];
 
   setInputTextOrder: (text: string) => void;
   setOrders: (orders: IOrder[]) => void;
   setAreaTextOrder: (text: string) => void;
   setIsFindNewOrders: (value: boolean) => void;
-  addNotifiedOrderId: (id: number) => void;
-  setNotifiedOrdersIds: (ids: number[]) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
   orders: [],
   inputTextOrder: "",
   areaTextOrder: "",
-  notifiedOrdersIds: [],
   isFindNewOrders: false,
 
   setOrders: (newOrders: IOrder[]) =>
@@ -40,14 +36,4 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     }),
   setAreaTextOrder: (text: string) => set({ areaTextOrder: text }),
   setIsFindNewOrders: (bool: boolean) => set({ isFindNewOrders: bool }),
-
-  addNotifiedOrderId: (id: number) =>
-    set((prev) => ({
-      notifiedOrdersIds: prev.notifiedOrdersIds.includes(id)
-        ? prev.notifiedOrdersIds
-        : [...prev.notifiedOrdersIds, id],
-    })),
-
-  setNotifiedOrdersIds: (ids: number[]) =>
-    set({ notifiedOrdersIds: Array.from(new Set(ids)) }),
 }));
