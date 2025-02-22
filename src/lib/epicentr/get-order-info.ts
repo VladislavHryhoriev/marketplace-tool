@@ -10,7 +10,7 @@ const headers = {
 const getOrderTemplate = (orderData: EpicentrOrderResponse) => {
   return {
     id: orderData.number,
-    fullname: `${orderData.address.firstName} ${orderData.address.lastName} ${orderData.address.patronymic}`,
+    fullname: `${orderData.address.lastName} ${orderData.address.firstName} ${orderData.address.patronymic}`,
     products: [
       ...orderData.items.map((item) => ({
         title: item.title,
