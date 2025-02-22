@@ -1,9 +1,9 @@
+import { TemplateNames } from "@/consts/TEMPLATES";
 import { getOrderInfoEpicentr } from "@/lib/epicentr/get-order-info";
 import { getTrackingInfo } from "@/lib/get-tracking-info";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplateEpicentr } from "@/lib/templates/get-template-epicentr";
 import { getTemplateRozetka } from "@/lib/templates/get-template-rozetka";
-import { TemplateNames } from "@/consts/TEMPLATES";
 import { toast } from "react-toastify";
 
 export const fetchOrderInfo = async (

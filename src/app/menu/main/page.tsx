@@ -18,7 +18,7 @@ const Page = () => {
       <div className="flex gap-2">
         <Button onClick={handleClick}>Кинуть в обработку</Button>
         <PollingOrdersButton />
-        <TelegramOrderAlertsButton />
+        {/* <TelegramOrderAlertsButton /> */}
       </div>
       <OrderList title="Новые заказы Розетка" />
     </List>
