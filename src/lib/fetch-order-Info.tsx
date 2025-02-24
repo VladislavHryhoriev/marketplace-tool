@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { getOrderInfoEpicentr } from "./epicentr/get-order-info";
 import { getTrackingInfo } from "./get-tracking-info";
 
-export const fetchOrderInfo = async (
+const fetchOrderInfo = async (
   type: TemplateNames,
   inputTextOrder: string,
   setAreaTextOrder: (text: string) => void,
@@ -42,3 +42,5 @@ export const fetchOrderInfo = async (
     toast.error("Непредвиденная ошибка");
   }
 };
+
+export default fetchOrderInfo;
