@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { BUTTONS_CONFIG } from "@/consts/BUTTONS_CONFIG";
-import fetchOrderInfo from "@/lib/fetch-order-Info";
+import fetchOrderInfo from "@/lib/fetch-order";
 import useGlobalStore from "@/store/globalStore";
 
 const TemplateButtons = () => {
