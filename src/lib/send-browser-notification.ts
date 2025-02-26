@@ -1,7 +1,7 @@
 import { LINKS } from "@/consts/LINKS";
 import { IOrder } from "./types/rozetka";
 
-export const sendNotify = async (orders: IOrder[]) => {
+export const sendBrowserNotification = async (orders: IOrder[]) => {
   if (orders.length === 0) return;
 
   if (Notification.permission !== "granted") {

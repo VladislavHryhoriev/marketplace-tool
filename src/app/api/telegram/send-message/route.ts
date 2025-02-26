@@ -1,22 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
 import { Bot } from "grammy";
+import { NextRequest, NextResponse } from "next/server";
 
 const bot = new Bot(process.env.BOT_TOKEN!);
 
 export interface Message {
-  chatIds: number[];
+  id: number;
   message: string;
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { chatIds, message }: Message = await req.json();
+    const chats: Message[] = await req.json();
 
-    const messages = await Promise.all(
-      chatIds.map(async (chatId) => {
-        return await bot.api.sendMessage(chatId, message, {
-          parse_mode: "HTML",
-        });
+    const messages = await Promise.allSettled(
+      chats.map(async ({ id, message }) => {
+        try {
+          return await bot.api.sendMessage(id, message, { parse_mode: "HTML" });
+        } catch (error) {
+          console.error(error);
+        }
       }),
     );
 

@@ -1,19 +1,21 @@
 import { config } from "@/config";
 import { LINKS } from "@/consts/LINKS";
+import { differenceByKey } from "@/lib/difference-by-key";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
-import { sendNotify } from "@/lib/send-notify";
+import { sendBrowserNotification } from "@/lib/send-browser-notification";
 import { sendMessage } from "@/lib/telegram/send-message";
 import { IOrder } from "@/lib/types/rozetka";
 import { create } from "zustand";
 
 interface PollingState {
   orders: IOrder[];
-  sentOrderIds: Set<number>;
   isPolling: boolean;
+  maxSum: number;
 
-  setOrders: (orders: IOrder[]) => void;
-  fetchNewOrders: () => Promise<{ orders: IOrder[]; success: boolean }>;
+  setMaxSum: (maxSum: string) => void;
+
+  getSmallOrders: (orders: IOrder[]) => IOrder[];
 
   startPolling: () => void;
   stopPolling: () => void;
@@ -21,69 +23,74 @@ interface PollingState {
 
 let intervalId = null as NodeJS.Timeout | null;
 
-const getSmallOrders = (orders: IOrder[]) => {
-  return orders.filter((order) => +order.amount <= 100);
-};
-
-const differenceByKey = <T, K extends keyof T>(
-  arr1: T[],
-  arr2: T[],
-  key: K,
-): T[] => {
-  const set2 = new Set(arr2.map((item) => item[key]));
-  return arr1.filter((item) => !set2.has(item[key]));
+const createMessage = (orders: IOrder[]) => {
+  const message = orders
+    .map((order) => {
+      const link = `${LINKS.rozetka.new}?page=1&sort=-id&pageSize=50&id=${order.id}`;
+      return `<a href="${link}">№${order.id} ${order.recipient_title.full_name} - ${order.amount}</a>`;
+    })
+    .join("\n");
+  return message;
 };
 
 const usePollingStore = create<PollingState>((set, get) => ({
   orders: [],
-  sentOrderIds: new Set([]),
   isPolling: false,
+  maxSum: 100,
 
-  setOrders: (orders: IOrder[]) => set({ orders }),
-  fetchNewOrders: async () => {
-    const { orders, success } = await getNewOrders();
-    if (!success) return { orders: [], success };
+  setMaxSum: (maxSum: string) => {
+    set({ orders: [] });
+    set(() => {
+      const numbersOnly = +maxSum.replace(/[^0-9]/g, "");
+      return { maxSum: numbersOnly };
+    });
+  },
 
-    set({ orders });
-    return { orders, success };
+  getSmallOrders: (orders: IOrder[]) => {
+    return orders.filter((order) => +order.amount <= get().maxSum);
   },
 
   startPolling: () => {
     if (intervalId) return;
 
     const pollingOrders = async () => {
-      const data = await getNewOrders();
-      const uniqueOrders = differenceByKey(data.orders, get().orders, "id");
+      try {
+        const { orders, success } = await getNewOrders();
+        if (!success) {
+          get().stopPolling();
+          return { orders: [], success };
+        }
 
-      const { success } = await get().fetchNewOrders();
-      if (!success || !data.success) return get().stopPolling();
+        const uniqueOrders = differenceByKey(orders, get().orders, "id");
 
-      // Кинуть в обработку заказы до 100 грн
-      const smallOrders = getSmallOrders(data.orders);
-      await updateOrderStatus({ orders: smallOrders });
+        set({ orders });
 
-      // Отправить уведомление в браузере
-      sendNotify(uniqueOrders);
+        // Кинуть в обработку заказы до 100 грн
+        await updateOrderStatus({ orders: get().getSmallOrders(orders) });
 
-      if (uniqueOrders.length > 0) {
-        const msg = uniqueOrders.map((order) => {
-          const link = `${LINKS.rozetka.new}?page=1&sort=-id&pageSize=50&id=${order.id}`;
-          return `<a href="${link}">№${order.id} ${order.recipient_title.full_name} - ${order.amount}</a>`;
-        });
+        if (uniqueOrders.length > 0) {
+          sendBrowserNotification(uniqueOrders); // Отправить уведомление в браузере
 
-        await sendMessage({
-          message: msg.join("\n"),
-          chatIds: [...config.BOT_OWNER_IDS],
-        });
+          await sendMessage([
+            {
+              id: config.BOT_USER_IDS.owner,
+              message: createMessage(get().getSmallOrders(orders)),
+            },
+            {
+              id: config.BOT_USER_IDS.ukrstore,
+              message: createMessage(orders),
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error(error);
       }
     };
 
     const initialStart = [pollingOrders];
     initialStart.forEach((fn) => fn());
 
-    intervalId = setInterval(() => {
-      pollingOrders();
-    }, config.ROZETKA_FETCH_INTERVAL);
+    intervalId = setInterval(pollingOrders, config.ROZETKA_FETCH_INTERVAL);
     set({ isPolling: true });
   },
 
