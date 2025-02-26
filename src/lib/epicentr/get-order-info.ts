@@ -66,6 +66,7 @@ export const getOrderInfoEpicentr = async (
         deliveryName: "",
         ttn: "",
         phone: "",
+        subtotal: 0,
       },
       success: false,
     };
