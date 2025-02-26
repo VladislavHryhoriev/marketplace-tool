@@ -20,12 +20,7 @@ export async function POST(req: NextRequest) {
       }),
     );
 
-    console.log(messages);
-
-    // const msg_id = msg.message_id;
-    // const chat_id = msg.chat.id;
-
-    return NextResponse.json({ ok: true, message: {} }, { status: 200 });
+    return NextResponse.json({ ok: true, message: messages }, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ ok: false, message: error }, { status: 500 });
