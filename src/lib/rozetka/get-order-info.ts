@@ -20,6 +20,7 @@ const getOrderRozetkaTemplate = (
     totalQuantity: content.total_quantity,
     ttn: content.ttn,
     phone: content.recipient_phone,
+    amount: content.amount,
 
     get address() {
       const deliveryService = content.delivery.delivery_service_name;
@@ -75,6 +76,7 @@ export const getOrderInfoRozetka = async (
         totalQuantity: -1,
         ttn: "",
         phone: "",
+        amount: "-1",
       },
       success: false,
     };

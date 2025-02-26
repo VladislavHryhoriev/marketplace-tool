@@ -22,6 +22,7 @@ const getOrderTemplate = (orderData: EpicentrOrderResponse) => {
     deliveryName: orderData.address.shipment.provider,
     ttn: orderData.address.shipment.number,
     phone: orderData.address.phone,
+    subtotal: orderData.subtotal,
 
     get address() {
       const service =

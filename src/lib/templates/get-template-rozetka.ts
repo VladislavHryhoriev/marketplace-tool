@@ -8,7 +8,9 @@ export const getTemplateRozetka = async (
   order: IOrderRozetkaTemplate,
   ttnInfo: TrackingResult,
 ) => {
-  const cost = order.deliveryName.includes("ukr") ? [60, 45] : [105, 80];
+  const cost = order.deliveryName.includes("ukr")
+    ? [Math.round(45 + 10 + +order.amount * 0.02), 45]
+    : [Math.round(80 + 20 + +order.amount * 0.02), 80];
 
   const productsText = order.products.map((product) => {
     return `${order.products.length > 1 ? "\n- " : ""} ${product.item_name} = ${Math.round(+product.cost)}грн (${product.quantity}шт)`;

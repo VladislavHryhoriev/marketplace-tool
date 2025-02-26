@@ -155,6 +155,7 @@ export interface IOrderRozetkaTemplate {
   totalQuantity: number;
   ttn: string;
   phone: string;
+  amount: string;
   get address(): string;
 }
 

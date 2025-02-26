@@ -7,7 +7,9 @@ export const getTemplateEpicentr = async (
   order: OrderEpicentr,
   ttnInfo: TrackingResult,
 ) => {
-  const cost = order.deliveryName.includes("ukr") ? [60, 45] : [105, 80];
+  const cost = order.deliveryName.includes("ukr")
+    ? [Math.round(45 + 10 + +order.subtotal * 0.02), 45]
+    : [Math.round(80 + 20 + +order.subtotal * 0.02), 80];
 
   const productsText = order.products.map((product) => {
     return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}${product.measure})`;

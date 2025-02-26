@@ -1,6 +1,7 @@
 export interface OrderEpicentr {
   id: string;
   fullname: string;
+  subtotal: number;
   products: {
     title: string;
     quantity: number;
