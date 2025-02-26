@@ -15,7 +15,7 @@ export type Message = {
   };
 };
 
-export const sendMessage = async ({ msg }: Message) => {
+export const deleteMessage = async ({ msg }: Message) => {
   const response = await fetch(API_URLS.telegram.deleteMessage, {
     method: "POST",
     body: JSON.stringify({ msg }),

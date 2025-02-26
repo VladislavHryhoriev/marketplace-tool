@@ -7,12 +7,12 @@ export type ResponseMessage = {
   };
 };
 
-export type Message = { chatId: number; message: string };
+export type Message = { chatIds: number[]; message: string };
 
-export const sendMessage = async ({ message, chatId }: Message) => {
+export const sendMessage = async ({ message, chatIds }: Message) => {
   const response = await fetch(API_URLS.telegram.sendMessage, {
     method: "POST",
-    body: JSON.stringify({ chatId, message }),
+    body: JSON.stringify({ chatIds, message }),
   });
 
   const json: ResponseMessage = await response.json();

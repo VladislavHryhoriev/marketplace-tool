@@ -1,4 +1,3 @@
-"use client";
 import { ROUTES } from "@/config";
 import { cn } from "@/lib/utils";
 import Link from "next/link";

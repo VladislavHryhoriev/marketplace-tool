@@ -1,9 +1,9 @@
-import useOrdersStore from "@/store/ordersStore";
+import usePollingStore from "@/store/pollingStore";
 import Image from "next/image";
 import Link from "next/link";
 
 const OrderList = ({ title }: { title: string }) => {
-  const orders = useOrdersStore((state) => state.orders);
+  const orders = usePollingStore((state) => state.orders);
 
   return (
     <div className="mt-4 p-2">
