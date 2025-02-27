@@ -147,18 +147,6 @@ export interface ErrorResponse {
   message: string; // Сообщение об ошибке
 }
 
-export interface IOrderRozetkaTemplate {
-  id: number;
-  fullname: string;
-  products: { item_name: string; cost: number; quantity: number }[];
-  deliveryName: string;
-  totalQuantity: number;
-  ttn: string;
-  phone: string;
-  amount: string;
-  get address(): string;
-}
-
 // export interface RozetkaOrderResponse {
 //   errors?: {
 //     code: number;

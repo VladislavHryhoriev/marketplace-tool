@@ -1,5 +1,5 @@
 import { API_URLS } from "@/consts/API_URLS";
-import { TrackingResult } from "./types/types";
+import { TrackingResult } from "./types/novaposhta";
 
 export const getTrackingInfo = async (
   ttn: string,

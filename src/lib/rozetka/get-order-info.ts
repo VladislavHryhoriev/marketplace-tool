@@ -5,31 +5,36 @@ import {
   IExtendPurchases,
   IOrder,
   IOrderResponse,
-  IOrderRozetkaTemplate,
 } from "../types/rozetka";
 import { getTokenRozetka } from "./get-token-rozetka";
+import { IOrderTemplate } from "../types/types";
 
-const getOrderRozetkaTemplate = (
-  content: IOrder & IExtendDelivery & IExtendPurchases,
-) => {
+const getOrderTemplate = (
+  orderData: IOrder & IExtendDelivery & IExtendPurchases,
+): IOrderTemplate => {
   return {
-    id: content.id,
-    fullname: content.delivery.recipient_title,
-    products: content.purchases,
-    deliveryName: content.delivery.name_logo,
-    totalQuantity: content.total_quantity,
-    ttn: content.ttn,
-    phone: content.recipient_phone,
-    amount: content.amount,
+    id: orderData.id,
+    fullname: orderData.delivery.recipient_title,
+    products: [
+      ...orderData.purchases.map((item) => ({
+        title: item.item_name,
+        quantity: item.quantity,
+        cost: item.cost,
+      })),
+    ],
+    deliveryName: orderData.delivery.name_logo,
+    ttn: orderData.ttn,
+    phone: orderData.recipient_phone,
+    amount: orderData.amount,
 
     get address() {
-      const deliveryService = content.delivery.delivery_service_name;
-      const deliveryMethod = content.delivery.delivery_method_id;
-      const city = content.delivery.city.name_ua;
-      const street = content.delivery.place_street;
-      const house = content.delivery.place_house;
-      const departmentNumber = content.delivery.place_number;
-      const flat = content.delivery.place_flat;
+      const deliveryService = orderData.delivery.delivery_service_name;
+      const deliveryMethod = orderData.delivery.delivery_method_id;
+      const city = orderData.delivery.city.name_ua;
+      const street = orderData.delivery.place_street;
+      const house = orderData.delivery.place_house;
+      const departmentNumber = orderData.delivery.place_number;
+      const flat = orderData.delivery.place_flat;
 
       if (deliveryMethod === 1) {
         return `(${deliveryService}) Відділення №${departmentNumber} ${city}, ${street} ${house}`;
@@ -46,7 +51,7 @@ const getOrderRozetkaTemplate = (
 
 export const getOrderInfoRozetka = async (
   id: string,
-): Promise<{ order: IOrderRozetkaTemplate; success: boolean }> => {
+): Promise<{ order: IOrderTemplate; success: boolean }> => {
   try {
     const token = await getTokenRozetka();
     const response = await fetch(API_URLS.rozetka.orderInfo(id), {
@@ -54,14 +59,18 @@ export const getOrderInfoRozetka = async (
       next: { revalidate: 30 },
     });
 
-    const { success, content, errors }: IOrderResponse = await response.json();
+    const {
+      success,
+      content: orderData,
+      errors,
+    }: IOrderResponse = await response.json();
 
     if (!success && errors) {
       toast.error(errors.description);
       throw new Error(`${errors.message} | ${errors.description}`);
     }
 
-    const order = getOrderRozetkaTemplate(content);
+    const order = getOrderTemplate(orderData);
 
     return { order, success: true };
   } catch (error) {
@@ -73,7 +82,6 @@ export const getOrderInfoRozetka = async (
         products: [],
         address: "",
         deliveryName: "",
-        totalQuantity: -1,
         ttn: "",
         phone: "",
         amount: "-1",

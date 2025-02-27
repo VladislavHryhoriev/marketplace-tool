@@ -1,5 +1,5 @@
 import { API_URLS } from "@/consts/API_URLS";
-import { EpicentrOrderResponse, OrderEpicentr } from "../types/types";
+import { EpicentrOrderResponse, IOrderTemplate } from "../types/types";
 
 const headers = {
   accept: "application/json",
@@ -7,7 +7,7 @@ const headers = {
   "accept-language": "uk",
 };
 
-const getOrderTemplate = (orderData: EpicentrOrderResponse) => {
+const getOrderTemplate = (orderData: EpicentrOrderResponse): IOrderTemplate => {
   return {
     id: orderData.number,
     fullname: `${orderData.address.lastName} ${orderData.address.firstName} ${orderData.address.patronymic}`,
@@ -15,14 +15,14 @@ const getOrderTemplate = (orderData: EpicentrOrderResponse) => {
       ...orderData.items.map((item) => ({
         title: item.title,
         quantity: item.quantity,
-        subtotal: item.subtotal,
+        cost: item.subtotal,
         measure: item.measure,
       })),
     ],
     deliveryName: orderData.address.shipment.provider,
     ttn: orderData.address.shipment.number,
     phone: orderData.address.phone,
-    subtotal: orderData.subtotal,
+    amount: orderData.subtotal,
 
     get address() {
       const service =
@@ -39,7 +39,7 @@ const getOrderTemplate = (orderData: EpicentrOrderResponse) => {
 
 export const getOrderInfoEpicentr = async (
   id: string,
-): Promise<{ order: OrderEpicentr; success: boolean }> => {
+): Promise<{ order: IOrderTemplate; success: boolean }> => {
   try {
     const orders = await fetch(API_URLS.epicentr.orders(id), {
       headers,
@@ -66,7 +66,7 @@ export const getOrderInfoEpicentr = async (
         deliveryName: "",
         ttn: "",
         phone: "",
-        subtotal: 0,
+        amount: 0,
       },
       success: false,
     };

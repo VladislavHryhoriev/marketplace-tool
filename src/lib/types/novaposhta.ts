@@ -119,3 +119,10 @@ export interface TrackingResponse {
   warningCodes: [];
   infoCodes: [];
 }
+export interface TrackingResult {
+  ok: boolean;
+  ttn: string;
+  date: string;
+  return: string;
+  message: string | unknown;
+}

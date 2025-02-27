@@ -1,12 +1,12 @@
-export interface OrderEpicentr {
-  id: string;
+export interface IOrderTemplate {
+  id: string | number;
   fullname: string;
-  subtotal: number;
+  amount: number | string;
   products: {
     title: string;
     quantity: number;
-    subtotal: number;
-    measure: string;
+    cost: number;
+    measure?: string;
   }[];
   deliveryName: string;
   ttn: string;
@@ -36,12 +36,4 @@ export interface EpicentrOrderResponse {
 
 export interface DeliveryInfoResponse {
   data: { ActualDeliveryDate: string; DateReturnCargo: string }[];
-}
-
-export interface TrackingResult {
-  ok: boolean;
-  ttn: string;
-  date: string;
-  return: string;
-  message: string | unknown;
 }

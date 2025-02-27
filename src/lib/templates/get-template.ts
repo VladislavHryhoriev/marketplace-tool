@@ -1,57 +1,56 @@
-import { TEMPLATES } from "@/consts/TEMPLATES";
-import { OrderEpicentr, TrackingResult } from "../types/types";
-import { TemplateNames } from "@/consts/TEMPLATES";
+import { TemplateNames, TEMPLATES } from "@/consts/TEMPLATES";
+import { calculateCost } from "../calculate-cost";
+import { capitalize } from "../capitalize";
+import { TrackingResult } from "../types/novaposhta";
+import { IOrderTemplate } from "../types/types";
 
-export const getTemplateEpicentr = async (
+export const getTemplate = async (
   type: TemplateNames,
-  order: OrderEpicentr,
+  order: IOrderTemplate,
   ttnInfo: TrackingResult,
+  storeName: "Епіцентр" | "Розетка",
 ) => {
-  const cost = order.deliveryName.includes("ukr")
-    ? [Math.round(45 + 10 + +order.subtotal * 0.02), 45]
-    : [Math.round(80 + 20 + +order.subtotal * 0.02), 80];
-
+  const cost = calculateCost(order.deliveryName, order.amount);
+  const fullName = capitalize(order.fullname);
   const productsText = order.products.map((product) => {
-    return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.subtotal)}грн (${product.quantity}${product.measure})`;
+    return `${order.products.length > 1 ? "\n- " : ""} ${product.title} = ${Math.round(product.cost)}грн (${product.quantity}${product.measure || "шт"})`;
   });
-
-  const fullName = order.fullname
-    .split(" ")
-    .map((name) => name.charAt(0).toUpperCase() + name.slice(1).toLowerCase())
-    .join(" ");
 
   const templates = {
     [TEMPLATES.missedCall]: `
-Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті Епіцентр. 
+Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті ${storeName}. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
 (068)554-40-46 (063)969-68-29 (099)566-45-21 або напишіть нам у вайбер.
 
 **Замовили:** ${productsText}
 **Отримувач:** ${fullName}
 **Адреса доставки:** ${order.address}
-**Вартість доставки:** Грошовим переказом ~${cost[0]}грн (При передоплаті ~${cost[1]}грн)
+**Спосіб оплати:** Оплата під час отримання товару
+**Вартість доставки:** ~${cost.payed}грн
+**Комісія за грошовий переказ:** ${cost.commision}грн
 
 Який спосіб оплати вам підходить?`,
 
     [TEMPLATES.autoconfirm]: `
-Доброго дня, Ваше замовлення №${order.id} на сайті Епіцентр прийнято.
+Доброго дня, Ваше замовлення №${order.id} на сайті ${storeName} прийнято.
 
 **Замовили:** ${productsText}
 **Отримувач:** ${fullName}
 **Адреса доставки:** ${order.address}
-**Вартість доставки:** ~${cost[1]}грн
+**Вартість доставки:** ~${cost.payed}грн
 **Спосіб оплати:** На рахунок продавця
 
 **Реквізити для оплати:**`,
 
     [TEMPLATES.confirmWithoutCall]: `
-Доброго дня, Ваше замовлення №${order.id} на сайті Епіцентр прийнято.
+Доброго дня, Ваше замовлення №${order.id} на сайті ${storeName} прийнято.
 
 **Замовили:** ${productsText}
 **Отримувач:** ${fullName}
 **Адреса доставки:** ${order.address}	
-**Вартість доставки:** За тарифами перевізника ~${cost[0]}грн
 **Спосіб оплати:** Оплата під час отримання товару
+**Вартість доставки:** ~${cost.payed}грн
+**Комісія за грошовий переказ:** ${cost.commision}грн
 
 Чи підтверджуєте замовлення?`,
 
