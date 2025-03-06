@@ -1,3 +1,47 @@
+const expandNames = [
+  "chatUser",
+  "chatMessages",
+  "delivery",
+  "user",
+  "status_available",
+  "is_promo",
+  "status_data",
+  "purchases",
+  "total_quantity",
+  "is_access_change_order",
+  "payment_type",
+  "credit_info",
+  "delivery_service",
+  "payment_type_name",
+  "item_details",
+  "payment_status",
+  "status_payment",
+  "can_edit",
+  "feedback",
+  "feedback_count",
+  "order_status_history",
+  "credit_status",
+  "credit_broker",
+  "delivery_service",
+  "payment_invoice_id",
+  "can_edit",
+  "is_free_delivery",
+  "is_receiver_edit_available",
+  "delivery_prices",
+  "invoice_exist",
+  "can_create_invoice",
+  "need_label",
+  "delivery_commission_info",
+  "count_buyer_orders",
+  "rz_delivery_ttn_sender",
+  "is_reserve_ending",
+  "group_id",
+  "group_orders_count",
+  "has_kit",
+] as const;
+
+export type TExpandNames = (typeof expandNames)[number];
+
 export interface IOrder {
   id: number; // ID замовлення
   created: string; // Дата створення замовлення (YYYY-MM-DD, H:i:s)
@@ -146,34 +190,6 @@ export interface ErrorResponse {
   details: { value: number };
   message: string; // Сообщение об ошибке
 }
-
-// export interface RozetkaOrderResponse {
-//   errors?: {
-//     code: number;
-//     message: string;
-//     description: string;
-//     details: { value: string };
-//   };
-//   success: boolean;
-//   content: {
-//     id: number;
-//     recipient_title: { full_name: string };
-//     purchases: { item_name: string; cost: number; quantity: number }[];
-//     delivery: {
-//       delivery_service_name: string;
-//       delivery_method_id: number;
-//       city: { name_ua: string };
-//       place_street: string;
-//       place_house: string;
-//       place_number: string;
-//       place_flat: string;
-//       name_logo: string;
-//     };
-//     total_quantity: number;
-//     ttn: string;
-//     recipient_phone: string;
-//   };
-// }
 
 export interface IOrdersResponse {
   success: boolean;

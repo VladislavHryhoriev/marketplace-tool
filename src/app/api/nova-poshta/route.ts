@@ -1,4 +1,4 @@
-import { LINKS } from "@/consts/LINKS";
+import LINKS from "@/consts/LINKS";
 import { getDeliveryInfo } from "@/lib/nova-poshta/get-delivery-info";
 import { TrackingResponse } from "@/lib/types/novaposhta";
 import { TrackingResult } from "@/lib/types/novaposhta";

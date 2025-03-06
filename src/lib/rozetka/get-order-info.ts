@@ -1,13 +1,6 @@
-import { API_URLS } from "@/consts/API_URLS";
-import { toast } from "react-toastify";
-import {
-  IExtendDelivery,
-  IExtendPurchases,
-  IOrder,
-  IOrderResponse,
-} from "../types/rozetka";
-import { getTokenRozetka } from "./get-token-rozetka";
+import { IExtendDelivery, IExtendPurchases, IOrder } from "../types/rozetka";
 import { IOrderTemplate } from "../types/types";
+import fetchOrder from "./fetch-order";
 
 const getOrderTemplate = (
   orderData: IOrder & IExtendDelivery & IExtendPurchases,
@@ -53,23 +46,7 @@ export const getOrderInfoRozetka = async (
   id: string,
 ): Promise<{ order: IOrderTemplate; success: boolean }> => {
   try {
-    const token = await getTokenRozetka();
-    const response = await fetch(API_URLS.rozetka.orderInfo(id), {
-      headers: { Authorization: `Bearer ${token}` },
-      next: { revalidate: 30 },
-    });
-
-    const {
-      success,
-      content: orderData,
-      errors,
-    }: IOrderResponse = await response.json();
-
-    if (!success && errors) {
-      toast.error(errors.description);
-      throw new Error(`${errors.message} | ${errors.description}`);
-    }
-
+    const orderData = await fetchOrder(id, ["delivery", "purchases"]);
     const order = getOrderTemplate(orderData);
 
     return { order, success: true };

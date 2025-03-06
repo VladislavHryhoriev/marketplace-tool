@@ -1,17 +1,19 @@
-import { API_URLS } from "@/consts/API_URLS";
+import API_URLS from "@/consts/API_URLS";
 import { toast } from "react-toastify";
 import { IOrder } from "../types/rozetka";
 import { getTokenRozetka } from "./get-token-rozetka";
+
+interface Params {
+  orders: IOrder[];
+  token?: string;
+  status?: number;
+}
 
 export const updateOrderStatus = async ({
   orders,
   token,
   status = 26, // 26 - Обрабатывается менеджером
-}: {
-  orders: IOrder[];
-  token?: string;
-  status?: number;
-}): Promise<{
+}: Params): Promise<{
   updatedOrders: IOrder[];
 }> => {
   if (!orders.length) return { updatedOrders: [] };

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { BUTTONS_CONFIG } from "@/consts/BUTTONS_CONFIG";
-import fetchOrder from "@/lib/fetch-order";
+import BUTTONS_CONFIG from "@/consts/BUTTONS_CONFIG";
+import fetchOrderData from "@/lib/fetch-order";
 import useGlobalStore from "@/store/globalStore";
 
 const TemplateButtons = () => {
@@ -12,7 +12,7 @@ const TemplateButtons = () => {
       {BUTTONS_CONFIG.map(({ type, icon, label }) => (
         <Button
           key={type}
-          onClick={() => fetchOrder(type, inputTextOrder, setAreaTextOrder)}
+          onClick={() => fetchOrderData(type, inputTextOrder, setAreaTextOrder)}
         >
           {icon}
           {label}

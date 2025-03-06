@@ -1,4 +1,4 @@
-import { LINKS } from "@/consts/LINKS";
+import LINKS from "@/consts/LINKS";
 import { IOrder } from "./types/rozetka";
 
 export const sendBrowserNotification = async (orders: IOrder[]) => {

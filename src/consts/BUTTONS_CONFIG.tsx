@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { TEMPLATES } from "./TEMPLATES";
 
-export const BUTTONS_CONFIG = [
+const BUTTONS_CONFIG = [
   {
     type: TEMPLATES.missedCall,
     icon: <PhoneMissed />,
@@ -28,3 +28,5 @@ export const BUTTONS_CONFIG = [
     label: "Не забирает заказ",
   },
 ] as const;
+
+export default BUTTONS_CONFIG;

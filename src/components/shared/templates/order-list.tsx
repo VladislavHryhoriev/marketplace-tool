@@ -1,10 +1,8 @@
-import usePollingStore from "@/store/pollingStore";
+import { IOrder } from "@/lib/types/rozetka";
 import Image from "next/image";
 import Link from "next/link";
 
-const OrderList = ({ title }: { title: string }) => {
-  const orders = usePollingStore((state) => state.orders);
-
+const OrderList = ({ title, orders }: { title: string; orders: IOrder[] }) => {
   return (
     <div className="mt-4 p-2">
       <h2>{title}</h2>

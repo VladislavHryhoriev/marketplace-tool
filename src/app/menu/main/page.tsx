@@ -16,6 +16,7 @@ const handleClick = async () => {
 const Page = () => {
   const maxSum = usePollingStore((state) => state.maxSum);
   const setMaxSum = usePollingStore((state) => state.setMaxSum);
+  const orders = usePollingStore((state) => state.ordersRozetka);
 
   return (
     <List>
@@ -32,7 +33,8 @@ const Page = () => {
           />
         </div>
       </div>
-      <OrderList title="Новые заказы Розетка" />
+      <OrderList title="Новые заказы Розетка" orders={orders} />
+      {/* <OrderList title="Новые заказы Розетка" /> */}
     </List>
   );
 };

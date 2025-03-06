@@ -1,5 +1,5 @@
 import { config } from "@/config";
-import { API_URLS } from "@/consts/API_URLS";
+import API_URLS from "@/consts/API_URLS";
 
 export interface ITokenResponse {
   success: boolean;

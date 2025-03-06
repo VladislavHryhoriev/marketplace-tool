@@ -1,11 +1,6 @@
-import { API_URLS } from "@/consts/API_URLS";
+import API_URLS from "@/consts/API_URLS";
 import { EpicentrOrderResponse, IOrderTemplate } from "../types/types";
-
-const headers = {
-  accept: "application/json",
-  Authorization: `Bearer ${process.env.EPICENTR_TOKEN}`,
-  "accept-language": "uk",
-};
+import fetchOrder from "./fetch-order";
 
 const getOrderTemplate = (orderData: EpicentrOrderResponse): IOrderTemplate => {
   return {
@@ -41,18 +36,7 @@ export const getOrderInfoEpicentr = async (
   id: string,
 ): Promise<{ order: IOrderTemplate; success: boolean }> => {
   try {
-    const orders = await fetch(API_URLS.epicentr.orders(id), {
-      headers,
-      next: { revalidate: 10 },
-    }).then((res) => res.json().then((data) => data.items[0]));
-
-    if (!orders) throw new Error("Order not found");
-
-    const response = await fetch(API_URLS.epicentr.orderInfo(orders.id), {
-      headers,
-    });
-
-    const orderData: EpicentrOrderResponse = await response.json();
+    const orderData: EpicentrOrderResponse = await fetchOrder(id);
     if (!orderData.number) throw new Error("Order not found");
 
     return { order: getOrderTemplate(orderData), success: true };

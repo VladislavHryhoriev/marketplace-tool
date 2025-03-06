@@ -1,5 +1,5 @@
 import { Message } from "@/app/api/telegram/send-message/route";
-import { API_URLS } from "@/consts/API_URLS";
+import API_URLS from "@/consts/API_URLS";
 
 export type ResponseMessage = {
   message: {

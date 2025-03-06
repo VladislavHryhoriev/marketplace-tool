@@ -1,5 +1,5 @@
 import { config } from "@/config";
-import { LINKS } from "@/consts/LINKS";
+import LINKS from "@/consts/LINKS";
 import { differenceByKey } from "@/lib/difference-by-key";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
@@ -9,14 +9,12 @@ import { IOrder } from "@/lib/types/rozetka";
 import { create } from "zustand";
 
 interface PollingState {
-  orders: IOrder[];
+  ordersRozetka: IOrder[];
   isPolling: boolean;
   maxSum: number;
 
   setMaxSum: (maxSum: string) => void;
-
   getSmallOrders: (orders: IOrder[]) => IOrder[];
-
   startPolling: () => void;
   stopPolling: () => void;
 }
@@ -34,16 +32,13 @@ const createMessage = (orders: IOrder[]) => {
 };
 
 const usePollingStore = create<PollingState>((set, get) => ({
-  orders: [],
+  ordersRozetka: [],
   isPolling: false,
   maxSum: 100,
 
   setMaxSum: (maxSum: string) => {
-    set({ orders: [] });
-    set(() => {
-      const numbersOnly = +maxSum.replace(/[^0-9]/g, "");
-      return { maxSum: numbersOnly };
-    });
+    set({ ordersRozetka: [] });
+    set({ maxSum: +maxSum.replace(/[^0-9]/g, "") });
   },
 
   getSmallOrders: (orders: IOrder[]) => {
@@ -56,14 +51,15 @@ const usePollingStore = create<PollingState>((set, get) => ({
     const pollingOrders = async () => {
       try {
         const { orders, success } = await getNewOrders();
+
         if (!success) {
           get().stopPolling();
-          return { orders: [], success };
+          return { ordersRozetka: [], success };
         }
 
-        const uniqueOrders = differenceByKey(orders, get().orders, "id");
+        const uniqueOrders = differenceByKey(orders, get().ordersRozetka, "id");
 
-        set({ orders });
+        set({ ordersRozetka: orders });
 
         // Кинуть в обработку заказы до 100 грн
         await updateOrderStatus({ orders: get().getSmallOrders(orders) });

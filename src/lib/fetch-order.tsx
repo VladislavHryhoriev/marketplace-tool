@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { getOrderInfoEpicentr } from "./epicentr/get-order-info";
 import { getTrackingInfo } from "./get-tracking-info";
 
-const fetchOrder = async (
+const fetchOrderData = async (
   type: TemplateNames,
   inputTextOrder: string,
   setAreaTextOrder: (text: string) => void,
@@ -42,4 +42,4 @@ const fetchOrder = async (
   }
 };
 
-export default fetchOrder;
+export default fetchOrderData;
