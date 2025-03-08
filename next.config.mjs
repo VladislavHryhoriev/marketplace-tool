@@ -7,6 +7,8 @@ const nextConfig = {
       "content.rozetka.com.ua",
       "content1.rozetka.com.ua",
       "content2.rozetka.com.ua",
+      "epicentrk.ua",
+      "cdn.27.ua",
     ],
   },
   env: {

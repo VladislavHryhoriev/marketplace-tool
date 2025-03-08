@@ -1,7 +1,8 @@
 "use client";
 import { List } from "@/components/shared/list";
 import PollingOrdersButton from "@/components/shared/polling-orders-button";
-import OrderList from "@/components/shared/templates/order-list";
+import OrderListEpicentr from "@/components/shared/templates/order-list-epicentr";
+import OrderListRozetka from "@/components/shared/templates/order-list-rozetka";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
@@ -16,7 +17,8 @@ const handleClick = async () => {
 const Page = () => {
   const maxSum = usePollingStore((state) => state.maxSum);
   const setMaxSum = usePollingStore((state) => state.setMaxSum);
-  const orders = usePollingStore((state) => state.ordersRozetka);
+  const ordersRozetka = usePollingStore((state) => state.ordersRozetka);
+  const ordersEpicentr = usePollingStore((state) => state.ordersEpicentr);
 
   return (
     <List>
@@ -33,8 +35,8 @@ const Page = () => {
           />
         </div>
       </div>
-      <OrderList title="Новые заказы Розетка" orders={orders} />
-      {/* <OrderList title="Новые заказы Розетка" /> */}
+      <OrderListRozetka orders={ordersRozetka} />
+      <OrderListEpicentr orders={ordersEpicentr} />
     </List>
   );
 };

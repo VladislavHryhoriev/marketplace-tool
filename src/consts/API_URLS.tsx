@@ -17,6 +17,7 @@ const API_URLS = {
   },
 
   epicentr: {
+    orders: `${BASE_URL}/api/epicentr/v3/oms/orders?filter[statusCode][]=confirmed_by_merchant`,
     order: (orderNum: string) =>
       `${BASE_URL}/api/epicentr/v3/oms/orders?filter[number]=${orderNum}`,
     orderInfo: (orderId: string) =>

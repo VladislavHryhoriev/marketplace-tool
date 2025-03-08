@@ -1,3 +1,5 @@
+import epicentrApi from "@/clients/epicentr/api";
+import { Order } from "@/clients/epicentr/types";
 import { config } from "@/config";
 import LINKS from "@/consts/LINKS";
 import { differenceByKey } from "@/lib/difference-by-key";
@@ -10,39 +12,63 @@ import { create } from "zustand";
 
 interface PollingState {
   ordersRozetka: IOrder[];
+  ordersEpicentr: Order[];
   isPolling: boolean;
   maxSum: number;
 
   setMaxSum: (maxSum: string) => void;
-  getSmallOrders: (orders: IOrder[]) => IOrder[];
+
+  getSmallOrdersRozetka: (orders: IOrder[]) => IOrder[];
+  getSmallOrdersEpicentr: (orders: Order[]) => Order[];
+
   startPolling: () => void;
   stopPolling: () => void;
 }
 
 let intervalId = null as NodeJS.Timeout | null;
 
-const createMessage = (orders: IOrder[]) => {
-  const message = orders
+const createMessage = (ordersRozetka: IOrder[], ordersEpicentr: Order[]) => {
+  const messageRozetka = ordersRozetka
     .map((order) => {
       const link = `${LINKS.rozetka.new}?page=1&sort=-id&pageSize=50&id=${order.id}`;
       return `<a href="${link}">№${order.id} ${order.recipient_title.full_name} - ${order.amount}</a>`;
     })
     .join("\n");
+
+  const messageEpicentr = ordersEpicentr
+    .map((order) => {
+      const link = `https://admin.epicentrm.com.ua/oms/orders/${order.id}`;
+      const fullName = `${order.address.lastName} ${order.address.firstName} ${order.address.patronymic}`;
+      return `<a href="${link}">№${order.number} ${fullName} - ${order.subtotal}</a>`;
+    })
+    .join("\n");
+
+  const message = `Розетка:\n${messageRozetka}\n\nЭпицентр:\n${messageEpicentr}`;
+
   return message;
 };
 
 const usePollingStore = create<PollingState>((set, get) => ({
   ordersRozetka: [],
+  ordersEpicentr: [],
   isPolling: false,
   maxSum: 100,
 
   setMaxSum: (maxSum: string) => {
-    set({ ordersRozetka: [] });
-    set({ maxSum: +maxSum.replace(/[^0-9]/g, "") });
+    set({
+      isPolling: false,
+      ordersRozetka: [],
+      ordersEpicentr: [],
+      maxSum: +maxSum.replace(/[^0-9]/g, ""),
+    });
   },
 
-  getSmallOrders: (orders: IOrder[]) => {
+  getSmallOrdersRozetka: (orders: IOrder[]) => {
     return orders.filter((order) => +order.amount <= get().maxSum);
+  },
+
+  getSmallOrdersEpicentr: (orders: Order[]) => {
+    return orders.filter((order) => order.subtotal <= get().maxSum);
   },
 
   startPolling: () => {
@@ -50,31 +76,52 @@ const usePollingStore = create<PollingState>((set, get) => ({
 
     const pollingOrders = async () => {
       try {
-        const { orders, success } = await getNewOrders();
+        const { orders: newOrdersRozetka, success } = await getNewOrders();
+        const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
+          "confirmed_by_merchant",
+        );
 
         if (!success) {
           get().stopPolling();
           return { ordersRozetka: [], success };
         }
 
-        const uniqueOrders = differenceByKey(orders, get().ordersRozetka, "id");
+        const uniqueOrdersRozetka = differenceByKey(
+          newOrdersRozetka,
+          get().ordersRozetka,
+          "id",
+        );
+        const uniqueOrdersEpicentr = differenceByKey(
+          newOrdersEpicentr,
+          get().ordersEpicentr,
+          "id",
+        );
 
-        set({ ordersRozetka: orders });
+        set({ ordersEpicentr: newOrdersEpicentr });
+        set({ ordersRozetka: newOrdersRozetka });
 
         // Кинуть в обработку заказы до 100 грн
-        await updateOrderStatus({ orders: get().getSmallOrders(orders) });
+        await updateOrderStatus({
+          orders: get().getSmallOrdersRozetka(newOrdersRozetka),
+        });
 
-        if (uniqueOrders.length > 0) {
-          sendBrowserNotification(uniqueOrders); // Отправить уведомление в браузере
+        if (uniqueOrdersRozetka.length > 0 || uniqueOrdersEpicentr.length > 0) {
+          sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
+
+          const epicentrCount = get().getSmallOrdersEpicentr(newOrdersEpicentr);
+          const rozetkaCount = get().getSmallOrdersRozetka(newOrdersRozetka);
 
           await sendMessage([
             {
               id: config.BOT_USER_IDS.owner,
-              message: createMessage(get().getSmallOrders(orders)),
+              message: createMessage(
+                get().getSmallOrdersRozetka(newOrdersRozetka),
+                get().getSmallOrdersEpicentr(newOrdersEpicentr),
+              ),
             },
             {
               id: config.BOT_USER_IDS.ukrstore,
-              message: createMessage(orders),
+              message: createMessage(newOrdersRozetka, newOrdersEpicentr),
             },
           ]);
         }

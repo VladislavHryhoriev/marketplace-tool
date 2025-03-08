@@ -2,10 +2,10 @@ import { IOrder } from "@/lib/types/rozetka";
 import Image from "next/image";
 import Link from "next/link";
 
-const OrderList = ({ title, orders }: { title: string; orders: IOrder[] }) => {
+const OrderListRozetka = ({ orders }: { orders: IOrder[] }) => {
   return (
     <div className="mt-4 p-2">
-      <h2>{title}</h2>
+      <h2>Розетка: {orders.length}шт</h2>
       <ul className="mt-2 grid grid-cols-1 gap-2">
         {orders.map((order) => (
           <li key={order.id}>
@@ -36,4 +36,4 @@ const OrderList = ({ title, orders }: { title: string; orders: IOrder[] }) => {
   );
 };
 
-export default OrderList;
+export default OrderListRozetka;
