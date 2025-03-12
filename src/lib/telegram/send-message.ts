@@ -9,14 +9,19 @@ export type ResponseMessage = {
 };
 
 export const sendMessage = async (chats: Message[]) => {
-  const response = await fetch(API_URLS.telegram.sendMessage, {
-    method: "POST",
-    body: JSON.stringify(chats),
-  });
+  try {
+    const response = await fetch(API_URLS.telegram.sendMessage, {
+      method: "POST",
+      body: JSON.stringify(chats),
+    });
 
-  const json: ResponseMessage = await response.json();
+    const json: ResponseMessage = await response.json();
 
-  if (!response.ok) throw new Error(response.statusText);
+    if (!response.ok) throw new Error(response.statusText);
 
-  return json;
+    return json;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };

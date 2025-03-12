@@ -77,8 +77,9 @@ const usePollingStore = create<PollingState>((set, get) => ({
     const pollingOrders = async () => {
       try {
         const { orders: newOrdersRozetka, success } = await getNewOrders();
-        const { items: newOrdersEpicentr } =
-          await epicentrApi.fetchOrders("new");
+        const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
+          "confirmed_by_merchant",
+        );
 
         if (!success) {
           get().stopPolling();
@@ -107,22 +108,24 @@ const usePollingStore = create<PollingState>((set, get) => ({
         if (uniqueOrdersRozetka.length > 0 || uniqueOrdersEpicentr.length > 0) {
           sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
 
-          const epicentrCount = get().getSmallOrdersEpicentr(newOrdersEpicentr);
-          const rozetkaCount = get().getSmallOrdersRozetka(newOrdersRozetka);
+          const rozetkaCount =
+            get().getSmallOrdersRozetka(newOrdersRozetka).length;
+          const epicentrCount =
+            get().getSmallOrdersEpicentr(newOrdersEpicentr).length;
 
-          await sendMessage([
-            {
-              id: config.BOT_USER_IDS.owner,
-              message: createMessage(
-                get().getSmallOrdersRozetka(newOrdersRozetka),
-                get().getSmallOrdersEpicentr(newOrdersEpicentr),
-              ),
-            },
-            {
-              id: config.BOT_USER_IDS.ukrstore,
-              message: createMessage(newOrdersRozetka, newOrdersEpicentr),
-            },
-          ]);
+          if (rozetkaCount > 0 || epicentrCount > 0) {
+            const messageOwner = createMessage(
+              get().getSmallOrdersRozetka(newOrdersRozetka),
+              get().getSmallOrdersEpicentr(newOrdersEpicentr),
+            );
+
+            await sendMessage([
+              {
+                id: config.BOT_USER_IDS.owner,
+                message: messageOwner,
+              },
+            ]);
+          }
         }
       } catch (error) {
         console.error(error);
