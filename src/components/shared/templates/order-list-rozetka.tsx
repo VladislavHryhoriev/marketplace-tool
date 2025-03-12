@@ -1,11 +1,15 @@
 import { IOrder } from "@/lib/types/rozetka";
+import { Circle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 const OrderListRozetka = ({ orders }: { orders: IOrder[] }) => {
   return (
     <div className="mt-4 p-2">
-      <h2>Розетка: {orders.length}шт</h2>
+      <h2 className="flex items-center gap-2">
+        <Circle className="text-green-500" />
+        Розетка: {orders.length}шт
+      </h2>
       <ul className="mt-2 grid grid-cols-1 gap-2">
         {orders.map((order) => (
           <li key={order.id}>
