@@ -77,8 +77,9 @@ const usePollingStore = create<PollingState>((set, get) => ({
     const pollingOrders = async () => {
       try {
         const { orders: newOrdersRozetka, success } = await getNewOrders();
-        const { items: newOrdersEpicentr } =
-          await epicentrApi.fetchOrders("new");
+        const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
+          "confirmed_by_merchant",
+        );
 
         if (!success) {
           get().stopPolling();

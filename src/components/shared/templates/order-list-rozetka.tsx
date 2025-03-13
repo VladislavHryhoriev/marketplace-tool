@@ -1,42 +1,25 @@
 import { IOrder } from "@/lib/types/rozetka";
-import { Circle } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import OrderList from "./order-list";
 
 const OrderListRozetka = ({ orders }: { orders: IOrder[] }) => {
+  const formattedOrders = orders.map((order) => ({
+    id: order.id,
+    fullName: order.recipient_title.full_name,
+    amount: order.amount,
+    photos: order.items_photos.map((photo) => ({
+      url: photo.url,
+      alt: order.recipient_title.full_name,
+    })),
+    link: `https://seller.rozetka.com.ua/main/orders/all?page=1&sort=-id&pageSize=50&id=${order.id}&types=1`,
+  }));
+
   return (
-    <div className="mt-4 p-2">
-      <h2 className="flex items-center gap-2">
-        <Circle className="text-green-500" />
-        Розетка: {orders.length}шт
-      </h2>
-      <ul className="mt-2 grid grid-cols-1 gap-2">
-        {orders.map((order) => (
-          <li key={order.id}>
-            <Link
-              href={`https://seller.rozetka.com.ua/main/orders/all?page=1&sort=-id&pageSize=50&id=${order.id}&types=1`}
-              target="_blank"
-              className="grid grid-cols-4 rounded bg-indigo-500 p-2 hover:underline"
-            >
-              <span>№{order.id}</span>
-              <span>{order.recipient_title.full_name}</span>
-              <span>{order.amount}</span>
-              <div className="grid grid-cols-6 gap-2">
-                {order.items_photos.map((photo) => (
-                  <Image
-                    key={photo.url}
-                    src={photo.url}
-                    alt={order.recipient_title.full_name}
-                    width={50}
-                    height={50}
-                  />
-                ))}
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <OrderList
+      title="Розетка"
+      count={orders.length}
+      orders={formattedOrders}
+      color="emerald"
+    />
   );
 };
 
