@@ -19,11 +19,15 @@ type OrderListProps = {
 };
 
 const OrderList = ({ title, count, orders, color }: OrderListProps) => {
+  const colorMapBg = { emerald: "bg-emerald-500", blue: "bg-blue-500" };
+  const colorMapText = { emerald: "text-emerald-400", blue: "text-blue-400" };
+
   return (
-    <div className="mt-6 rounded-xl bg-zinc-900/80 p-4 ring ring-zinc-800/50">
+    <div className="mt-6 rounded-xl bg-zinc-900/80 p-4 ring-3 ring-zinc-800/50">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-medium text-zinc-100">
-          <span className={`size-2 rounded-full bg-${color}-500`} /> {title}
+          <span className={`size-2 rounded-full ${colorMapBg[color]}`} />
+          {title}
         </h2>
         <span className="rounded-full bg-zinc-800/80 px-3 py-1 text-sm text-zinc-300">
           {count} заказов
@@ -38,19 +42,16 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
                 target="_blank"
                 className="group flex items-center gap-4 rounded-lg bg-zinc-800/80 p-3 transition-all hover:bg-zinc-800"
               >
-                <div className="flex items-center justify-center rounded-md bg-zinc-900/80 p-2 font-medium text-zinc-200 ring-1 ring-zinc-700/50">
+                <div className="flex items-center justify-center rounded-md bg-zinc-900/80 p-2 text-sm font-medium text-zinc-200 ring-1 ring-zinc-700/50">
                   #{order.number || order.id}
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="flex-1">
                   <p className="truncate text-sm font-medium text-zinc-100">
                     {order.fullName}
                   </p>
                   <div className="mt-1 flex items-center gap-2">
                     <span
-                      className={cn("text-sm font-medium", {
-                        "text-emerald-400": color === "emerald",
-                        "text-blue-400": color === "blue",
-                      })}
+                      className={`text-sm font-medium ${colorMapText[color]}`}
                     >
                       {order.amount}
                     </span>
