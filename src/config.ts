@@ -2,8 +2,9 @@ const min = 60 * 1000;
 const hour = 60 * 60 * 1000;
 
 export const ROUTES = [
-  { title: "Main", path: "/menu/main" },
+  { title: "Главная", path: "/menu/main" },
   { title: "Шаблоны", path: "/menu/templates" },
+  { title: "Настройки", path: "/menu/settings" },
 ];
 
 export const BOT_OWNER_ID = 751308202;

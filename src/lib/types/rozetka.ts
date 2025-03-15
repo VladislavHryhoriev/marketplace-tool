@@ -184,6 +184,8 @@ export interface IExtendPurchases {
   }[];
 }
 
+export interface IExtendCountBuyerOrders {}
+
 export interface ErrorResponse {
   code: number; // Код ошибки
   description?: string;

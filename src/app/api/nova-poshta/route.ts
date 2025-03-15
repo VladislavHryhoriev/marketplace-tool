@@ -1,7 +1,6 @@
+import { getDeliveryInfo } from "@/clients/nova-poshta/api";
+import { TrackingResponse, TrackingResult } from "@/clients/nova-poshta/types";
 import LINKS from "@/consts/LINKS";
-import { getDeliveryInfo } from "@/lib/nova-poshta/get-delivery-info";
-import { TrackingResponse } from "@/lib/types/novaposhta";
-import { TrackingResult } from "@/lib/types/novaposhta";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(

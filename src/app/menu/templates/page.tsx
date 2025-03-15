@@ -2,7 +2,7 @@ import Templates from "@/components/shared/templates";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-const Page = async () => {
+const TemplatesPage = async () => {
   const session = await getServerSession();
 
   if (!session) redirect("/login");
@@ -10,4 +10,4 @@ const Page = async () => {
   return <Templates />;
 };
 
-export default Page;
+export default TemplatesPage;

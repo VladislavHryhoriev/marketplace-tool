@@ -14,14 +14,14 @@ const handleClick = async () => {
   await updateOrderStatus({ orders, token, status: 26 });
 };
 
-const Page = () => {
+const MainPage = () => {
   const maxSum = usePollingStore((state) => state.maxSum);
   const setMaxSum = usePollingStore((state) => state.setMaxSum);
   const ordersRozetka = usePollingStore((state) => state.ordersRozetka);
   const ordersEpicentr = usePollingStore((state) => state.ordersEpicentr);
 
   return (
-    <List>
+    <div>
       <div className="flex gap-2">
         <Button onClick={handleClick}>Кинуть в обработку</Button>
         <div className="flex items-center gap-2">
@@ -37,8 +37,8 @@ const Page = () => {
       </div>
       <OrderListRozetka orders={ordersRozetka} />
       <OrderListEpicentr orders={ordersEpicentr} />
-    </List>
+    </div>
   );
 };
 
-export default Page;
+export default MainPage;

@@ -1,6 +1,6 @@
 "use client";
 import Container from "@/components/shared/container";
-import { Tabs } from "@/components/shared/tabs";
+import { Navigation } from "@/components/shared/navigation";
 import usePollingStore from "@/store/pollingStore";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
@@ -16,9 +16,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [isPolling]);
 
   return (
-    <Container className="mt-4">
-      <Tabs />
-      <div>{children}</div>
+    <>
+      <Container className="flex h-svh justify-between">
+        <Navigation />
+        <div className="flex-1 overflow-y-auto px-8 py-4">{children}</div>
+      </Container>
+
       <ToastContainer
         hideProgressBar
         theme="dark"
@@ -26,7 +29,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         closeOnClick
         pauseOnFocusLoss={false}
       />
-    </Container>
+    </>
   );
 };
 

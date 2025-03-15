@@ -1,7 +1,7 @@
 import { TemplateNames, TEMPLATES } from "@/consts/TEMPLATES";
 import { calculateCost } from "../calculate-cost";
 import { capitalize } from "../capitalize";
-import { TrackingResult } from "../types/novaposhta";
+import { TrackingResult } from "../../clients/nova-poshta/types";
 import { IOrderTemplate } from "../types/types";
 
 export const getTemplate = async (

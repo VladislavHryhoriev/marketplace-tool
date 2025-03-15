@@ -1,9 +1,17 @@
-import { IExtendDelivery, IExtendPurchases, IOrder } from "../types/rozetka";
+import {
+  IExtendCountBuyerOrders,
+  IExtendDelivery,
+  IExtendPurchases,
+  IOrder,
+} from "../types/rozetka";
 import { IOrderTemplate } from "../types/types";
 import fetchOrder from "./fetch-order";
 
 const getOrderTemplate = (
-  orderData: IOrder & IExtendDelivery & IExtendPurchases,
+  orderData: IOrder &
+    IExtendDelivery &
+    IExtendPurchases &
+    IExtendCountBuyerOrders,
 ): IOrderTemplate => {
   return {
     id: orderData.id,
@@ -46,7 +54,12 @@ export const getOrderInfoRozetka = async (
   id: string,
 ): Promise<{ order: IOrderTemplate; success: boolean }> => {
   try {
-    const orderData = await fetchOrder(id, ["delivery", "purchases"]);
+    const orderData = await fetchOrder(id, [
+      "delivery",
+      "purchases",
+      "count_buyer_orders",
+    ]);
+
     const order = getOrderTemplate(orderData);
 
     return { order, success: true };

@@ -1,10 +1,9 @@
+import epicentrApi from "@/clients/epicentr/api";
+import novaPoshtaApi from "@/clients/nova-poshta/api";
 import { TemplateNames } from "@/consts/TEMPLATES";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplate } from "@/lib/templates/get-template";
 import { toast } from "react-toastify";
-import { getOrderInfoEpicentr } from "./epicentr/get-order-info";
-import { getTrackingInfo } from "./get-tracking-info";
-
 const fetchOrderData = async (
   type: TemplateNames,
   inputTextOrder: string,
@@ -13,6 +12,10 @@ const fetchOrderData = async (
   toast.dismiss();
   setAreaTextOrder("Загрузка...");
   if (!inputTextOrder) return toast.error("Введите номер заказа");
+
+  const getTrackingInfo = novaPoshtaApi.getTrackingInfo.bind(novaPoshtaApi);
+  const getOrderInfoEpicentr =
+    epicentrApi.getOrderInfoEpicentr.bind(epicentrApi);
 
   try {
     switch (inputTextOrder.length) {
