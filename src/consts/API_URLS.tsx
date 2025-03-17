@@ -1,3 +1,4 @@
+import { config } from "@/config";
 import { TExpandNames } from "@/lib/types/rozetka";
 import BASE_URL from "./BASE_URL";
 
@@ -8,7 +9,7 @@ const API_URLS = {
   },
 
   rozetka: {
-    newOrders: `${BASE_URL}/api/rozetka/orders/search?types=4`, // 4 new
+    newOrders: `${BASE_URL}/api/rozetka/orders/search?types=${config.rozetka.searchType}`, // 4 new
     orderInfo: (id: string, expand: TExpandNames[]) =>
       `${BASE_URL}/api/rozetka/orders/${id}?expand=${expand?.join(",")}`,
     orders: `${BASE_URL}/api/rozetka/orders`,

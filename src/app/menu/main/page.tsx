@@ -1,5 +1,4 @@
 "use client";
-import { List } from "@/components/shared/list";
 import PollingOrdersButton from "@/components/shared/polling-orders-button";
 import OrderListEpicentr from "@/components/shared/templates/order-list-epicentr";
 import OrderListRozetka from "@/components/shared/templates/order-list-rozetka";
@@ -35,8 +34,10 @@ const MainPage = () => {
           />
         </div>
       </div>
-      <OrderListRozetka orders={ordersRozetka} />
-      <OrderListEpicentr orders={ordersEpicentr} />
+      <div className="mt-6 flex gap-4">
+        <OrderListRozetka orders={ordersRozetka} />
+        <OrderListEpicentr orders={ordersEpicentr} />
+      </div>
     </div>
   );
 };

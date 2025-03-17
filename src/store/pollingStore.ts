@@ -14,6 +14,7 @@ interface PollingState {
   ordersRozetka: IOrder[];
   ordersEpicentr: Order[];
   isPolling: boolean;
+
   maxSum: number;
 
   setMaxSum: (maxSum: string) => void;
@@ -77,8 +78,9 @@ const usePollingStore = create<PollingState>((set, get) => ({
     const pollingOrders = async () => {
       try {
         const { orders: newOrdersRozetka, success } = await getNewOrders();
-        const { items: newOrdersEpicentr } =
-          await epicentrApi.fetchOrders("new");
+        const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
+          config.epicentr.searchType,
+        );
 
         if (!success) {
           get().stopPolling();
@@ -120,7 +122,7 @@ const usePollingStore = create<PollingState>((set, get) => ({
 
             await sendMessage([
               {
-                id: config.BOT_USER_IDS.owner,
+                id: config.botUserIds.owner,
                 message: messageOwner,
               },
             ]);
@@ -134,7 +136,7 @@ const usePollingStore = create<PollingState>((set, get) => ({
     const initialStart = [pollingOrders];
     initialStart.forEach((fn) => fn());
 
-    intervalId = setInterval(pollingOrders, config.ROZETKA_FETCH_INTERVAL);
+    intervalId = setInterval(pollingOrders, config.fetchInterval);
     set({ isPolling: true });
   },
 

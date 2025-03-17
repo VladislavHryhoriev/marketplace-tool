@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 
 const SettingsPage = () => {
   return (
-    <div>
+    <div className="bg-zinc-700/80 p-4">
       <Button
         variant="destructive"
         size="sm"

@@ -107,7 +107,7 @@ const isValidToken = (storedTime: number, lifetime: number): boolean => {
 export const getTokenRozetka = async (): Promise<string> => {
   const { token, time } = getToken();
 
-  if (token && time && isValidToken(time, config.ROZETKA_TOKEN_LIFETIME))
+  if (token && time && isValidToken(time, config.rozetka.tokenLifetime))
     return token;
 
   const newToken = await fetchToken();

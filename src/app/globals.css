@@ -71,6 +71,24 @@
 		color: inherit;
 		text-decoration: none;
 	}
+
+	::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #666;
+		border-radius: 4px;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: #777;
+	}
 }
 
 @layer base {
@@ -127,9 +145,7 @@
 		--chart-4: 280 65% 60%;
 		--chart-5: 340 75% 55%;
 	}
-}
 
-@layer base {
 	body {
 		@apply bg-background text-foreground;
 	}

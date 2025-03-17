@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,36 +17,38 @@ type OrderListProps = {
   color: "emerald" | "blue";
 };
 
-const OrderList = ({ title, count, orders, color }: OrderListProps) => {
-  const colorMapBg = { emerald: "bg-emerald-500", blue: "bg-blue-500" };
-  const colorMapText = { emerald: "text-emerald-400", blue: "text-blue-400" };
+const colorMapBg = { emerald: "bg-emerald-500", blue: "bg-blue-500" };
+const colorMapText = { emerald: "text-emerald-400", blue: "text-blue-400" };
 
+const OrderList = ({ title, count, orders, color }: OrderListProps) => {
   return (
-    <div className="mt-6 rounded-xl bg-zinc-900/80 p-4 ring-3 ring-zinc-800/50">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="flex w-full flex-col gap-4 rounded-xl bg-zinc-800/80 p-4">
+      <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-medium text-zinc-100">
           <span className={`size-2 rounded-full ${colorMapBg[color]}`} />
           {title}
         </h2>
-        <span className="rounded-full bg-zinc-800/80 px-3 py-1 text-sm text-zinc-300">
+        <span
+          className={`${colorMapText[color]} rounded-full bg-zinc-700/70 px-3 py-1 text-sm`}
+        >
           {count} заказов
         </span>
       </div>
-      <div className="max-h-[400px] overflow-y-auto">
+      <div className="max-h-[70vh] overflow-y-auto">
         <ul className="grid grid-cols-1 gap-2">
           {orders.map((order) => (
             <li key={order.id}>
               <Link
                 href={order.link}
                 target="_blank"
-                className="group flex items-center gap-4 rounded-lg bg-zinc-800/80 p-3 transition-all hover:bg-zinc-800"
+                className="group flex items-center gap-4 rounded-lg bg-zinc-700/40 p-3 transition-all hover:bg-zinc-700/60"
               >
-                <div className="flex items-center justify-center rounded-md bg-zinc-900/80 p-2 text-sm font-medium text-zinc-200 ring-1 ring-zinc-700/50">
-                  #{order.number || order.id}
-                </div>
                 <div className="flex-1">
                   <p className="truncate text-sm font-medium text-zinc-100">
-                    {order.fullName}
+                    {order.fullName}{" "}
+                    <span className="text-xs text-zinc-400">
+                      ({order.number || order.id})
+                    </span>
                   </p>
                   <div className="mt-1 flex items-center gap-2">
                     <span
@@ -58,22 +59,24 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
                     <span className="text-xs text-zinc-400">
                       {order.photos.length} товаров
                     </span>
-                  </div>
-                </div>
-                <div className="flex gap-1.5">
-                  {order.photos.map((photo) => (
-                    <div
-                      key={photo.url}
-                      className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-zinc-900/80 ring-1 ring-zinc-700/50 transition-transform group-hover:scale-105"
-                    >
-                      <Image
-                        src={photo.url}
-                        alt={photo.alt}
-                        fill
-                        className="object-cover"
-                      />
+                    <div className="flex gap-2">
+                      {order.photos.map((photo) => (
+                        <div
+                          key={photo.alt}
+                          className="relative size-5 shrink-0 overflow-hidden rounded-md bg-zinc-900/80 transition-transform hover:scale-110"
+                        >
+                          <Link href={photo.url} target="_blank">
+                            <Image
+                              src={photo.url}
+                              alt={photo.alt}
+                              fill
+                              className="object-cover"
+                            />
+                          </Link>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               </Link>
             </li>

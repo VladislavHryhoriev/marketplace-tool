@@ -16,7 +16,7 @@ const useGlobalStore = create<GlobalState>((set) => ({
   setInputTextOrder: (text: string) =>
     set(() => {
       const numbersOnly = text.replace(/[^0-9]/g, "");
-      return { inputTextOrder: numbersOnly.slice(0, config.MAX_INPUT_LENGTH) };
+      return { inputTextOrder: numbersOnly.slice(0, config.maxInputLength) };
     }),
   setAreaTextOrder: (text: string) => set({ areaTextOrder: text }),
 }));
