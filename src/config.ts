@@ -6,6 +6,7 @@ export interface IConfig {
   rozetka: { tokenLifetime: number; searchType: number };
   epicentr: { searchType: `${OrderStatus}` };
   botUserIds: { owner: number; ukrstore: number };
+  deliveryCost: { nova: number; ukr: number };
 }
 
 const min = 60 * 1000;
@@ -33,5 +34,9 @@ export const config: IConfig = {
   botUserIds: {
     owner: BOT_OWNER_ID,
     ukrstore: BOT_UKRSTORE_ID,
+  },
+  deliveryCost: {
+    nova: 80,
+    ukr: 45,
   },
 } as const;
