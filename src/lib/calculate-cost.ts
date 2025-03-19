@@ -14,8 +14,8 @@ export const calculateCost = (
 
   if (deliveryService.includes("nova")) {
     return {
-      payed: config.deliveryCost.ukr,
-      cod: Math.floor(config.deliveryCost.ukr + 20 + +total * 0.02),
+      payed: config.deliveryCost.nova,
+      cod: Math.floor(config.deliveryCost.nova + 20 + +total * 0.02),
       commision: Math.floor(20 + +total * 0.02),
     };
   }
