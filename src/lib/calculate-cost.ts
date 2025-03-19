@@ -7,7 +7,7 @@ export const calculateCost = (
   const { ukr, nova } = config.deliveryCost;
   if (deliveryService.includes("ukr")) {
     return {
-      payed: config.deliveryCost.ukr,
+      payed: ukr.price,
       cod: Math.floor(ukr.price + ukr.commision + +total * 0.02),
       commision: Math.floor(ukr.commision + +total * 0.02),
     };
