@@ -29,10 +29,10 @@ export const config: IConfig = {
   maxInputLength: 15,
   rozetka: {
     tokenLifetime: 24 * hour,
-    searchType: 2,
+    searchType: 4,
   },
   epicentr: {
-    searchType: "confirmed_by_merchant",
+    searchType: "new",
   },
   botUserIds: {
     owner: BOT_OWNER_ID,
