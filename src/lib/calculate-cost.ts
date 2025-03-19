@@ -4,21 +4,22 @@ export const calculateCost = (
   deliveryService: string,
   total: string | number,
 ) => {
+  const { ukr, nova } = config.deliveryCost;
   if (deliveryService.includes("ukr")) {
     return {
       payed: config.deliveryCost.ukr,
-      cod: Math.floor(config.deliveryCost.ukr + 10 + +total * 0.02),
-      commision: Math.floor(10 + +total * 0.02),
+      cod: Math.floor(ukr.price + ukr.commision + +total * 0.02),
+      commision: Math.floor(ukr.commision + +total * 0.02),
     };
   }
 
   if (deliveryService.includes("nova")) {
     return {
-      payed: config.deliveryCost.nova,
-      cod: Math.floor(config.deliveryCost.nova + 20 + +total * 0.02),
-      commision: Math.floor(20 + +total * 0.02),
+      payed: nova.price,
+      cod: Math.floor(nova.price + nova.commision + +total * 0.02),
+      commision: Math.floor(nova.commision + +total * 0.02),
     };
   }
 
-  return { payed: 0, cod: 0, commision: 0 };
+  return { payed: -1, cod: -1, commision: -1 };
 };
