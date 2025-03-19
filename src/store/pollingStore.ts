@@ -9,6 +9,7 @@ import { sendBrowserNotification } from "@/lib/send-browser-notification";
 import { sendMessage } from "@/lib/telegram/send-message";
 import { IOrder } from "@/lib/types/rozetka";
 import { create } from "zustand";
+import useUserConfigStore from "./userConfigStore";
 
 interface PollingState {
   ordersRozetka: IOrder[];
@@ -98,16 +99,22 @@ const usePollingStore = create<PollingState>((set, get) => ({
           "id",
         );
 
-        set({ ordersEpicentr: newOrdersEpicentr });
-        set({ ordersRozetka: newOrdersRozetka });
-
-        // Кинуть в обработку заказы до 100 грн
-        await updateOrderStatus({
-          orders: get().getSmallOrdersRozetka(newOrdersRozetka),
+        set({
+          ordersEpicentr: newOrdersEpicentr,
+          ordersRozetka: newOrdersRozetka,
         });
 
+        // Кинуть в обработку заказы до 100 грн
+        if (useUserConfigStore.getState().notifications.sendToProcess) {
+          await updateOrderStatus({
+            orders: get().getSmallOrdersRozetka(newOrdersRozetka),
+          });
+        }
+
         if (uniqueOrdersRozetka.length > 0 || uniqueOrdersEpicentr.length > 0) {
-          sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
+          if (useUserConfigStore.getState().notifications.browser) {
+            sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
+          }
 
           const rozetkaCount =
             get().getSmallOrdersRozetka(newOrdersRozetka).length;
@@ -120,12 +127,14 @@ const usePollingStore = create<PollingState>((set, get) => ({
               get().getSmallOrdersEpicentr(newOrdersEpicentr),
             );
 
-            await sendMessage([
-              {
-                id: config.botUserIds.owner,
-                message: messageOwner,
-              },
-            ]);
+            if (useUserConfigStore.getState().notifications.telegram) {
+              await sendMessage([
+                {
+                  id: config.botUserIds.owner,
+                  message: messageOwner,
+                },
+              ]);
+            }
           }
         }
       } catch (error) {
@@ -133,9 +142,7 @@ const usePollingStore = create<PollingState>((set, get) => ({
       }
     };
 
-    const initialStart = [pollingOrders];
-    initialStart.forEach((fn) => fn());
-
+    pollingOrders();
     intervalId = setInterval(pollingOrders, config.fetchInterval);
     set({ isPolling: true });
   },

@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [token, setToken] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
   const session = useSession();
@@ -24,34 +25,47 @@ export default function Home() {
 
     const res = await signIn("credentials", {
       redirect: false,
-      authToken: token,
+      name,
+      password,
+      callbackUrl: ROUTES[0].path,
     });
 
     if (res?.error) {
       setError(res.error);
       return;
     }
-
-    router.push(ROUTES[0].path);
   };
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <form onSubmit={handleLogin} className="rounded bg-zinc-800 p-4">
-        <div>
+        <div className="flex flex-col gap-2">
           <h2 className="mb-2 text-center text-lg font-semibold text-zinc-200">
-            Токен
+            Логин
           </h2>
-          <Input
-            type="text"
-            name="token"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            placeholder="Введите токен"
-            className="bg-zinc-900"
-            required
-            autoComplete="off"
-          />
+          <div className="flex flex-col gap-2">
+            <Input
+              type="text"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Введите имя"
+              className="bg-zinc-900"
+              required
+              autoComplete="off"
+            />
+
+            <Input
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Введите пароль"
+              className="bg-zinc-900"
+              required
+              autoComplete="off"
+            />
+          </div>
           {error && <p className="text-center text-xs text-red-500">{error}</p>}
           <Button type="submit" className="mt-4 w-full">
             Войти

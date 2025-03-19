@@ -89,6 +89,10 @@
 	::-webkit-scrollbar-thumb:hover {
 		background: #777;
 	}
+
+	button {
+		cursor: pointer;
+	}
 }
 
 @layer base {

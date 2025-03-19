@@ -5,6 +5,7 @@ export const calculateCost = (
   total: string | number,
 ) => {
   const { ukr, nova } = config.deliveryCost;
+
   if (deliveryService.includes("ukr")) {
     return {
       payed: ukr.price,

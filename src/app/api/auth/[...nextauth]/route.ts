@@ -7,21 +7,41 @@ const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        authToken: { label: "Token", type: "password" },
+        password: { label: "Password", type: "password" },
+        name: { label: "Name", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials?.authToken) throw new Error("Token is required");
+        if (!credentials?.password || !credentials?.name) {
+          throw new Error("Password and name are required");
+        }
 
-        const token = users.find((u) => u.authToken === credentials.authToken);
-        if (!token) throw new Error("Token not found");
+        const user = users.find(
+          (u) =>
+            u.password === credentials.password && u.name === credentials.name,
+        );
+        if (!user) throw new Error("Invalid login or password");
 
-        return { id: token.id, name: token.name };
+        return { id: user.id, name: user.name, role: user.role };
       },
     }),
   ],
   pages: { signIn: "/auth" },
   session: { strategy: "jwt", maxAge: 7 * 24 * 60 * 60 },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role as string;
+      }
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

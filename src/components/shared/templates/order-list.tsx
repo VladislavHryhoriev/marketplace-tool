@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,8 +23,8 @@ const colorMapText = { emerald: "text-emerald-400", blue: "text-blue-400" };
 
 const OrderList = ({ title, count, orders, color }: OrderListProps) => {
   return (
-    <div className="flex w-full flex-col gap-4 rounded-xl bg-zinc-800/80 p-4">
-      <div className="flex items-center justify-between">
+    <Card className="flex w-full flex-col rounded-xl border-zinc-700 bg-zinc-800/80">
+      <CardHeader className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-lg font-medium text-zinc-100">
           <span className={`size-2 rounded-full ${colorMapBg[color]}`} />
           {title}
@@ -33,8 +34,8 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
         >
           {count} заказов
         </span>
-      </div>
-      <div className="max-h-[70vh] overflow-y-auto">
+      </CardHeader>
+      <CardContent className="h-[70vh] overflow-y-auto">
         <ul className="grid grid-cols-1 gap-2">
           {orders.map((order) => (
             <li key={order.id}>
@@ -82,8 +83,8 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
             </li>
           ))}
         </ul>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import usePollingStore from "@/store/pollingStore";
+import { LoaderPinwheel } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 
@@ -13,11 +13,15 @@ const PollingOrdersButton = () => {
   }, [isPolling, startPolling, stopPolling]);
 
   return (
-    <Button
-      onClick={isPolling ? stopPolling : startPolling}
-      className={cn(isPolling && "bg-green-500")}
-    >
-      Проверять новые заказы {isPolling ? "ON" : "OFF"}
+    <Button onClick={isPolling ? stopPolling : startPolling}>
+      {isPolling ? (
+        <div className="flex items-center gap-2">
+          Проверка заказов включена
+          <LoaderPinwheel className="size-4 animate-spin" />
+        </div>
+      ) : (
+        <div>Проверка заказов выключена</div>
+      )}
     </Button>
   );
 };
