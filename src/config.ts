@@ -37,6 +37,6 @@ export const config: IConfig = {
   },
   deliveryCost: {
     nova: 80,
-    ukr: 45,
+    ukr: 55,
   },
 } as const;
