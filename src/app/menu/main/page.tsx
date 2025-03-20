@@ -7,14 +7,16 @@ import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import usePollingStore from "@/store/pollingStore";
 
-const handleClick = async () => {
-  const { orders, token } = await getNewOrders();
-  await updateOrderStatus({ orders, token, status: 26 });
-};
-
 const MainPage = () => {
   const ordersRozetka = usePollingStore((state) => state.ordersRozetka);
   const ordersEpicentr = usePollingStore((state) => state.ordersEpicentr);
+
+  // TODO: Сбросить список после обновления статуса
+
+  const handleClick = async () => {
+    const { orders, token } = await getNewOrders();
+    await updateOrderStatus({ orders, token, status: 26 });
+  };
 
   return (
     <div className="space-y-6">

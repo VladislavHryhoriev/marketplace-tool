@@ -9,7 +9,11 @@ export async function GET(req: NextRequest) {
 
   if (tokenUrl === internalToken) {
     try {
-      const { updatedOrders } = await updateOrderStatus({ orders, token });
+      const { updatedOrders } = await updateOrderStatus({
+        orders,
+        token,
+        status: 26,
+      });
 
       return NextResponse.json(
         { ok: true, message: updatedOrders },

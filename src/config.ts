@@ -10,10 +10,11 @@ export interface IConfig {
     nova: { price: number; commision: number };
     ukr: { price: number; commision: number };
   };
+  interval: number;
 }
-
-const min = 60 * 1000;
-const hour = 60 * 60 * 1000;
+const sec = 1000;
+const min = 60 * sec;
+const hour = 60 * min;
 
 export const ROUTES = [
   { title: "Главная", path: "/menu/main" },
@@ -42,4 +43,5 @@ export const config: IConfig = {
     nova: { price: 80, commision: 20 },
     ukr: { price: 55, commision: 10 },
   },
+  interval: sec,
 } as const;

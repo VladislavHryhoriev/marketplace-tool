@@ -23,7 +23,6 @@ export const updateOrderStatus = async ({
   );
 
   if (!ordersToUpdate.length) {
-    toast.error("Нет заказов со статусом 1 или 7");
     return { updatedOrders: [] };
   }
 

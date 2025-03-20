@@ -46,7 +46,7 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
               >
                 <div className="flex-1">
                   <p className="truncate text-sm font-medium text-zinc-100">
-                    {order.fullName}{" "}
+                    {order.fullName}
                     <span className="text-xs text-zinc-400">
                       ({order.number || order.id})
                     </span>
@@ -64,16 +64,15 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
                       {order.photos.map((photo) => (
                         <div
                           key={photo.alt}
-                          className="relative size-5 shrink-0 overflow-hidden rounded-md bg-zinc-900/80 transition-transform hover:scale-110"
+                          className="size-5 overflow-hidden rounded-md"
                         >
-                          <Link href={photo.url} target="_blank">
-                            <Image
-                              src={photo.url}
-                              alt={photo.alt}
-                              fill
-                              className="object-cover"
-                            />
-                          </Link>
+                          <Image
+                            src={photo.url}
+                            alt={photo.alt}
+                            width={30}
+                            height={30}
+                            className="object-cover"
+                          />
                         </div>
                       ))}
                     </div>

@@ -1,48 +1,6 @@
+import { ITokenResponse } from "@/clients/rozetka/types";
 import { config } from "@/config";
 import API_URLS from "@/consts/API_URLS";
-
-export interface ITokenResponse {
-  success: boolean;
-  content: {
-    id: number; // ID менеджера
-    access_token: string; // Access токен авторизации
-    permissions: string[]; // Список Permissions
-    roles: string[]; // Список Roles
-    seller: {
-      fio: string; // ПІБ менеджера
-      email: string; // Email менеджера
-      first_phone: {
-        id: number; // ID запису номера телефону
-        phone_number: string; // Номер телефону
-        confirmed: boolean; // Прапор, чи підтверджений номер
-      };
-      wizard: boolean; // Чи потрібен візард клієнту
-    };
-    market: {
-      id: number; // ID продавця (магазину) в системі Розетка Маркетплейс
-      logo: string | null; // Логотип (посилання)
-      business_model: "c2c" | "b2c"; // Бізнес-модель
-      title: string; // Назва магазину
-      title_translit: string; // Назва магазину (трансліт)
-      market_url: string; // Посилання на магазин на Розетці
-      war_block: boolean; // Ознака примусового блокування магазина
-      status: number; // Статус магазину
-      status_label: string; // Назва статусу магазину
-      status_description: string; // Опис статусу магазину
-      status_transfer_reason: {
-        label: string; // Назва причини
-        description: string; // Опис причини
-      } | null; // Может быть null
-      fulfillment_available: boolean; // Ознака чи доступний магазину функціонал фулфілмента
-    };
-    raising: {
-      campaigns_type: 0 | 1 | 2; // Тип РК: 0 - не створено, 1 - стандартна, 2 - спрощена
-    } | null; // Может быть null
-    needInterview: boolean; // Ознака, чи потрібно показувати користувачу інтерв'ю
-    lang: string; // Мова користувача за замовчуванням
-    poll_link: string; // Посилання на опитування
-  };
-}
 
 const isBrowser = typeof window !== "undefined";
 

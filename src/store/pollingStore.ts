@@ -1,11 +1,11 @@
 import epicentrApi from "@/clients/epicentr/api";
 import { Order } from "@/clients/epicentr/types";
 import { config } from "@/config";
-import LINKS from "@/consts/LINKS";
 import { differenceByKey } from "@/lib/difference-by-key";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
 import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import { sendBrowserNotification } from "@/lib/send-browser-notification";
+import { createMessage } from "@/lib/telegram/create-message";
 import { sendMessage } from "@/lib/telegram/send-message";
 import { IOrder } from "@/lib/types/rozetka";
 import { create } from "zustand";
@@ -15,8 +15,8 @@ interface PollingState {
   ordersRozetka: IOrder[];
   ordersEpicentr: Order[];
   isPolling: boolean;
-
   maxSum: number;
+  progress: number;
 
   setMaxSum: (maxSum: string) => void;
 
@@ -27,34 +27,17 @@ interface PollingState {
   stopPolling: () => void;
 }
 
-let intervalId = null as NodeJS.Timeout | null;
+let intervalPollingId = null as NodeJS.Timeout | null;
 
-const createMessage = (ordersRozetka: IOrder[], ordersEpicentr: Order[]) => {
-  const messageRozetka = ordersRozetka
-    .map((order) => {
-      const link = `${LINKS.rozetka.new}?page=1&sort=-id&pageSize=50&id=${order.id}`;
-      return `<a href="${link}">№${order.id} ${order.recipient_title.full_name} - ${order.amount}</a>`;
-    })
-    .join("\n");
-
-  const messageEpicentr = ordersEpicentr
-    .map((order) => {
-      const link = `https://admin.epicentrm.com.ua/oms/orders/${order.id}`;
-      const fullName = `${order.address.lastName} ${order.address.firstName} ${order.address.patronymic}`;
-      return `<a href="${link}">№${order.number} ${fullName} - ${order.subtotal}</a>`;
-    })
-    .join("\n");
-
-  const message = `Розетка:\n${messageRozetka}\n\nЭпицентр:\n${messageEpicentr}`;
-
-  return message;
-};
+let intervalProgressId = null as NodeJS.Timeout | null;
+const step = 100 / (config.fetchInterval / config.interval);
 
 const usePollingStore = create<PollingState>((set, get) => ({
   ordersRozetka: [],
   ordersEpicentr: [],
   isPolling: false,
   maxSum: 100,
+  progress: 0,
 
   setMaxSum: (maxSum: string) => {
     set({
@@ -74,7 +57,7 @@ const usePollingStore = create<PollingState>((set, get) => ({
   },
 
   startPolling: () => {
-    if (intervalId) return;
+    if (intervalPollingId) return;
 
     const pollingOrders = async () => {
       try {
@@ -129,10 +112,7 @@ const usePollingStore = create<PollingState>((set, get) => ({
 
             if (useUserConfigStore.getState().notifications.telegram) {
               await sendMessage([
-                {
-                  id: config.botUserIds.owner,
-                  message: messageOwner,
-                },
+                { id: config.botUserIds.owner, message: messageOwner },
               ]);
             }
           }
@@ -142,15 +122,26 @@ const usePollingStore = create<PollingState>((set, get) => ({
       }
     };
 
+    const progress = () => {
+      if (get().progress < 100) {
+        set((prev) => ({ progress: prev.progress + step }));
+      } else {
+        set({ progress: 0 });
+      }
+    };
+
     pollingOrders();
-    intervalId = setInterval(pollingOrders, config.fetchInterval);
+    intervalPollingId = setInterval(pollingOrders, config.fetchInterval);
+    intervalProgressId = setInterval(progress, config.interval);
     set({ isPolling: true });
   },
 
   stopPolling: () => {
-    if (intervalId) clearInterval(intervalId);
-    set({ isPolling: false });
-    intervalId = null;
+    if (intervalPollingId) clearInterval(intervalPollingId);
+    if (intervalProgressId) clearInterval(intervalProgressId);
+    set({ isPolling: false, progress: 0 });
+    intervalPollingId = null;
+    intervalProgressId = null;
   },
 }));
 
