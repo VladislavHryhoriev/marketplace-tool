@@ -49,7 +49,7 @@ export default function Home() {
               name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Введите имя"
+              placeholder="Введите логин"
               className="bg-zinc-900"
               required
               autoComplete="off"

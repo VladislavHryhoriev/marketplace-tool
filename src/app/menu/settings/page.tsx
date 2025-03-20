@@ -17,7 +17,7 @@ const SettingsPage = () => {
           <CardTitle className="text-zinc-100">Настройки</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-4 xl:grid-cols-2">
             {session.data?.user.role === "admin" && <OrdersCard />}
             <NotificationCard />
           </div>
