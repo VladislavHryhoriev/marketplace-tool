@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 
 export const copyToClipboard = async (text: string) => {
+  toast.dismiss();
   if (!text) {
     toast.error("Нет текста для копирования");
     return;

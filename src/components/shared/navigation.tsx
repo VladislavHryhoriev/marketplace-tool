@@ -26,7 +26,10 @@ export const Navigation = ({ className }: { className?: string }) => {
     <>
       {/* Мобильная кнопка меню */}
       <Sheet open={isOpenMenu} onOpenChange={setIsOpenMenu}>
-        <SheetContent side="left" className="w-[200px] bg-zinc-800/95 p-0">
+        <SheetContent
+          side="left"
+          className="w-screen bg-zinc-800/95 p-0 md:w-[250px]"
+        >
           <SheetHeader className="border-b border-zinc-700 p-4">
             <SheetTitle className="text-lg font-semibold text-zinc-100">
               Меню
@@ -38,7 +41,7 @@ export const Navigation = ({ className }: { className?: string }) => {
                 <li key={route.path}>
                   <Link
                     className={cn(
-                      "block rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                      "block rounded-md px-3 py-2 text-center text-xl font-medium transition-colors sm:text-left md:text-sm",
                       activePath === route.path
                         ? "bg-indigo-500 text-zinc-100"
                         : "text-zinc-400 hover:bg-zinc-700/50 hover:text-zinc-100",
