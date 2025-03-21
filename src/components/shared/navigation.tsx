@@ -1,6 +1,7 @@
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -34,6 +35,7 @@ export const Navigation = ({ className }: { className?: string }) => {
             <SheetTitle className="text-lg font-semibold text-zinc-100">
               Меню
             </SheetTitle>
+            <SheetDescription className="text-sm text-zinc-400"></SheetDescription>
           </SheetHeader>
           <nav className="flex-1 p-4">
             <ul className="space-y-1">
