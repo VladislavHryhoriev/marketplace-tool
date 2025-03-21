@@ -1,15 +1,13 @@
 "use client";
+import AdminWrapper from "@/components/shared/admin-wrapper";
 import NotificationCard from "@/components/shared/templates/settings/notification-card";
 import OrdersCard from "@/components/shared/templates/settings/orders-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
 
 const SettingsPage = () => {
-  const session = useSession();
-
   return (
     <div>
       <Card className="border-zinc-700 bg-zinc-800/80">
@@ -18,7 +16,9 @@ const SettingsPage = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 xl:grid-cols-2">
-            {session.data?.user.role === "admin" && <OrdersCard />}
+            <AdminWrapper>
+              <OrdersCard />
+            </AdminWrapper>
             <NotificationCard />
           </div>
 

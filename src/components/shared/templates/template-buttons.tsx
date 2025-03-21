@@ -8,7 +8,7 @@ const TemplateButtons = () => {
   const setAreaTextOrder = useGlobalStore((state) => state.setAreaTextOrder);
 
   return (
-    <div className="mt-4 flex flex-col gap-2">
+    <div className="mt-4 flex flex-wrap gap-2">
       {BUTTONS_CONFIG.map(({ type, icon, label }) => (
         <Button
           key={type}

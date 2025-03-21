@@ -1,18 +1,15 @@
-import { ROUTES } from "@/config";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
+import { ROUTES } from "@/config";
+import { cn } from "@/lib/utils";
 import useGlobalStore from "@/store/globalStore";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 export const Navigation = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   const [activePath, setActivePath] = useState(pathname);
@@ -29,7 +26,7 @@ export const Navigation = ({ className }: { className?: string }) => {
     <>
       {/* Мобильная кнопка меню */}
       <Sheet open={isOpenMenu} onOpenChange={setIsOpenMenu}>
-        <SheetContent side="left" className="w-[250px] bg-zinc-800/95 p-0">
+        <SheetContent side="left" className="w-[200px] bg-zinc-800/95 p-0">
           <SheetHeader className="border-b border-zinc-700 p-4">
             <SheetTitle className="text-lg font-semibold text-zinc-100">
               Меню
@@ -61,7 +58,7 @@ export const Navigation = ({ className }: { className?: string }) => {
       {/* Десктопное меню */}
       <div
         className={cn(
-          "hidden h-full w-[250px] flex-col justify-between bg-zinc-800/80 px-2 py-4 md:flex",
+          "hidden h-full w-[200px] flex-col justify-between bg-zinc-800/80 px-2 py-4 md:flex",
           className,
         )}
       >

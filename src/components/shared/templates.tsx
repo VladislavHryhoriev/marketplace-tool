@@ -4,10 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { copyToClipboard } from "@/lib/copy-to-clipboard";
 import useGlobalStore from "@/store/globalStore";
-import { ClipboardCopy } from "lucide-react";
+import { ClipboardCopy, FileText, Edit } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import TemplateButtons from "./templates/template-buttons";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const Templates = () => {
   const inputTextOrder = useGlobalStore((state) => state.inputTextOrder);
@@ -39,41 +40,55 @@ const Templates = () => {
   }, [handleKeyDown]);
 
   return (
-    <List>
-      <div className="flex justify-between gap-4">
-        <div>
-          <Input
-            type="text"
-            name="inputTextOrder"
-            value={inputTextOrder}
-            onChange={(e) => setInputTextOrder(e.target.value)}
-            placeholder="Номер заказа"
-            autoComplete="off"
-          />
+    <div className="flex flex-wrap gap-6">
+      <Card className="flex-3 border-zinc-700 bg-zinc-800/80">
+        <CardHeader className="flex flex-row items-center gap-2">
+          <FileText className="size-5 text-zinc-400" />
+          <CardTitle className="text-lg text-zinc-100">Шаблоны</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col gap-4">
+            <Input
+              type="text"
+              name="inputTextOrder"
+              value={inputTextOrder}
+              onChange={(e) => setInputTextOrder(e.target.value)}
+              placeholder="Номер заказа"
+              autoComplete="off"
+              className="bg-zinc-900/50"
+            />
 
-          <TemplateButtons />
-        </div>
+            <TemplateButtons />
+          </div>
+        </CardContent>
+      </Card>
 
-        <div className="relative">
-          <Textarea
-            ref={areaRef}
-            className="p-2 text-sm outline outline-2 outline-indigo-500"
-            name="edit"
-            id="edit"
-            cols={70}
-            rows={20}
-            value={areaTextOrder}
-            onChange={(e) => setAreaTextOrder(e.target.value)}
-          />
-          <button
-            className="absolute right-0 top-0 m-2 rounded-md bg-background p-1 hover:text-green-500 active:translate-y-0.5"
-            onClick={() => copyToClipboard(areaTextOrder)}
-          >
-            <ClipboardCopy />
-          </button>
-        </div>
-      </div>
-    </List>
+      <Card className="flex-6 basis-xl border-zinc-700 bg-zinc-800/80">
+        <CardHeader className="flex flex-row items-center gap-2">
+          <Edit className="size-5 text-zinc-400" />
+          <CardTitle className="text-lg text-zinc-100">Редактор</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="relative">
+            <Textarea
+              ref={areaRef}
+              className="w-full rounded-lg border-zinc-700 bg-zinc-900/50 p-4 text-sm text-zinc-100 transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              name="edit"
+              id="edit"
+              rows={20}
+              value={areaTextOrder}
+              onChange={(e) => setAreaTextOrder(e.target.value)}
+            />
+            <button
+              className="absolute top-2 right-2 rounded-md p-2 text-zinc-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
+              onClick={() => copyToClipboard(areaTextOrder)}
+            >
+              <ClipboardCopy className="h-5 w-5" />
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
