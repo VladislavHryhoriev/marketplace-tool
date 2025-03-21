@@ -41,7 +41,10 @@ const nextConfig = {
             key: "Access-Control-Allow-Origin",
             value: "*",
           },
-          { key: "Access-Control-Allow-Methods", value: "GET,POST,PUT" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,POST,PUT,PATCH,DELETE",
+          },
         ],
       },
     ];
