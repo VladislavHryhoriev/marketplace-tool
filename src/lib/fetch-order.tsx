@@ -4,6 +4,7 @@ import { TemplateNames } from "@/consts/TEMPLATES";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplate } from "@/lib/templates/get-template";
 import { toast } from "react-toastify";
+
 const fetchOrderData = async (
   type: TemplateNames,
   inputTextOrder: string,
@@ -11,7 +12,12 @@ const fetchOrderData = async (
 ) => {
   toast.dismiss();
   setAreaTextOrder("Загрузка...");
-  if (!inputTextOrder) return toast.error("Введите номер заказа");
+
+  if (!inputTextOrder) {
+    setAreaTextOrder("");
+    toast.error("Введите номер заказа");
+    return null;
+  }
 
   const getTrackingInfo = novaPoshtaApi.getTrackingInfo.bind(novaPoshtaApi);
   const getOrderInfoEpicentr =
@@ -21,27 +27,37 @@ const fetchOrderData = async (
     switch (inputTextOrder.length) {
       case 9: {
         const { order, success } = await getOrderInfoRozetka(inputTextOrder);
-        if (!success) return toast.error("Заказ не найден");
+        if (!success) {
+          toast.error("Заказ не найден");
+          return null;
+        }
         const ttnInfo = await getTrackingInfo(order.ttn, order.phone);
         const template = await getTemplate(type, order, ttnInfo, "Розетка");
-        return setAreaTextOrder(template);
+        setAreaTextOrder(template);
+        return order;
       }
       case 8: {
         const { order, success } = await getOrderInfoEpicentr(inputTextOrder);
-        if (!success) return toast.error("Заказ не найден");
+        if (!success) {
+          toast.error("Заказ не найден");
+          return null;
+        }
         const ttnInfo = await getTrackingInfo(order.ttn, order.phone);
         const template = await getTemplate(type, order, ttnInfo, "Епіцентр");
-        return setAreaTextOrder(template);
+        setAreaTextOrder(template);
+        return order;
       }
 
       default: {
         setAreaTextOrder("");
-        return toast.error("Номер заказа не с маркетплейса");
+        toast.error("Номер заказа не с маркетплейса");
+        return null;
       }
     }
   } catch (error) {
     console.error(error);
     toast.error("Непредвиденная ошибка");
+    return null;
   }
 };
 

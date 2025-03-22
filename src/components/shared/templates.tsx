@@ -1,14 +1,16 @@
 "use client";
-import { List } from "@/components/shared/list";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { copyToClipboard } from "@/lib/copy-to-clipboard";
 import useGlobalStore from "@/store/globalStore";
-import { ClipboardCopy, FileText, Edit } from "lucide-react";
+import { useCopyToClipboard } from "@uidotdev/usehooks";
+import { Edit, FileText, Save } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
+import { FaViber } from "react-icons/fa";
+import { RiTelegram2Fill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import TemplateButtons from "./templates/template-buttons";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const Templates = () => {
   const inputTextOrder = useGlobalStore((state) => state.inputTextOrder);
@@ -16,6 +18,8 @@ const Templates = () => {
   const areaTextOrder = useGlobalStore((state) => state.areaTextOrder);
   const setAreaTextOrder = useGlobalStore((state) => state.setAreaTextOrder);
   const areaRef = useRef<HTMLTextAreaElement>(null);
+  const activeOrder = useGlobalStore((state) => state.activeOrder);
+  const [text, copy] = useCopyToClipboard();
 
   const handleKeyDown = useCallback(async (e: KeyboardEvent) => {
     if (
@@ -67,6 +71,34 @@ const Templates = () => {
         <CardHeader className="flex flex-row items-center gap-2">
           <Edit className="size-5 text-zinc-400" />
           <CardTitle className="text-lg text-zinc-100">Редактор</CardTitle>
+          <div className="flex flex-1 items-center justify-between gap-2">
+            <button
+              className="order-last rounded-md p-2 text-green-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
+              onClick={() => copy(areaTextOrder)}
+            >
+              <Save className="size-5" />
+            </button>
+            {activeOrder?.phone && inputTextOrder && (
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`viber://chat?number=${activeOrder?.phone}`}
+                  target="_blank"
+                  onClick={() => copy(areaTextOrder)}
+                  className="rounded-md p-2 text-indigo-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
+                >
+                  <FaViber className="size-5" />
+                </Link>
+                <Link
+                  href={`https://t.me/+${activeOrder?.phone}`}
+                  target="_blank"
+                  onClick={() => copy(areaTextOrder)}
+                  className="rounded-md p-2 text-blue-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
+                >
+                  <RiTelegram2Fill className="size-5" />
+                </Link>
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="relative">
@@ -79,12 +111,6 @@ const Templates = () => {
               value={areaTextOrder}
               onChange={(e) => setAreaTextOrder(e.target.value)}
             />
-            <button
-              className="absolute top-2 right-2 rounded-md p-2 text-zinc-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
-              onClick={() => copyToClipboard(areaTextOrder)}
-            >
-              <ClipboardCopy className="h-5 w-5" />
-            </button>
           </div>
         </CardContent>
       </Card>
