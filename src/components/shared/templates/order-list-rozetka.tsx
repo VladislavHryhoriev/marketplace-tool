@@ -4,7 +4,14 @@ import OrderList from "./order-list";
 const OrderListRozetka = ({ orders }: { orders: IOrder[] }) => {
   const formattedOrders = orders.map((order) => ({
     id: order.id,
-    fullName: order.recipient_title.full_name,
+    recipient: {
+      phone: order.recipient_phone,
+      name: order.recipient_title.full_name,
+    },
+    user: {
+      phone: order.user_phone,
+      name: order.user_title.full_name,
+    },
     amount: order.amount,
     photos: order.items_photos.map((photo) => ({
       url: photo.url,

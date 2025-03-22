@@ -1,7 +1,7 @@
 import { TemplateNames, TEMPLATES } from "@/consts/TEMPLATES";
+import { TrackingResult } from "../../clients/nova-poshta/types";
 import { calculateCost } from "../calculate-cost";
 import { capitalize } from "../capitalize";
-import { TrackingResult } from "../../clients/nova-poshta/types";
 import { IOrderTemplate } from "../types/types";
 
 export const getTemplate = async (
@@ -17,7 +17,7 @@ export const getTemplate = async (
   });
 
   const templates = {
-    [TEMPLATES.missedCall]: `
+    [TEMPLATES.missedCall]: `	
 Добрий день. Не вдалося зв'язатися по номеру телефона, який Ви залишили в замовленні №${order.id} на сайті ${storeName}. 
 Будь ласка, зателефонуйте нам для підтвердження замовлення
 (068)554-40-46 (063)969-68-29 (099)566-45-21 або напишіть нам у вайбер.

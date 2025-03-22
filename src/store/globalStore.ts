@@ -7,11 +7,14 @@ interface GlobalState {
   areaTextOrder: string;
   isOpenMenu: boolean;
   activeOrder: IOrderTemplate | null;
+  paymentType: "cash" | "prepaid";
+
   setActiveOrder: (order: IOrderTemplate | null) => void;
 
   setInputTextOrder: (text: string) => void;
   setAreaTextOrder: (text: string) => void;
   setIsOpenMenu: (isOpen: boolean) => void;
+  setPaymentType: (type: "cash" | "prepaid") => void;
 }
 
 const useGlobalStore = create<GlobalState>((set, get) => ({
@@ -19,6 +22,7 @@ const useGlobalStore = create<GlobalState>((set, get) => ({
   areaTextOrder: "",
   isOpenMenu: false,
   activeOrder: null,
+  paymentType: "cash",
 
   setActiveOrder: (order: IOrderTemplate | null) => set({ activeOrder: order }),
 
@@ -29,6 +33,7 @@ const useGlobalStore = create<GlobalState>((set, get) => ({
     }),
   setAreaTextOrder: (text: string) => set({ areaTextOrder: text }),
   setIsOpenMenu: (isOpen: boolean) => set({ isOpenMenu: isOpen }),
+  setPaymentType: (type) => set({ paymentType: type }),
 }));
 
 export default useGlobalStore;

@@ -5,7 +5,14 @@ const OrderListEpicentr = ({ orders }: { orders: Order[] }) => {
   const formattedOrders = orders.map((order) => ({
     id: order.id,
     number: order.number,
-    fullName: `${order.address.firstName} ${order.address.lastName} ${order.address.patronymic}`,
+    recipient: {
+      phone: order.address.phone || "",
+      name: `${order.address.lastName} ${order.address.patronymic}`,
+    },
+    user: {
+      phone: order.address.phone || "",
+      name: `${order.address.firstName} ${order.address.lastName} ${order.address.patronymic}`,
+    },
     amount: order.subtotal,
     photos: order.items.map((item) => ({
       url: item.image || "",

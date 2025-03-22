@@ -5,7 +5,14 @@ import Link from "next/link";
 type OrderItem = {
   id: string | number;
   number?: string;
-  fullName: string;
+  user: {
+    phone: string;
+    name: string;
+  };
+  recipient: {
+    phone: string;
+    name: string;
+  };
   amount: string | number;
   photos: Array<{ url: string; alt: string }>;
   link: string;
@@ -45,12 +52,27 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
                 className="group flex items-center gap-4 rounded-lg bg-zinc-700/40 p-3 transition-all hover:bg-zinc-700/60"
               >
                 <div className="flex-1">
-                  <p className="truncate text-sm font-medium text-zinc-100">
-                    {order.fullName}
+                  <div className="space-x-1 truncate text-sm font-medium text-zinc-100">
+                    {title === "Розетка" &&
+                      (order.recipient.name !== order.user.name ? (
+                        <span className="text-red-400">
+                          {order.user.name} {"=>"} {order.recipient.name}
+                        </span>
+                      ) : (
+                        <span>{order.recipient.name}</span>
+                      ))}
+
+                    {title === "Розетка" &&
+                      order.recipient.phone !== order.user.phone && (
+                        <div className="text-red-400">
+                          {order.user.phone} {"=>"} {order.recipient.phone}
+                        </div>
+                      )}
+
                     <span className="text-xs text-zinc-400">
                       ({order.number || order.id})
                     </span>
-                  </p>
+                  </div>
                   <div className="mt-1 flex items-center gap-2">
                     <span
                       className={`text-sm font-medium ${colorMapText[color]}`}

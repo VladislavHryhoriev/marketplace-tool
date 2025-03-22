@@ -1,9 +1,15 @@
 import { config } from "@/config";
 
+export type Cost = {
+  payed: number;
+  cod: number;
+  commision: number;
+};
+
 export const calculateCost = (
   deliveryService: string,
   total: string | number,
-) => {
+): Cost => {
   const { ukr, nova } = config.deliveryCost;
 
   if (deliveryService.includes("ukr")) {
