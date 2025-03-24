@@ -108,7 +108,7 @@ const Templates = () => {
                 </Link>
                 <Separator orientation="vertical" className="h-5 bg-zinc-700" />
                 <Link
-                  href={`https://t.me/+${activeOrder?.phone}`}
+                  href={`tg://resolve?phone=${activeOrder?.phone}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   onClick={() => copy(areaTextOrder)}

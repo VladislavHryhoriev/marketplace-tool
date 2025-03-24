@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import usePollingStore from "@/store/pollingStore";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -23,12 +24,19 @@ type OrderListProps = {
   count: number;
   orders: OrderItem[];
   color: "emerald" | "blue";
+  smallOrders: OrderItem[];
 };
 
 const colorMapBg = { emerald: "bg-emerald-500", blue: "bg-blue-500" };
 const colorMapText = { emerald: "text-emerald-400", blue: "text-blue-400" };
 
-const OrderList = ({ title, count, orders, color }: OrderListProps) => {
+const OrderList = ({
+  title,
+  count,
+  orders,
+  color,
+  smallOrders,
+}: OrderListProps) => {
   return (
     <Card className="flex w-full flex-col rounded-xl border-zinc-700 bg-zinc-800/80">
       <CardHeader className="flex items-center justify-between">
@@ -40,6 +48,7 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
           className={`${colorMapText[color]} rounded-full bg-zinc-700/70 px-3 py-1 text-sm`}
         >
           {count} заказов
+          {smallOrders.length > 0 && ` (${smallOrders.length} маленьких)`}
         </span>
       </CardHeader>
       <CardContent className="h-[70vh] overflow-y-auto">
@@ -49,7 +58,7 @@ const OrderList = ({ title, count, orders, color }: OrderListProps) => {
               <Link
                 href={order.link}
                 target="_blank"
-                className="group flex items-center gap-4 rounded-lg bg-zinc-700/40 p-3 transition-all hover:bg-zinc-700/60"
+                className="flex items-center gap-4 rounded-lg bg-zinc-700/40 p-3 transition-all hover:bg-zinc-700/60"
               >
                 <div className="flex-1">
                   <div className="space-x-1 truncate text-sm font-medium text-zinc-100">

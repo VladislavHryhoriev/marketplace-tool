@@ -1,7 +1,10 @@
 import { IOrder } from "@/lib/types/rozetka";
+import usePollingStore from "@/store/pollingStore";
 import OrderList from "./order-list";
 
 const OrderListRozetka = ({ orders }: { orders: IOrder[] }) => {
+  const maxSum = usePollingStore((state) => state.maxSum);
+
   const formattedOrders = orders.map((order) => ({
     id: order.id,
     recipient: {
@@ -20,11 +23,16 @@ const OrderListRozetka = ({ orders }: { orders: IOrder[] }) => {
     link: `https://seller.rozetka.com.ua/main/orders/all?page=1&sort=-id&pageSize=50&id=${order.id}&types=1`,
   }));
 
+  const smallOrders = formattedOrders.filter(
+    (order) => +order.amount <= maxSum,
+  );
+
   return (
     <OrderList
       title="Розетка"
       count={orders.length}
       orders={formattedOrders}
+      smallOrders={smallOrders}
       color="emerald"
     />
   );
