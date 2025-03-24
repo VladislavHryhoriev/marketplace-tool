@@ -1,6 +1,9 @@
+import { IExtendPaymentType } from "@/clients/rozetka/types";
+
 export interface IOrderTemplate {
   id: string | number;
-  fullname: string;
+  recipient: { name: string; phone: string };
+  user: { name: string; phone: string };
   amount: number | string;
   products: {
     title: string;
@@ -11,7 +14,8 @@ export interface IOrderTemplate {
   deliveryName: string;
   ttn: string;
   get address(): string;
-  phone: string;
+  paymentType: IExtendPaymentType["payment_type"];
+  paymentTypeName: string;
 }
 
 export interface EpicentrOrderResponse {

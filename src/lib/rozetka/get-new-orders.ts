@@ -1,6 +1,6 @@
+import { IOrder, IOrdersResponse } from "@/clients/rozetka/types";
 import API_URLS from "@/consts/API_URLS";
 import { toast } from "react-toastify";
-import { IOrder, IOrdersResponse } from "../types/rozetka";
 import { getTokenRozetka } from "./get-token-rozetka";
 
 export interface Orders {

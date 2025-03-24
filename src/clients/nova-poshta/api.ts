@@ -1,6 +1,6 @@
 import { TrackingData, TrackingResult } from "@/clients/nova-poshta/types";
 import API_URLS from "@/consts/API_URLS";
-
+import { TemplateNames, TEMPLATES } from "@/consts/TEMPLATES";
 export const getDeliveryInfo = (data: TrackingData) => ({
   time: data.ActualDeliveryDate.split(" ")[1]?.slice(0, 5),
 
@@ -50,16 +50,24 @@ class NovaPoshtaApiClient {
     return json;
   }
 
-  async getTrackingInfo(ttn: string, phone: string) {
-    try {
-      return this.request<TrackingResult>({
-        method: "POST",
-        body: JSON.stringify({ ttn, phone }),
-      });
-    } catch (error) {
-      console.error(error);
-      return { ok: false, ttn, date: "", return: "", message: error };
+  async getTrackingInfo(
+    ttn: string,
+    phone: string,
+    activeTemplate: TemplateNames,
+  ) {
+    if (activeTemplate === TEMPLATES.uncollected) {
+      try {
+        return this.request<TrackingResult>({
+          method: "POST",
+          body: JSON.stringify({ ttn, phone }),
+        });
+      } catch (error) {
+        console.error(error);
+        return { ok: false, ttn, date: "", return: "", message: error };
+      }
     }
+
+    return { ok: true, ttn, date: "", return: "", message: "" };
   }
 }
 

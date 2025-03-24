@@ -42,6 +42,49 @@ const expandNames = [
 
 export type TExpandNames = (typeof expandNames)[number];
 
+export interface ITokenResponse {
+  success: boolean;
+  content: {
+    id: number; // ID менеджера
+    access_token: string; // Access токен авторизации
+    permissions: string[]; // Список Permissions
+    roles: string[]; // Список Roles
+    seller: {
+      fio: string; // ПІБ менеджера
+      email: string; // Email менеджера
+      first_phone: {
+        id: number; // ID запису номера телефону
+        phone_number: string; // Номер телефону
+        confirmed: boolean; // Прапор, чи підтверджений номер
+      };
+      wizard: boolean; // Чи потрібен візард клієнту
+    };
+    market: {
+      id: number; // ID продавця (магазину) в системі Розетка Маркетплейс
+      logo: string | null; // Логотип (посилання)
+      business_model: "c2c" | "b2c"; // Бізнес-модель
+      title: string; // Назва магазину
+      title_translit: string; // Назва магазину (трансліт)
+      market_url: string; // Посилання на магазин на Розетці
+      war_block: boolean; // Ознака примусового блокування магазина
+      status: number; // Статус магазину
+      status_label: string; // Назва статусу магазину
+      status_description: string; // Опис статусу магазину
+      status_transfer_reason: {
+        label: string; // Назва причини
+        description: string; // Опис причини
+      } | null; // Может быть null
+      fulfillment_available: boolean; // Ознака чи доступний магазину функціонал фулфілмента
+    };
+    raising: {
+      campaigns_type: 0 | 1 | 2; // Тип РК: 0 - не створено, 1 - стандартна, 2 - спрощена
+    } | null; // Может быть null
+    needInterview: boolean; // Ознака, чи потрібно показувати користувачу інтерв'ю
+    lang: string; // Мова користувача за замовчуванням
+    poll_link: string; // Посилання на опитування
+  };
+}
+
 export interface IOrder {
   id: number; // ID замовлення
   created: string; // Дата створення замовлення (YYYY-MM-DD, H:i:s)
@@ -184,7 +227,24 @@ export interface IExtendPurchases {
   }[];
 }
 
-export interface IExtendCountBuyerOrders {}
+export interface IExtendPaymentType {
+  payment_type:
+    | "card"
+    | "credit"
+    | "part_pay"
+    | "cash"
+    | "apple_pay"
+    | "google_pay"
+    | "instantly_pay"
+    | "instantly_pay_promo"
+    | "no_cash"
+    | "privat24"
+    | "parent"; // Спосіб оплати
+}
+
+export interface IExtendPaymentTypeName {
+  payment_type_name: string; // Назва способу оплати
+}
 
 export interface ErrorResponse {
   code: number; // Код ошибки
@@ -201,49 +261,10 @@ export interface IOrdersResponse {
 
 export interface IOrderResponse {
   success: boolean;
-  content: IOrder & IExtendDelivery & IExtendPurchases;
+  content: IOrder &
+    IExtendDelivery &
+    IExtendPurchases &
+    IExtendPaymentType &
+    IExtendPaymentTypeName;
   errors?: ErrorResponse;
-}
-
-export interface ITokenResponse {
-  success: boolean;
-  content: {
-    id: number; // ID менеджера
-    access_token: string; // Access токен авторизации
-    permissions: string[]; // Список Permissions
-    roles: string[]; // Список Roles
-    seller: {
-      fio: string; // ПІБ менеджера
-      email: string; // Email менеджера
-      first_phone: {
-        id: number; // ID запису номера телефону
-        phone_number: string; // Номер телефону
-        confirmed: boolean; // Прапор, чи підтверджений номер
-      };
-      wizard: boolean; // Чи потрібен візард клієнту
-    };
-    market: {
-      id: number; // ID продавця (магазину) в системі Розетка Маркетплейс
-      logo: string | null; // Логотип (посилання)
-      business_model: "c2c" | "b2c"; // Бізнес-модель
-      title: string; // Назва магазину
-      title_translit: string; // Назва магазину (трансліт)
-      market_url: string; // Посилання на магазин на Розетці
-      war_block: boolean; // Ознака примусового блокування магазина
-      status: number; // Статус магазину
-      status_label: string; // Назва статусу магазину
-      status_description: string; // Опис статусу магазину
-      status_transfer_reason: {
-        label: string; // Назва причини
-        description: string; // Опис причини
-      } | null; // Может быть null
-      fulfillment_available: boolean; // Ознака чи доступний магазину функціонал фулфілмента
-    };
-    raising: {
-      campaigns_type: 0 | 1 | 2; // Тип РК: 0 - не створено, 1 - стандартна, 2 - спрощена
-    } | null; // Может быть null
-    needInterview: boolean; // Ознака, чи потрібно показувати користувачу інтерв'ю
-    lang: string; // Мова користувача за замовчуванням
-    poll_link: string; // Посилання на опитування
-  };
 }

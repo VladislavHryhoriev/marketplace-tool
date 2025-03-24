@@ -1,5 +1,5 @@
 import LINKS from "@/consts/LINKS";
-import { IOrder } from "./types/rozetka";
+import { IOrder } from "@/clients/rozetka/types";
 
 export const sendBrowserNotification = async (orders: IOrder[]) => {
   if (orders.length === 0) return;

@@ -61,7 +61,7 @@ const OrderList = ({
                 className="flex items-center gap-4 rounded-lg bg-zinc-700/40 p-3 transition-all hover:bg-zinc-700/60"
               >
                 <div className="flex-1">
-                  <div className="space-x-1 truncate text-sm font-medium text-zinc-100">
+                  <div className="flex flex-wrap items-center gap-1 text-sm font-medium text-zinc-100">
                     {title === "Розетка" &&
                       (order.recipient.name !== order.user.name ? (
                         <span className="text-red-400">

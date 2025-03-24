@@ -1,19 +1,24 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import LINKS from "@/consts/LINKS";
 import useGlobalStore from "@/store/globalStore";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Edit, FileText, Save, Star } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { FaViber } from "react-icons/fa";
 import { RiTelegram2Fill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { Separator } from "../ui/separator";
 import TemplateButtons from "./templates/template-buttons";
-import { Button } from "../ui/button";
-import LINKS from "@/consts/LINKS";
 
 const Templates = () => {
   const inputTextOrder = useGlobalStore((state) => state.inputTextOrder);
@@ -23,9 +28,18 @@ const Templates = () => {
   const areaRef = useRef<HTMLTextAreaElement>(null);
   const activeOrder = useGlobalStore((state) => state.activeOrder);
   const setActiveOrder = useGlobalStore((state) => state.setActiveOrder);
-  const paymentType = useGlobalStore((state) => state.paymentType);
-  const setPaymentType = useGlobalStore((state) => state.setPaymentType);
   const [text, copy] = useCopyToClipboard();
+
+  const comparedPhone = useMemo(() => {
+    return (
+      activeOrder?.user.phone.replace(/\D/g, "") ===
+      activeOrder?.recipient.phone.replace(/\D/g, "")
+    );
+  }, [activeOrder]);
+
+  const comparedName = useMemo(() => {
+    return activeOrder?.user.name === activeOrder?.recipient.name;
+  }, [activeOrder]);
 
   const handleKeyDown = useCallback(async (e: KeyboardEvent) => {
     if (
@@ -59,7 +73,7 @@ const Templates = () => {
           <FileText className="size-5 text-zinc-400" />
           <CardTitle className="text-lg text-zinc-100">Шаблоны</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-2">
           <div className="flex items-center gap-1">
             <Input
               type="text"
@@ -71,8 +85,8 @@ const Templates = () => {
               className="bg-zinc-900/50"
             />
             <Link
-              hidden={!activeOrder?.phone}
-              href={`${LINKS.rozetka.rating}?userPhone=${activeOrder?.phone}`}
+              hidden={!activeOrder?.recipient.phone}
+              href={`${LINKS.rozetka.rating}?userPhone=${activeOrder?.recipient.phone}`}
               target="_blank"
               rel="noreferrer noopener"
               className="rounded-md p-2 text-yellow-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
@@ -80,6 +94,9 @@ const Templates = () => {
               <Star className="size-5" />
             </Link>
           </div>
+          <CardDescription className="text-xs text-zinc-400/80">
+            {activeOrder?.paymentTypeName}
+          </CardDescription>
           <TemplateButtons />
         </CardContent>
       </Card>
@@ -95,10 +112,10 @@ const Templates = () => {
             >
               <Save className="size-5" />
             </button>
-            {activeOrder?.phone && inputTextOrder && (
+            {activeOrder?.recipient.phone && inputTextOrder && (
               <div className="flex items-center rounded-md outline outline-zinc-700">
                 <Link
-                  href={`viber://chat?number=${activeOrder?.phone}`}
+                  href={`viber://chat?number=${activeOrder?.recipient.phone}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   onClick={() => copy(areaTextOrder)}
@@ -108,7 +125,7 @@ const Templates = () => {
                 </Link>
                 <Separator orientation="vertical" className="h-5 bg-zinc-700" />
                 <Link
-                  href={`tg://resolve?phone=${activeOrder?.phone}`}
+                  href={`tg://resolve?phone=${activeOrder?.recipient.phone}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   onClick={() => copy(areaTextOrder)}
@@ -121,28 +138,18 @@ const Templates = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {/* <div className="mb-4 flex items-center gap-2 rounded-lg">
-            <button
-              onClick={() => setPaymentType("cash")}
-              className={`rounded-md px-4 py-2 text-sm transition-colors ${
-                paymentType === "cash"
-                  ? "bg-indigo-500 text-white"
-                  : "bg-zinc-900 text-zinc-400 hover:text-zinc-200"
-              }`}
-            >
-              Наложка
-            </button>
-            <button
-              onClick={() => setPaymentType("prepaid")}
-              className={`rounded-md px-4 py-2 text-sm transition-colors ${
-                paymentType === "prepaid"
-                  ? "bg-indigo-500 text-white"
-                  : "bg-zinc-900 text-zinc-400 hover:text-zinc-200"
-              }`}
-            >
-              Передоплата
-            </button>
-          </div> */}
+          <div>
+            {!comparedName && (
+              <p className="text-sm text-red-400">
+                {activeOrder?.user.name} {"=>"} {activeOrder?.recipient.name}
+              </p>
+            )}
+            {!comparedPhone && (
+              <p className="text-sm text-red-400">
+                {activeOrder?.user.phone} {"=>"} {activeOrder?.recipient.phone}
+              </p>
+            )}
+          </div>
 
           <div>
             <Textarea

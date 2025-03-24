@@ -1,5 +1,6 @@
 import epicentrApi from "@/clients/epicentr/api";
 import novaPoshtaApi from "@/clients/nova-poshta/api";
+import { IExtendPaymentType } from "@/clients/rozetka/types";
 import { TemplateNames } from "@/consts/TEMPLATES";
 import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplate } from "@/lib/templates/get-template";
@@ -19,41 +20,33 @@ const fetchOrderData = async (
     return null;
   }
 
-  const getTrackingInfo = novaPoshtaApi.getTrackingInfo.bind(novaPoshtaApi);
-  const getOrderInfoEpicentr =
-    epicentrApi.getOrderInfoEpicentr.bind(epicentrApi);
-
   try {
-    switch (inputTextOrder.length) {
-      case 9: {
-        const { order, success } = await getOrderInfoRozetka(inputTextOrder);
-        if (!success) {
-          toast.error("Заказ не найден");
-          return null;
-        }
-        const ttnInfo = await getTrackingInfo(order.ttn, order.phone);
-        const template = await getTemplate(type, order, ttnInfo, "Розетка");
-        setAreaTextOrder(template);
-        return order;
-      }
-      case 8: {
-        const { order, success } = await getOrderInfoEpicentr(inputTextOrder);
-        if (!success) {
-          toast.error("Заказ не найден");
-          return null;
-        }
-        const ttnInfo = await getTrackingInfo(order.ttn, order.phone);
-        const template = await getTemplate(type, order, ttnInfo, "Епіцентр");
-        setAreaTextOrder(template);
-        return order;
-      }
+    const { order, success } =
+      inputTextOrder.length === 9
+        ? await getOrderInfoRozetka(inputTextOrder)
+        : await epicentrApi.getOrderInfoEpicentr(inputTextOrder);
 
-      default: {
-        setAreaTextOrder("");
-        toast.error("Номер заказа не с маркетплейса");
-        return null;
-      }
+    if (!success) {
+      toast.error("Заказ не найден");
+      setAreaTextOrder("");
+      return null;
     }
+
+    const ttnInfo = await novaPoshtaApi.getTrackingInfo(
+      order.ttn,
+      order.recipient.phone,
+      type,
+    );
+
+    const template = await getTemplate(
+      type,
+      order,
+      ttnInfo,
+      inputTextOrder.length === 9 ? "Розетка" : "Епіцентр",
+    );
+
+    setAreaTextOrder(template);
+    return order;
   } catch (error) {
     console.error(error);
     toast.error("Непредвиденная ошибка");

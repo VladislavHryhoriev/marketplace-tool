@@ -1,9 +1,10 @@
 import {
-  IExtendCountBuyerOrders,
   IExtendDelivery,
+  IExtendPaymentType,
+  IExtendPaymentTypeName,
   IExtendPurchases,
   IOrder,
-} from "../types/rozetka";
+} from "@/clients/rozetka/types";
 import { IOrderTemplate } from "../types/types";
 import fetchOrder from "./fetch-order";
 
@@ -11,11 +12,19 @@ const getOrderTemplate = (
   orderData: IOrder &
     IExtendDelivery &
     IExtendPurchases &
-    IExtendCountBuyerOrders,
+    IExtendPaymentType &
+    IExtendPaymentTypeName,
 ): IOrderTemplate => {
   return {
     id: orderData.id,
-    fullname: orderData.delivery.recipient_title,
+    recipient: {
+      name: orderData.delivery.recipient_title,
+      phone: orderData.recipient_phone,
+    },
+    user: {
+      name: orderData.user_title.full_name,
+      phone: orderData.user_phone,
+    },
     products: [
       ...orderData.purchases.map((item) => ({
         title: item.item_name,
@@ -25,8 +34,9 @@ const getOrderTemplate = (
     ],
     deliveryName: orderData.delivery.name_logo,
     ttn: orderData.ttn,
-    phone: orderData.recipient_phone,
     amount: orderData.amount,
+    paymentType: orderData.payment_type,
+    paymentTypeName: orderData.payment_type_name,
 
     get address() {
       const deliveryService = orderData.delivery.delivery_service_name;
@@ -57,7 +67,8 @@ export const getOrderInfoRozetka = async (
     const orderData = await fetchOrder(id, [
       "delivery",
       "purchases",
-      "count_buyer_orders",
+      "payment_type_name",
+      "payment_type",
     ]);
 
     const order = getOrderTemplate(orderData);
@@ -68,13 +79,15 @@ export const getOrderInfoRozetka = async (
     return {
       order: {
         id: -1,
-        fullname: "",
+        recipient: { name: "", phone: "" },
+        user: { name: "", phone: "" },
         products: [],
         address: "",
         deliveryName: "",
         ttn: "",
-        phone: "",
         amount: "-1",
+        paymentType: "cash",
+        paymentTypeName: "",
       },
       success: false,
     };

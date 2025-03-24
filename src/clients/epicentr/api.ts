@@ -3,9 +3,18 @@ import { IOrderTemplate } from "@/lib/types/types";
 import { Order, OrderListModel, OrderStatus } from "./types";
 
 const getOrderTemplate = (orderData: Order): IOrderTemplate => {
+  console.log(orderData);
+
   return {
     id: orderData.number,
-    fullname: `${orderData.address.lastName} ${orderData.address.firstName} ${orderData.address.patronymic}`,
+    recipient: {
+      name: `${orderData.address.lastName} ${orderData.address.firstName} ${orderData.address.patronymic}`,
+      phone: orderData.address.phone ?? "",
+    },
+    user: {
+      name: `${orderData.address.lastName} ${orderData.address.firstName} ${orderData.address.patronymic}`,
+      phone: orderData.address.phone ?? "",
+    },
     products: [
       ...orderData.items.map((item) => ({
         title: item.title!,
@@ -16,9 +25,9 @@ const getOrderTemplate = (orderData: Order): IOrderTemplate => {
     ],
     deliveryName: orderData.address.shipment?.provider ?? "",
     ttn: orderData.address.shipment?.number ?? "",
-    phone: orderData.address.phone ?? "",
     amount: orderData.subtotal,
-
+    paymentType: "cash",
+    paymentTypeName: "Оплата під час отримання товару", // WARN: add payment type name
     get address() {
       const service =
         orderData.address.shipment?.provider === "nova_poshta"
@@ -89,13 +98,15 @@ class EpicentrApiClient {
       return {
         order: {
           id: "-1",
-          fullname: "",
+          recipient: { name: "", phone: "" },
+          user: { name: "", phone: "" },
           products: [],
           address: "",
           deliveryName: "",
           ttn: "",
-          phone: "",
           amount: 0,
+          paymentType: "cash",
+          paymentTypeName: "Оплата під час отримання товару",
         },
         success: false,
       };

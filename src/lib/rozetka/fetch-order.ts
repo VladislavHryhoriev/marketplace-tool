@@ -1,5 +1,5 @@
 import API_URLS from "@/consts/API_URLS";
-import { IOrderResponse, TExpandNames } from "../types/rozetka";
+import { IOrderResponse, TExpandNames } from "@/clients/rozetka/types";
 import { getTokenRozetka } from "./get-token-rozetka";
 
 const fetchOrder = async (id: string, expand: TExpandNames[]) => {

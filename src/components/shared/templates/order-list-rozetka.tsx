@@ -1,4 +1,4 @@
-import { IOrder } from "@/lib/types/rozetka";
+import { IOrder } from "@/clients/rozetka/types";
 import usePollingStore from "@/store/pollingStore";
 import OrderList from "./order-list";
 

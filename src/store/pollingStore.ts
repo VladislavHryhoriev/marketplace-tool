@@ -1,5 +1,6 @@
 import epicentrApi from "@/clients/epicentr/api";
 import { Order } from "@/clients/epicentr/types";
+import { IOrder } from "@/clients/rozetka/types";
 import { config } from "@/config";
 import { differenceByKey } from "@/lib/difference-by-key";
 import { getNewOrders } from "@/lib/rozetka/get-new-orders";
@@ -7,7 +8,6 @@ import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import { sendBrowserNotification } from "@/lib/send-browser-notification";
 import { createMessage } from "@/lib/telegram/create-message";
 import { sendMessage } from "@/lib/telegram/send-message";
-import { IOrder } from "@/lib/types/rozetka";
 import { create } from "zustand";
 import useUserConfigStore from "./userConfigStore";
 

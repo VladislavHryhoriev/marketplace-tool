@@ -1,4 +1,6 @@
+import { IExtendPaymentType } from "@/clients/rozetka/types";
 import { config } from "@/config";
+import { TemplateNames } from "@/consts/TEMPLATES";
 import { IOrderTemplate } from "@/lib/types/types";
 import { create } from "zustand";
 
@@ -7,14 +9,17 @@ interface GlobalState {
   areaTextOrder: string;
   isOpenMenu: boolean;
   activeOrder: IOrderTemplate | null;
-  paymentType: "cash" | "prepaid";
+  paymentType: IExtendPaymentType["payment_type"];
+  activeTemplate: TemplateNames | null;
+
+  setActiveTemplate: (type: TemplateNames | null) => void;
 
   setActiveOrder: (order: IOrderTemplate | null) => void;
 
   setInputTextOrder: (text: string) => void;
   setAreaTextOrder: (text: string) => void;
   setIsOpenMenu: (isOpen: boolean) => void;
-  setPaymentType: (type: "cash" | "prepaid") => void;
+  setPaymentType: (type: IExtendPaymentType["payment_type"]) => void;
 }
 
 const useGlobalStore = create<GlobalState>((set, get) => ({
@@ -23,6 +28,10 @@ const useGlobalStore = create<GlobalState>((set, get) => ({
   isOpenMenu: false,
   activeOrder: null,
   paymentType: "cash",
+  activeTemplate: null,
+
+  setActiveTemplate: (type: TemplateNames | null) =>
+    set({ activeTemplate: type }),
 
   setActiveOrder: (order: IOrderTemplate | null) => set({ activeOrder: order }),
 

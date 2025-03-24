@@ -1,6 +1,6 @@
-import LINKS from "@/consts/LINKS";
-import { IOrder } from "../types/rozetka";
 import { Order } from "@/clients/epicentr/types";
+import { IOrder } from "@/clients/rozetka/types";
+import LINKS from "@/consts/LINKS";
 
 export const createMessage = (
   ordersRozetka: IOrder[],
