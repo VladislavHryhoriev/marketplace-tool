@@ -1,10 +1,9 @@
 import epicentrApi from "@/clients/epicentr/api";
 import { Order } from "@/clients/epicentr/types";
+import rozetkaApi from "@/clients/rozetka/api";
 import { IOrder } from "@/clients/rozetka/types";
 import { config } from "@/config";
 import { differenceByKey } from "@/lib/difference-by-key";
-import { getNewOrders } from "@/lib/rozetka/get-new-orders";
-import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import { sendBrowserNotification } from "@/lib/send-browser-notification";
 import { createMessage } from "@/lib/telegram/create-message";
 import { sendMessage } from "@/lib/telegram/send-message";
@@ -25,6 +24,8 @@ interface PollingState {
 
   startPolling: () => void;
   stopPolling: () => void;
+  resetOrders: () => void;
+  restartPolling: () => void;
 }
 
 let intervalPollingId = null as NodeJS.Timeout | null;
@@ -61,7 +62,8 @@ const usePollingStore = create<PollingState>((set, get) => ({
 
     const pollingOrders = async () => {
       try {
-        const { orders: newOrdersRozetka, success } = await getNewOrders();
+        const { orders: newOrdersRozetka, success } =
+          await rozetkaApi.getOrdersByType(config.rozetka.searchType);
         const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
           config.epicentr.searchType,
         );
@@ -89,7 +91,7 @@ const usePollingStore = create<PollingState>((set, get) => ({
 
         // Кинуть в обработку заказы до 100 грн
         if (useUserConfigStore.getState().notifications.sendToProcess) {
-          await updateOrderStatus({
+          await rozetkaApi.updateOrderStatus({
             orders: get().getSmallOrdersRozetka(newOrdersRozetka),
           });
         }
@@ -142,6 +144,15 @@ const usePollingStore = create<PollingState>((set, get) => ({
     set({ isPolling: false, progress: 0 });
     intervalPollingId = null;
     intervalProgressId = null;
+  },
+
+  resetOrders: () => {
+    set({ ordersRozetka: [], ordersEpicentr: [] });
+  },
+
+  restartPolling: () => {
+    get().stopPolling();
+    get().startPolling();
   },
 }));
 

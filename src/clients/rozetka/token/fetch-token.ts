@@ -1,9 +1,9 @@
-import API_URLS from "@/consts/API_URLS";
+import BASE_URL from "@/consts/BASE_URL";
 import { ITokenResponse } from "../types";
 
 const fetchToken = async (): Promise<string> => {
   try {
-    const response = await fetch(API_URLS.rozetka.token, {
+    const response = await fetch(`${BASE_URL}/api/rozetka/sites`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -1019,6 +1019,41 @@ export enum OrderStatus {
   ClosedMerchantRejection = "closed_merchant_rejection",
 }
 
+export const epicentrSearchTypes = {
+  new: "Новые",
+  confirmed_by_merchant: "Подтверждены продавцом",
+  confirmed: "Подтверждены",
+  sent: "Отправлены",
+  delivered: "Доставлены",
+  completed: "Завершены",
+  closed: "Закрыты",
+  canceled: "Отменены",
+  returned: "Возвращены",
+  return_requested: "Запрос на возврат",
+  canceled_by_merchant: "Отменены продавцом",
+  completed_merchant_rejection: "Завершены (Отказ продавца)",
+  closed_merchant_rejection: "Закрыты (Отказ продавца)",
+} as const;
+
+/**
+ * Типи замовлень:
+ *  * `new` - Новий
+ *  * `confirmed_by_merchant` - Підтверджено продавцем
+ *  * `confirmed` - Підтверджений
+ *  * `sent` - Відправлено
+ *  * `delivered` - Готовий до видачі
+ *  * `completed` - Завершено
+ *  * `closed` - Закрито
+ *  * `сanceled` - Скасовано
+ *  * `returned` - Повернутий
+ *  * `return_requested` - Запит на повернення
+ *  * `canceled_by_merchant` - Скасовано продавцем
+ *  * `completed_merchant_rejection` - Завершено (Відмова продавця)
+ *  * `closed_merchant_rejection` - Закрито (Відмова продавця)
+ * @example "sent"
+ */
+export type TEpicentrSearchType = keyof typeof epicentrSearchTypes;
+
 export interface OrderCallStatusInput {
   callStatus: OrderCallStatus;
 }

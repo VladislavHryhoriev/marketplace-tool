@@ -1,7 +1,9 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import usePollingStore from "@/store/pollingStore";
+import useUserConfigStore from "@/store/userConfigStore";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 type OrderItem = {
   id: string | number;
@@ -37,6 +39,13 @@ const OrderList = ({
   color,
   smallOrders,
 }: OrderListProps) => {
+  const resetOrders = usePollingStore((state) => state.resetOrders);
+  const { market } = useUserConfigStore();
+
+  useEffect(() => {
+    resetOrders();
+  }, [market]);
+
   return (
     <Card className="flex w-full flex-col rounded-xl border-zinc-700 bg-zinc-800/80">
       <CardHeader className="flex items-center justify-between">

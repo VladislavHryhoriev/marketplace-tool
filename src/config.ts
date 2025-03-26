@@ -1,10 +1,11 @@
-import { OrderStatus } from "./clients/epicentr/types";
+import { TEpicentrSearchType } from "./clients/epicentr/types";
+import { TRozetkaSearchType } from "./clients/rozetka/types";
 
 export interface IConfig {
   fetchInterval: number;
   maxInputLength: number;
-  rozetka: { tokenLifetime: number; searchType: number };
-  epicentr: { searchType: `${OrderStatus}` };
+  rozetka: { tokenLifetime: number; searchType: TRozetkaSearchType };
+  epicentr: { searchType: TEpicentrSearchType };
   botUserIds: { owner: number; ukrstore: number };
   deliveryCost: {
     nova: { price: number; commision: number };
@@ -26,7 +27,7 @@ export const ROUTES = [
 export const BOT_OWNER_ID = 751308202;
 export const BOT_UKRSTORE_ID = 901615640;
 
-export const config: IConfig = {
+export let config: IConfig = {
   fetchInterval: 1 * min,
   maxInputLength: 15,
   rozetka: {
@@ -45,4 +46,23 @@ export const config: IConfig = {
     ukr: { price: 55, commision: 10 },
   },
   interval: sec,
-} as const;
+};
+
+export const defaultConfig: IConfig = JSON.parse(JSON.stringify(config));
+
+export const setSearchType = (newConfig: {
+  rozetka: TRozetkaSearchType;
+  epicentr: TEpicentrSearchType;
+}) => {
+  config = {
+    ...config,
+    rozetka: {
+      ...config.rozetka,
+      searchType: newConfig.rozetka ?? config.rozetka.searchType,
+    },
+    epicentr: {
+      ...config.epicentr,
+      searchType: newConfig.epicentr ?? config.epicentr.searchType,
+    },
+  };
+};

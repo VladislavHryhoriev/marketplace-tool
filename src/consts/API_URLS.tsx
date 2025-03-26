@@ -1,5 +1,5 @@
+import { TExpandNames } from "@/clients/rozetka/types";
 import { config } from "@/config";
-import { TExpandNames } from "@/lib/types/rozetka";
 import BASE_URL from "./BASE_URL";
 
 const API_URLS = {
@@ -17,15 +17,7 @@ const API_URLS = {
     updateOrderStatus: (id: number) => `${BASE_URL}/api/rozetka/orders/${id}`,
   },
 
-  epicentr: {
-    orders: `${BASE_URL}/api/epicentr/v3/oms/orders?filter[statusCode][]=confirmed_by_merchant`,
-    order: (orderNum: string) =>
-      `${BASE_URL}/api/epicentr/v3/oms/orders?filter[number]=${orderNum}`,
-    orderInfo: (orderId: string) =>
-      `${BASE_URL}/api/epicentr/v2/oms/orders/${orderId}`,
-  },
-
   novaPoshta: { route: `${BASE_URL}/api/nova-poshta` },
-} as const;
+};
 
 export default API_URLS;
