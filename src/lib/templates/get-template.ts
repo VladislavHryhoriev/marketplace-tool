@@ -17,9 +17,9 @@ export const getTemplate = async (
   });
 
   const payment =
-    order.paymentType === "cash"
-      ? "**Спосіб оплати:** Оплата під час отримання товару"
-      : `**Спосіб оплати:** ${order.paymentTypeName}`;
+    order.paymentType === "cash" && type !== TEMPLATES.autoconfirm
+      ? `**Спосіб оплати:** ${order.paymentTypeName}`
+      : `**Спосіб оплати:** Оплата на карту`;
 
   const orderBlocks = {
     items: `**Замовили:** ${productsText}`,
@@ -36,7 +36,9 @@ export const getTemplate = async (
         this.address,
         this.payment,
         this.deliveryCost,
-        order.paymentType === "cash" ? this.commision : null,
+        order.paymentType === "cash" && type !== TEMPLATES.autoconfirm
+          ? this.commision
+          : null,
       ]
         .filter(Boolean)
         .join("\n");
@@ -52,7 +54,7 @@ export const getTemplate = async (
 
 ${orderBlocks.base}
 
-Щоб не сплачувати грошовий переказ, можемо зробити по передоплаті, як вам буде зручніше?`,
+Можемо оформити передоплату, щоб не сплачувати комісію за грошовий переказ. Як вам зручніше?`,
 
     /// auto confirm
     [TEMPLATES.autoconfirm]: `
