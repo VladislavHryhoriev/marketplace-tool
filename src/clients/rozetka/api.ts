@@ -35,10 +35,6 @@ class RozetkaApiClient {
         ...options,
       });
 
-      if (!url.includes("types=4")) {
-        toast.error("Тип заказов != 4");
-      }
-
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
