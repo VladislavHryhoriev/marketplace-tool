@@ -25,7 +25,6 @@ interface PollingState {
   startPolling: () => void;
   stopPolling: () => void;
   resetOrders: () => void;
-  restartPolling: () => void;
 }
 
 let intervalPollingId = null as NodeJS.Timeout | null;
@@ -148,11 +147,6 @@ const usePollingStore = create<PollingState>((set, get) => ({
 
   resetOrders: () => {
     set({ ordersRozetka: [], ordersEpicentr: [] });
-  },
-
-  restartPolling: () => {
-    get().stopPolling();
-    get().startPolling();
   },
 }));
 
