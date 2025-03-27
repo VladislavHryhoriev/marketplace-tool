@@ -1,5 +1,3 @@
-import { TExpandNames } from "@/clients/rozetka/types";
-import { config } from "@/config";
 import BASE_URL from "./BASE_URL";
 
 const API_URLS = {
