@@ -38,10 +38,10 @@ const MarketsCard = () => {
         <div className="grid grid-cols-2 items-center gap-4">
           <p className="text-right text-sm">Тип заказов Розетка:</p>
           <Select
-            value={market.rozetkaSearchType.toString()}
+            value={`${market.rozetkaSearchType}`}
             onValueChange={(value) =>
               setMarket({
-                rozetkaSearchType: Number(value) as TRozetkaSearchType,
+                rozetkaSearchType: +value as TRozetkaSearchType,
               })
             }
           >
@@ -62,7 +62,7 @@ const MarketsCard = () => {
         <div className="grid grid-cols-2 items-center gap-4">
           <p className="text-right text-sm">Тип заказов Эпицентр:</p>
           <Select
-            value={market.epicenterSearchType.toString()}
+            value={`${market.epicenterSearchType}`}
             onValueChange={(value) =>
               setMarket({
                 epicenterSearchType: value as TEpicentrSearchType,

@@ -1,58 +1,69 @@
 import { TEpicentrSearchType } from "@/clients/epicentr/types";
 import { TRozetkaSearchType } from "@/clients/rozetka/types";
-import { config, setSearchType } from "@/config";
+import { config, defaultConfig, setConfig, setSearchType } from "@/config";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
+import usePollingStore from "./pollingStore";
+import { get } from "node:http";
 
-interface UserConfigState {
+interface State {
   notifications: {
     browser: boolean;
     telegram: boolean;
     sendToProcess: boolean;
   };
-
   market: {
     rozetkaSearchType: TRozetkaSearchType;
     epicenterSearchType: TEpicentrSearchType;
   };
+}
 
+interface Actions {
   setNotifications: (
-    newNotificationsConfig: Partial<UserConfigState["notifications"]>,
+    newNotificationsConfig: Partial<State["notifications"]>,
   ) => void;
-
-  setMarket: (newMarketConfig: Partial<UserConfigState["market"]>) => void;
-
+  setMarket: (newMarketConfig: Partial<State["market"]>) => void;
   resetMarket: () => void;
 }
 
-const useUserConfigStore = create(
-  persist<UserConfigState>(
-    (set) => ({
-      notifications: {
-        browser: false,
-        telegram: false,
-        sendToProcess: false,
-      },
+const initialState: State = {
+  notifications: {
+    browser: false,
+    telegram: false,
+    sendToProcess: false,
+  },
 
-      market: {
-        rozetkaSearchType: config.rozetka.searchType,
-        epicenterSearchType: config.epicentr.searchType,
-      },
-
+  market: {
+    rozetkaSearchType: config.rozetka.searchType,
+    epicenterSearchType: config.epicentr.searchType,
+  },
+};
+const useUserConfigStore = create<State & Actions>()(
+  persist(
+    (set, get) => ({
+      ...initialState,
       setMarket: (newMarketConfig) => {
         setSearchType({
-          rozetka: newMarketConfig.rozetkaSearchType as TRozetkaSearchType,
-          epicentr: newMarketConfig.epicenterSearchType as TEpicentrSearchType,
+          rozetka:
+            newMarketConfig.rozetkaSearchType ?? get().market.rozetkaSearchType,
+          epicentr:
+            newMarketConfig.epicenterSearchType ??
+            get().market.epicenterSearchType,
         });
 
-        set((state) => ({
-          market: { ...state.market, ...newMarketConfig },
-        }));
+        set((state) => ({ market: { ...state.market, ...newMarketConfig } }));
+        usePollingStore.getState().resetOrders();
       },
 
       resetMarket: () => {
-        setSearchType({ rozetka: 4, epicentr: "new" });
-        set({ market: { rozetkaSearchType: 4, epicenterSearchType: "new" } });
+        setConfig(defaultConfig);
+        set({
+          market: {
+            rozetkaSearchType: defaultConfig.rozetka.searchType,
+            epicenterSearchType: defaultConfig.epicentr.searchType,
+          },
+        });
+        usePollingStore.getState().resetOrders();
       },
 
       setNotifications: (newNotificationsConfig) =>

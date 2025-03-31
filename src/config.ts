@@ -27,7 +27,7 @@ export const ROUTES = [
 export const BOT_OWNER_ID = 751308202;
 export const BOT_UKRSTORE_ID = 901615640;
 
-export let config: IConfig = {
+export const defaultConfig: IConfig = {
   fetchInterval: 1 * min,
   maxInputLength: 15,
   rozetka: {
@@ -48,21 +48,26 @@ export let config: IConfig = {
   interval: sec,
 };
 
-export const defaultConfig: IConfig = JSON.parse(JSON.stringify(config));
+Object.freeze(defaultConfig);
+
+export let config: IConfig = JSON.parse(JSON.stringify(defaultConfig));
+
+export const setConfig = (newConfig: Partial<IConfig>) => {
+  config = { ...config, ...newConfig };
+};
 
 export const setSearchType = (newConfig: {
   rozetka: TRozetkaSearchType;
   epicentr: TEpicentrSearchType;
 }) => {
-  config = {
-    ...config,
+  setConfig({
     rozetka: {
       ...config.rozetka,
-      searchType: newConfig.rozetka ?? config.rozetka.searchType,
+      searchType: newConfig.rozetka,
     },
     epicentr: {
       ...config.epicentr,
-      searchType: newConfig.epicentr ?? config.epicentr.searchType,
+      searchType: newConfig.epicentr,
     },
-  };
+  });
 };

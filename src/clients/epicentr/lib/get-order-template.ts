@@ -2,8 +2,6 @@ import { IOrderTemplate } from "@/lib/types/types";
 import { Order } from "../types";
 
 const getOrderTemplate = (orderData: Order): IOrderTemplate => {
-  console.log(orderData);
-
   return {
     id: orderData.number,
     recipient: {

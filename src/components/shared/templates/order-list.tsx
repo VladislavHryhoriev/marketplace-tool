@@ -3,19 +3,13 @@ import usePollingStore from "@/store/pollingStore";
 import useUserConfigStore from "@/store/userConfigStore";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 type OrderItem = {
   id: string | number;
   number?: string;
-  user: {
-    phone: string;
-    name: string;
-  };
-  recipient: {
-    phone: string;
-    name: string;
-  };
+  user: { phone: string; name: string };
+  recipient: { phone: string; name: string };
   amount: string | number;
   photos: Array<{ url: string; alt: string }>;
   link: string;
@@ -39,13 +33,6 @@ const OrderList = ({
   color,
   smallOrders,
 }: OrderListProps) => {
-  const resetOrders = usePollingStore((state) => state.resetOrders);
-  const { market } = useUserConfigStore();
-
-  useEffect(() => {
-    resetOrders();
-  }, [market]);
-
   return (
     <Card className="flex w-full flex-col rounded-xl border-zinc-700 bg-zinc-800/80">
       <CardHeader className="flex items-center justify-between">

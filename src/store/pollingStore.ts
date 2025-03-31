@@ -10,35 +10,38 @@ import { sendMessage } from "@/lib/telegram/send-message";
 import { create } from "zustand";
 import useUserConfigStore from "./userConfigStore";
 
-interface PollingState {
+interface State {
   ordersRozetka: IOrder[];
   ordersEpicentr: Order[];
   isPolling: boolean;
   maxSum: number;
   progress: number;
+}
 
+interface Actions {
   setMaxSum: (maxSum: string) => void;
-
   getSmallOrdersRozetka: (orders: IOrder[]) => IOrder[];
   getSmallOrdersEpicentr: (orders: Order[]) => Order[];
-
   startPolling: () => void;
   stopPolling: () => void;
   resetOrders: () => void;
 }
 
 let intervalPollingId = null as NodeJS.Timeout | null;
-
 let intervalProgressId = null as NodeJS.Timeout | null;
+
 const step = 100 / (config.fetchInterval / config.interval);
 
-const usePollingStore = create<PollingState>((set, get) => ({
+const initialState: State = {
   ordersRozetka: [],
   ordersEpicentr: [],
   isPolling: false,
   maxSum: 100,
   progress: 0,
+};
 
+const usePollingStore = create<State & Actions>((set, get) => ({
+  ...initialState,
   setMaxSum: (maxSum: string) => {
     set({
       isPolling: false,
