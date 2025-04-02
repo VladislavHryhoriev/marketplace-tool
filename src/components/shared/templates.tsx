@@ -14,7 +14,7 @@ import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Edit, FileText, Save, Star } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { FaViber } from "react-icons/fa";
+import { FaPlus, FaViber } from "react-icons/fa";
 import { RiTelegram2Fill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { Separator } from "../ui/separator";
@@ -28,7 +28,7 @@ const Templates = () => {
   const areaRef = useRef<HTMLTextAreaElement>(null);
   const activeOrder = useGlobalStore((state) => state.activeOrder);
   const setActiveOrder = useGlobalStore((state) => state.setActiveOrder);
-  const [text, copy] = useCopyToClipboard();
+  const [_, copy] = useCopyToClipboard();
 
   const comparedPhone = useMemo(() => {
     return (
@@ -114,22 +114,49 @@ const Templates = () => {
             </button>
             {activeOrder?.recipient.phone && inputTextOrder && (
               <div className="flex items-center rounded-md outline outline-zinc-700">
+                {!comparedPhone && (
+                  <Link
+                    href={`viber://chat?number=${activeOrder?.user.phone}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    onClick={() => copy(areaTextOrder)}
+                    className="relative rounded-md p-2 text-indigo-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
+                  >
+                    <FaViber className="size-5" />
+                    <FaPlus className="absolute top-0.5 right-0.5 size-2" />
+                  </Link>
+                )}
                 <Link
                   href={`viber://chat?number=${activeOrder?.recipient.phone}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   onClick={() => copy(areaTextOrder)}
-                  className="rounded-md p-2 text-indigo-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
+                  className="relative rounded-md p-2 text-indigo-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
                 >
                   <FaViber className="size-5" />
                 </Link>
-                <Separator orientation="vertical" className="h-5 bg-zinc-700" />
+                <Separator
+                  orientation="vertical"
+                  className="mx-1 h-5 bg-zinc-700"
+                />
+                {!comparedPhone && (
+                  <Link
+                    href={`tg://resolve?phone=${activeOrder?.recipient.phone}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    onClick={() => copy(areaTextOrder)}
+                    className="relative rounded-md p-2 text-blue-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
+                  >
+                    <RiTelegram2Fill className="size-5" />
+                    <FaPlus className="absolute top-0.5 right-0.5 size-2" />
+                  </Link>
+                )}
                 <Link
                   href={`tg://resolve?phone=${activeOrder?.recipient.phone}`}
                   target="_blank"
                   rel="noreferrer noopener"
                   onClick={() => copy(areaTextOrder)}
-                  className="rounded-md p-2 text-blue-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
+                  className="relative rounded-md p-2 text-blue-400 transition-colors hover:bg-zinc-700/50 hover:text-zinc-100"
                 >
                   <RiTelegram2Fill className="size-5" />
                 </Link>
