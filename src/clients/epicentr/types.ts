@@ -1142,7 +1142,6 @@ export interface OrderProductsItem {
 }
 
 export type OrderListModel = PaginatedCursorCollection & {
-  /** -- СПИСОК ПРЕДМЕТІВ */
   items: Order[];
 };
 

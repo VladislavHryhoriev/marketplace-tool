@@ -3,8 +3,8 @@ import { IOrder } from "@/clients/rozetka/types";
 import LINKS from "@/consts/LINKS";
 
 export const createMessage = (
-  ordersRozetka: IOrder[] | null,
-  ordersEpicentr: Order[] | null,
+  ordersRozetka: IOrder[],
+  ordersEpicentr: Order[],
 ) => {
   const messageRozetka = ordersRozetka
     ? ordersRozetka
@@ -24,8 +24,6 @@ export const createMessage = (
         })
         .join("\n")
     : "";
-
-  console.log(messageRozetka, messageEpicentr);
 
   if (messageRozetka.length === 0) return `🔵 Эпицентр:\n${messageEpicentr}`;
   if (messageEpicentr.length === 0) return `🟢 Розетка:\n${messageRozetka}`;

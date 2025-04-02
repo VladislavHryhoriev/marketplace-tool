@@ -64,6 +64,9 @@ const usePollingStore = create<State & Actions>((set, get) => ({
     if (intervalPollingId) return;
 
     const pollingOrders = async () => {
+      const { browser, telegram } = useUserConfigStore.getState().notifications;
+      const { sendToProcess } = useUserConfigStore.getState().orders;
+
       try {
         const { orders: newOrdersRozetka, success } =
           await rozetkaApi.getOrdersByType(
@@ -94,35 +97,31 @@ const usePollingStore = create<State & Actions>((set, get) => ({
           ordersRozetka: newOrdersRozetka,
         });
 
-        // Кинуть в обработку заказы до 100 грн
-        if (useUserConfigStore.getState().orders.sendToProcess) {
-          await rozetkaApi.updateOrderStatus({
-            orders: get().getSmallOrdersRozetka(newOrdersRozetka),
-          });
+        const smallRozetka = get().getSmallOrdersRozetka(newOrdersRozetka);
+        const smallEpicentr = get().getSmallOrdersEpicentr(newOrdersEpicentr);
+
+        // Кинуть в обработку заказы до <maxSum> грн
+        if (sendToProcess) {
+          await rozetkaApi.updateOrderStatus({ orders: smallRozetka });
         }
 
         if (uniqueOrdersRozetka.length > 0 || uniqueOrdersEpicentr.length > 0) {
-          if (useUserConfigStore.getState().notifications.browser) {
-            sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
-          }
+          if (browser) sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
 
-          const rozetkaCount =
-            get().getSmallOrdersRozetka(newOrdersRozetka).length;
-          const epicentrCount =
-            get().getSmallOrdersEpicentr(newOrdersEpicentr).length;
+          if (telegram) {
+            await sendMessage([
+              {
+                id: config.botUserIds.ukrstore,
+                message: createMessage([], newOrdersEpicentr),
+              },
+            ]);
 
-          if (rozetkaCount > 0 || epicentrCount > 0) {
-            const messageOwner = createMessage(
-              get().getSmallOrdersRozetka(newOrdersRozetka),
-              get().getSmallOrdersEpicentr(newOrdersEpicentr),
-            );
-
-            const messageUkrstore = createMessage(null, newOrdersEpicentr);
-
-            if (useUserConfigStore.getState().notifications.telegram) {
+            if (smallRozetka.length > 0 || smallEpicentr.length > 0) {
               await sendMessage([
-                { id: config.botUserIds.owner, message: messageOwner },
-                { id: config.botUserIds.ukrstore, message: messageUkrstore },
+                {
+                  id: config.botUserIds.owner,
+                  message: createMessage(smallRozetka, smallEpicentr),
+                },
               ]);
             }
           }

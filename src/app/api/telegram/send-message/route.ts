@@ -15,7 +15,9 @@ export async function POST(req: NextRequest) {
     const messages = await Promise.allSettled(
       chats.map(async ({ id, message }) => {
         try {
-          return await bot.api.sendMessage(id, message, { parse_mode: "HTML" });
+          return await bot.api.sendMessage(id, message, {
+            parse_mode: "HTML",
+          });
         } catch (error) {
           console.error(error);
         }
