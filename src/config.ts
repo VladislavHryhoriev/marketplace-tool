@@ -1,22 +1,7 @@
 import { TEpicentrSearchType } from "./clients/epicentr/types";
 import { TRozetkaSearchType } from "./clients/rozetka/types";
-
-export interface IConfig {
-  fetchInterval: number;
-  maxInputLength: number;
-  rozetka: { tokenLifetime: number; searchType: TRozetkaSearchType };
-  epicentr: { searchType: TEpicentrSearchType };
-  botUserIds: { owner: number; ukrstore: number };
-  deliveryCost: {
-    nova: { price: number; commision: number };
-    ukr: { price: number; commision: number };
-  };
-  interval: number;
-}
-
-const sec = 1000;
-const min = 60 * sec;
-const hour = 60 * min;
+import { hour, min, sec } from "./consts/TIME";
+import { IConfig } from "./types/config";
 
 export const ROUTES = [
   { title: "Главная", path: "/menu/main" },
@@ -61,13 +46,7 @@ export const setSearchType = (newConfig: {
   epicentr: TEpicentrSearchType;
 }) => {
   setConfig({
-    rozetka: {
-      ...config.rozetka,
-      searchType: newConfig.rozetka,
-    },
-    epicentr: {
-      ...config.epicentr,
-      searchType: newConfig.epicentr,
-    },
+    rozetka: { ...config.rozetka, searchType: newConfig.rozetka },
+    epicentr: { ...config.epicentr, searchType: newConfig.epicentr },
   });
 };

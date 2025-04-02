@@ -7,14 +7,12 @@ import { Button } from "@/components/ui/button";
 import usePollingStore from "@/store/pollingStore";
 
 const MainPage = () => {
-  const ordersRozetka = usePollingStore((state) => state.ordersRozetka);
-  const ordersEpicentr = usePollingStore((state) => state.ordersEpicentr);
-
-  // TODO: Сбросить список после обновления статуса
+  const { ordersRozetka, ordersEpicentr, restartPolling } = usePollingStore();
 
   const handleClick = async () => {
     const { orders } = await rozetkaApi.getNewOrders();
     await rozetkaApi.updateOrderStatus({ orders, status: 26 });
+    restartPolling();
   };
 
   return (

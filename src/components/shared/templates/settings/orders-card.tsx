@@ -8,7 +8,7 @@ import useUserConfigStore from "@/store/userConfigStore";
 import { SquareChartGantt } from "lucide-react";
 
 const OrdersCard = () => {
-  const { notifications, setNotifications } = useUserConfigStore();
+  const { orders, setOrders } = useUserConfigStore();
   const maxSum = usePollingStore((state) => state.maxSum);
   const setMaxSum = usePollingStore((state) => state.setMaxSum);
 
@@ -22,12 +22,8 @@ const OrdersCard = () => {
         <div className="flex items-center gap-4">
           <Switch
             id="sendToProcess"
-            checked={notifications.sendToProcess}
-            onCheckedChange={(checked) =>
-              setNotifications({
-                sendToProcess: checked,
-              })
-            }
+            checked={orders.sendToProcess}
+            onCheckedChange={(checked) => setOrders({ sendToProcess: checked })}
             className="data-[state=checked]:bg-emerald-500 dark:data-[state=unchecked]:bg-zinc-500/50"
           />
           <Label htmlFor="sendToProcess">Кидать в обработку заказы до:</Label>

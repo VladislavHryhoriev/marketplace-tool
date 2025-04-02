@@ -25,6 +25,7 @@ interface Actions {
   startPolling: () => void;
   stopPolling: () => void;
   resetOrders: () => void;
+  restartPolling: () => void;
 }
 
 let intervalPollingId = null as NodeJS.Timeout | null;
@@ -65,9 +66,11 @@ const usePollingStore = create<State & Actions>((set, get) => ({
     const pollingOrders = async () => {
       try {
         const { orders: newOrdersRozetka, success } =
-          await rozetkaApi.getOrdersByType(config.rozetka.searchType);
+          await rozetkaApi.getOrdersByType(
+            useUserConfigStore.getState().market.rozetkaSearchType,
+          );
         const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
-          config.epicentr.searchType,
+          useUserConfigStore.getState().market.epicenterSearchType,
         );
 
         if (!success) {
@@ -92,7 +95,7 @@ const usePollingStore = create<State & Actions>((set, get) => ({
         });
 
         // Кинуть в обработку заказы до 100 грн
-        if (useUserConfigStore.getState().notifications.sendToProcess) {
+        if (useUserConfigStore.getState().orders.sendToProcess) {
           await rozetkaApi.updateOrderStatus({
             orders: get().getSmallOrdersRozetka(newOrdersRozetka),
           });
@@ -114,9 +117,12 @@ const usePollingStore = create<State & Actions>((set, get) => ({
               get().getSmallOrdersEpicentr(newOrdersEpicentr),
             );
 
+            const messageUkrstore = createMessage(null, newOrdersEpicentr);
+
             if (useUserConfigStore.getState().notifications.telegram) {
               await sendMessage([
                 { id: config.botUserIds.owner, message: messageOwner },
+                { id: config.botUserIds.ukrstore, message: messageUkrstore },
               ]);
             }
           }
@@ -146,6 +152,11 @@ const usePollingStore = create<State & Actions>((set, get) => ({
     set({ isPolling: false, progress: 0 });
     intervalPollingId = null;
     intervalProgressId = null;
+  },
+
+  restartPolling: () => {
+    get().stopPolling();
+    get().startPolling();
   },
 
   resetOrders: () => {

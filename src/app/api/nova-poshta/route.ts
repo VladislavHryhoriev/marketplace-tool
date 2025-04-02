@@ -1,4 +1,4 @@
-import { getDeliveryInfo } from "@/clients/nova-poshta/api";
+import { getDeliveryInfo } from "@/clients/nova-poshta/lib/get-delivery-info";
 import { TrackingResponse, TrackingResult } from "@/clients/nova-poshta/types";
 import LINKS from "@/consts/LINKS";
 import { NextRequest, NextResponse } from "next/server";
@@ -44,13 +44,7 @@ export async function POST(
 
     if (!success)
       return NextResponse.json(
-        {
-          ok: false,
-          message: errors,
-          ttn: "",
-          date: "",
-          return: "",
-        },
+        { ok: false, message: errors, ttn: "", date: "", return: "" },
         { status: 400 },
       );
 
@@ -66,13 +60,7 @@ export async function POST(
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      {
-        ok: false,
-        message: error,
-        ttn: "",
-        date: "",
-        return: "",
-      },
+      { ok: false, message: error, ttn: "", date: "", return: "" },
       { status: 500 },
     );
   }

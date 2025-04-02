@@ -2,14 +2,15 @@ import { TEpicentrSearchType } from "@/clients/epicentr/types";
 import { TRozetkaSearchType } from "@/clients/rozetka/types";
 import { config, defaultConfig, setConfig, setSearchType } from "@/config";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import usePollingStore from "./pollingStore";
-import { get } from "node:http";
 
 interface State {
   notifications: {
     browser: boolean;
     telegram: boolean;
+  };
+  orders: {
     sendToProcess: boolean;
   };
   market: {
@@ -22,6 +23,7 @@ interface Actions {
   setNotifications: (
     newNotificationsConfig: Partial<State["notifications"]>,
   ) => void;
+  setOrders: (newOrdersConfig: Partial<State["orders"]>) => void;
   setMarket: (newMarketConfig: Partial<State["market"]>) => void;
   resetMarket: () => void;
 }
@@ -30,6 +32,9 @@ const initialState: State = {
   notifications: {
     browser: false,
     telegram: false,
+  },
+
+  orders: {
     sendToProcess: false,
   },
 
@@ -70,6 +75,9 @@ const useUserConfigStore = create<State & Actions>()(
         set((state) => ({
           notifications: { ...state.notifications, ...newNotificationsConfig },
         })),
+
+      setOrders: (newOrdersConfig) =>
+        set((state) => ({ orders: { ...state.orders, ...newOrdersConfig } })),
     }),
     { name: "config" },
   ),
