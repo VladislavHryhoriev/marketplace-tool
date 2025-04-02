@@ -6,6 +6,8 @@ export const createMessage = (
   ordersRozetka: IOrder[],
   ordersEpicentr: Order[],
 ) => {
+  if (ordersRozetka.length === 0 && ordersEpicentr.length === 0) return "";
+
   const messageRozetka = ordersRozetka
     ? ordersRozetka
         .map((order) => {

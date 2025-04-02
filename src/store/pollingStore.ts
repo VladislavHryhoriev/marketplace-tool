@@ -9,6 +9,7 @@ import { createMessage } from "@/lib/telegram/create-message";
 import { sendMessage } from "@/lib/telegram/send-message";
 import { create } from "zustand";
 import useUserConfigStore from "./userConfigStore";
+import { toast } from "react-toastify";
 
 interface State {
   ordersRozetka: IOrder[];
@@ -109,20 +110,28 @@ const usePollingStore = create<State & Actions>((set, get) => ({
           if (browser) sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
 
           if (telegram) {
-            await sendMessage([
+            const message = await sendMessage([
               {
                 id: config.botUserIds.ukrstore,
                 message: createMessage([], newOrdersEpicentr),
               },
             ]);
 
+            if (!message) {
+              toast.error("Ошибка при отправке сообщения");
+            }
+
             if (smallRozetka.length > 0 || smallEpicentr.length > 0) {
-              await sendMessage([
+              const message = await sendMessage([
                 {
                   id: config.botUserIds.owner,
                   message: createMessage(smallRozetka, smallEpicentr),
                 },
               ]);
+
+              if (!message) {
+                toast.error("Ошибка при отправке сообщения");
+              }
             }
           }
         }
