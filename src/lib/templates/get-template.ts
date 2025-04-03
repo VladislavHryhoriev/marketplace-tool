@@ -23,7 +23,7 @@ export const getTemplate = async (
 
   const orderBlocks = {
     welcome: `Доброго дня! Ваше замовлення №${order.id} на сайті ${storeName} прийнято.`,
-    items: `📦 **Ваше замовлення:** ${productsText}\n`,
+    items: `📦 **Замовили:** ${productsText}\n`,
     recipient: `👤 **Отримувач:** ${fullName}`,
     address: `📍 **Адреса доставки:** ${order.address}`,
     payment,
