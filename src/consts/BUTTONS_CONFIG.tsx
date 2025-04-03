@@ -3,6 +3,7 @@ import {
   ClockArrowDown,
   PhoneMissed,
   PhoneOff,
+  SquareChevronLeft,
 } from "lucide-react";
 import { TEMPLATES } from "./TEMPLATES";
 
@@ -26,6 +27,11 @@ const BUTTONS_CONFIG = [
     type: TEMPLATES.uncollected,
     icon: <ClockArrowDown />,
     label: "Не забирает заказ",
+  },
+  {
+    type: TEMPLATES.returnOrder,
+    icon: <SquareChevronLeft />,
+    label: "Возврат товара",
   },
 ] as const;
 
