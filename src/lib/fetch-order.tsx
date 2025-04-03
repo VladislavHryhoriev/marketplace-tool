@@ -37,6 +37,14 @@ const fetchOrderData = async (
       type,
     );
 
+    if (ttnInfo.statusCode) {
+      toast.warn(ttnInfo.status);
+    }
+
+    if (!ttnInfo.ok) {
+      toast.error(ttnInfo.message as string);
+    }
+
     const template = await getTemplate(
       type,
       order,

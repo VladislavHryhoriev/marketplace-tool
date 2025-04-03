@@ -125,4 +125,6 @@ export interface TrackingResult {
   date: string;
   return: string;
   message: string | unknown;
+  status: string;
+  statusCode: string;
 }

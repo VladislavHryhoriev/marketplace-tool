@@ -1,6 +1,14 @@
 import { TrackingResult } from "@/clients/nova-poshta/types";
 import API_URLS from "@/consts/API_URLS";
 import { TemplateNames, TEMPLATES } from "@/consts/TEMPLATES";
+import { toast } from "react-toastify";
+
+const empty = {
+  date: "",
+  return: "",
+  status: "",
+  statusCode: "",
+};
 
 class NovaPoshtaApiClient {
   protected async request<T>(options?: RequestInit): Promise<T> {
@@ -8,39 +16,53 @@ class NovaPoshtaApiClient {
       "Content-Type": "application/json",
     };
 
-    const response = await fetch(API_URLS.novaPoshta.route, {
-      headers,
-      next: { revalidate: 10 },
-      ...options,
-    });
+    try {
+      const response = await fetch(API_URLS.novaPoshta.route, {
+        headers,
+        next: { revalidate: 10 },
+        ...options,
+      });
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const json = await response.json();
+
+      return json;
+    } catch (error) {
+      console.error(error);
+      throw new Error(`Failed to make API request: ${error}`);
     }
-
-    const json = await response.json();
-
-    return json;
   }
 
   async getTrackingInfo(
     ttn: string,
     phone: string,
     activeTemplate: TemplateNames,
-  ) {
+  ): Promise<TrackingResult> {
     if (activeTemplate === TEMPLATES.uncollected) {
+      if (!ttn) {
+        return { ok: false, ttn, message: "Нету ТТН в заказе", ...empty };
+      }
+
+      if (!phone) {
+        return { ok: false, ttn, message: "Нету номера телефона", ...empty };
+      }
+
       try {
-        return this.request<TrackingResult>({
+        const result = await this.request<TrackingResult>({
           method: "POST",
           body: JSON.stringify({ ttn, phone }),
         });
+
+        return result;
       } catch (error) {
-        console.error(error);
-        return { ok: false, ttn, date: "", return: "", message: error };
+        return { ok: false, ttn, ...empty, message: error };
       }
     }
 
-    return { ok: true, ttn, date: "", return: "", message: "" };
+    return { ok: true, ttn, message: "", ...empty };
   }
 }
 
