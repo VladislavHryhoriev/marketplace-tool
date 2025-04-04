@@ -6,7 +6,9 @@ const API_URLS = {
     deleteMessage: `${BASE_URL}/api/telegram/delete-message`,
   },
 
-  novaPoshta: { route: `${BASE_URL}/api/nova-poshta` },
+  novaPoshta: {
+    tracking: `${BASE_URL}/api/nova-poshta/tracking`,
+  },
 };
 
 export default API_URLS;

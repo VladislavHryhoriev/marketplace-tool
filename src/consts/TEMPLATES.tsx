@@ -4,6 +4,7 @@ export const TEMPLATES = {
   confirmWithoutCall: "CONFIRM_WITHOUT_CALL",
   uncollected: "UNCOLLECTED",
   returnOrder: "RETURN_ORDER",
+  temp: "TEMP",
 } as const;
 
 export type TemplateNames = (typeof TEMPLATES)[keyof typeof TEMPLATES];

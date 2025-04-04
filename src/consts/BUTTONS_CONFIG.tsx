@@ -1,4 +1,5 @@
 import {
+  CalendarClock,
   CircleCheckBig,
   ClockArrowDown,
   PhoneMissed,
@@ -32,6 +33,11 @@ const BUTTONS_CONFIG = [
     type: TEMPLATES.returnOrder,
     icon: <SquareChevronLeft />,
     label: "Возврат товара",
+  },
+  {
+    type: TEMPLATES.temp,
+    icon: <CalendarClock />,
+    label: "Temp",
   },
 ] as const;
 

@@ -15,17 +15,9 @@ export const BOT_UKRSTORE_ID = 901615640;
 export const defaultConfig: IConfig = {
   fetchInterval: 1 * min,
   maxInputLength: 15,
-  rozetka: {
-    tokenLifetime: 24 * hour,
-    searchType: 4,
-  },
-  epicentr: {
-    searchType: "new",
-  },
-  botUserIds: {
-    owner: BOT_OWNER_ID,
-    ukrstore: BOT_UKRSTORE_ID,
-  },
+  rozetka: { searchType: 4, tokenLifetime: 24 * hour },
+  epicentr: { searchType: "new" },
+  botUserIds: { owner: BOT_OWNER_ID, ukrstore: BOT_UKRSTORE_ID },
   deliveryCost: {
     nova: { price: 80, commision: 20 },
     ukr: { price: 55, commision: 10 },

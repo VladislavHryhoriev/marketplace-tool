@@ -34,6 +34,19 @@ let intervalProgressId = null as NodeJS.Timeout | null;
 
 const step = 100 / (config.fetchInterval / config.interval);
 
+const fetchData = async () => {
+  const { orders: newOrdersRozetka, success } =
+    await rozetkaApi.getOrdersByType(
+      useUserConfigStore.getState().market.rozetkaSearchType,
+    );
+
+  const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
+    useUserConfigStore.getState().market.epicenterSearchType,
+  );
+
+  return { newOrdersRozetka, newOrdersEpicentr, success };
+};
+
 const initialState: State = {
   ordersRozetka: [],
   ordersEpicentr: [],
@@ -69,13 +82,8 @@ const usePollingStore = create<State & Actions>((set, get) => ({
       const { sendToProcess } = useUserConfigStore.getState().orders;
 
       try {
-        const { orders: newOrdersRozetka, success } =
-          await rozetkaApi.getOrdersByType(
-            useUserConfigStore.getState().market.rozetkaSearchType,
-          );
-        const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
-          useUserConfigStore.getState().market.epicenterSearchType,
-        );
+        const { newOrdersRozetka, newOrdersEpicentr, success } =
+          await fetchData();
 
         if (!success) {
           get().stopPolling();
@@ -135,16 +143,17 @@ const usePollingStore = create<State & Actions>((set, get) => ({
             }
           }
         }
+        set({ progress: 0 });
       } catch (error) {
         console.error(error);
       }
     };
 
     const progress = () => {
-      if (get().progress < 100) {
-        set((prev) => ({ progress: prev.progress + step }));
-      } else {
+      if (get().progress + step >= 100) {
         set({ progress: 0 });
+      } else {
+        set({ progress: get().progress + step });
       }
     };
 

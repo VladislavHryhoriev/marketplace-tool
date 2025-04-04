@@ -47,7 +47,7 @@ const OrderList = ({
           {smallOrders.length > 0 && ` (${smallOrders.length} маленьких)`}
         </span>
       </CardHeader>
-      <CardContent className="h-[70vh] overflow-y-auto">
+      <CardContent className="max-h-[70vh] overflow-y-auto">
         <ul className="grid grid-cols-1 gap-2">
           {orders.map((order) => (
             <li key={order.id}>

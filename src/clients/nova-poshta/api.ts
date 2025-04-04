@@ -1,7 +1,6 @@
 import { TrackingResult } from "@/clients/nova-poshta/types";
 import API_URLS from "@/consts/API_URLS";
 import { TemplateNames, TEMPLATES } from "@/consts/TEMPLATES";
-import { toast } from "react-toastify";
 
 const empty = {
   date: "",
@@ -11,13 +10,13 @@ const empty = {
 };
 
 class NovaPoshtaApiClient {
-  protected async request<T>(options?: RequestInit): Promise<T> {
+  protected async request<T>(url: string, options?: RequestInit): Promise<T> {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };
 
     try {
-      const response = await fetch(API_URLS.novaPoshta.route, {
+      const response = await fetch(url, {
         headers,
         next: { revalidate: 10 },
         ...options,
@@ -51,10 +50,10 @@ class NovaPoshtaApiClient {
       }
 
       try {
-        const result = await this.request<TrackingResult>({
-          method: "POST",
-          body: JSON.stringify({ ttn, phone }),
-        });
+        const result = await this.request<TrackingResult>(
+          API_URLS.novaPoshta.tracking,
+          { method: "POST", body: JSON.stringify({ ttn, phone }) },
+        );
 
         return result;
       } catch (error) {
