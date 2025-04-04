@@ -21,6 +21,7 @@ const OrderListRozetka = ({ orders }: { orders: IOrder[] }) => {
       alt: photo.item_name,
     })),
     link: `https://seller.rozetka.com.ua/main/orders/all?page=1&sort=-id&pageSize=50&id=${order.id}&types=1`,
+    ttn: order.ttn || null,
   }));
 
   const smallOrders = formattedOrders.filter(

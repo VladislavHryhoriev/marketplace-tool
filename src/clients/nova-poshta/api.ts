@@ -45,6 +45,10 @@ class NovaPoshtaApiClient {
         return { ok: false, ttn, message: "Нету ТТН в заказе", ...empty };
       }
 
+      if (ttn.startsWith("050")) {
+        return { ok: false, ttn, message: "ТТН от УкрПочты", ...empty };
+      }
+
       if (!phone) {
         return { ok: false, ttn, message: "Нету номера телефона", ...empty };
       }

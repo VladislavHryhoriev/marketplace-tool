@@ -13,6 +13,7 @@ import useGlobalStore from "@/store/globalStore";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Edit, FileText, Save, Star } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { FaPlus, FaViber } from "react-icons/fa";
 import { RiTelegram2Fill } from "react-icons/ri";
@@ -29,6 +30,15 @@ const Templates = () => {
   const activeOrder = useGlobalStore((state) => state.activeOrder);
   const setActiveOrder = useGlobalStore((state) => state.setActiveOrder);
   const [_, copy] = useCopyToClipboard();
+
+  const orderId = useSearchParams().get("orderId");
+
+  useEffect(() => {
+    if (orderId) {
+      setInputTextOrder(`${orderId}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId]);
 
   const comparedPhone = useMemo(() => {
     return (

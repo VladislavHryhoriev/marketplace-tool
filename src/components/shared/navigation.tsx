@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import useGlobalStore from "@/store/globalStore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export const Navigation = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   const [activePath, setActivePath] = useState(pathname);
@@ -22,6 +22,10 @@ export const Navigation = ({ className }: { className?: string }) => {
     setIsOpenMenu(!isOpenMenu);
     setActivePath(path);
   };
+
+  useEffect(() => {
+    setActivePath(pathname);
+  }, [pathname]);
 
   return (
     <>
