@@ -81,7 +81,7 @@ export const Navigation = ({ className }: { className?: string }) => {
                 <li key={route.path}>
                   <Link
                     className={cn(
-                      "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                      "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                       activePath === route.path
                         ? "bg-indigo-500 text-zinc-100"
                         : "text-zinc-400 hover:bg-zinc-700/50 hover:text-zinc-100",
@@ -89,6 +89,7 @@ export const Navigation = ({ className }: { className?: string }) => {
                     href={route.path}
                     onClick={() => setActivePath(route.path)}
                   >
+                    {route.icon}
                     {route.title}
                   </Link>
                 </li>

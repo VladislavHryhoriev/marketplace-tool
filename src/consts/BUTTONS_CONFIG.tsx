@@ -1,42 +1,48 @@
 import {
+  ArrowLeftFromLine,
+  Ban,
   CalendarClock,
-  CircleCheckBig,
-  ClockArrowDown,
+  Check,
+  ClockFading,
   PhoneMissed,
   PhoneOff,
-  SquareChevronLeft,
 } from "lucide-react";
 import { TEMPLATES } from "./TEMPLATES";
 
 const BUTTONS_CONFIG = [
   {
     type: TEMPLATES.missedCall,
-    icon: <PhoneMissed />,
+    icon: <PhoneMissed className="text-red-400" />,
     label: "Недозвон",
   },
   {
     type: TEMPLATES.autoconfirm,
-    icon: <CircleCheckBig />,
+    icon: <Check className="text-green-400" />,
     label: "Автоподтверждение",
   },
   {
     type: TEMPLATES.confirmWithoutCall,
-    icon: <PhoneOff />,
+    icon: <PhoneOff className="text-yellow-400" />,
     label: "Подтверждение без звонка",
   },
   {
     type: TEMPLATES.uncollected,
-    icon: <ClockArrowDown />,
+    icon: <ClockFading className="text-blue-400" />,
     label: "Не забирает заказ",
   },
   {
+    type: TEMPLATES.notReceived,
+    icon: <Ban className="text-red-400" />,
+    label: "Не забрал",
+  },
+  {
     type: TEMPLATES.returnOrder,
-    icon: <SquareChevronLeft />,
+    icon: <ArrowLeftFromLine className="text-fuchsia-400" />,
     label: "Возврат товара",
   },
   {
     type: TEMPLATES.temp,
-    icon: <CalendarClock />,
+    icon: <CalendarClock className="text-white" />,
     label: "Temp",
   },
 ] as const;

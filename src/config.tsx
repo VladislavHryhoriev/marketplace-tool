@@ -1,13 +1,26 @@
+import { Box, LayoutTemplate, Settings } from "lucide-react";
 import { TEpicentrSearchType } from "./clients/epicentr/types";
 import { TRozetkaSearchType } from "./clients/rozetka/types";
 import { hour, min, sec } from "./consts/TIME";
 import { IConfig } from "./types/config";
 
 export const ROUTES = [
-  { title: "Главная", path: "/menu/main" },
-  { title: "Шаблоны", path: "/menu/templates" },
-  { title: "Настройки", path: "/menu/settings" },
-];
+  {
+    title: "Главная",
+    path: "/menu/main",
+    icon: <Box className="size-5" />,
+  },
+  {
+    title: "Шаблоны",
+    path: "/menu/templates",
+    icon: <LayoutTemplate className="size-5" />,
+  },
+  {
+    title: "Настройки",
+    path: "/menu/settings",
+    icon: <Settings className="size-5" />,
+  },
+] as const;
 
 export const BOT_OWNER_ID = 751308202;
 export const BOT_UKRSTORE_ID = 901615640;

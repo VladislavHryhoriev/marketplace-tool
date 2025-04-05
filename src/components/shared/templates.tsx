@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import LINKS from "@/consts/LINKS";
 import useGlobalStore from "@/store/globalStore";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
-import { Edit, FileText, Save, Star } from "lucide-react";
+import { Edit, Save, Star } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -80,8 +80,7 @@ const Templates = () => {
     <div className="flex flex-wrap gap-6">
       <Card className="flex-3 border-zinc-700 bg-zinc-800/80">
         <CardHeader className="flex flex-row items-center gap-2">
-          <FileText className="size-5 text-zinc-400" />
-          <CardTitle className="text-lg text-zinc-100">Шаблоны</CardTitle>
+          <CardTitle className="text-zinc-100">Шаблоны</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <div className="flex items-center gap-1">
@@ -104,7 +103,7 @@ const Templates = () => {
               <Star className="size-5" />
             </Link>
           </div>
-          <CardDescription className="text-xs text-zinc-400/80">
+          <CardDescription className="mt-4 text-xs text-zinc-400/80">
             {activeOrder?.paymentTypeName}
           </CardDescription>
           <TemplateButtons />

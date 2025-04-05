@@ -3,6 +3,7 @@ export const TEMPLATES = {
   missedCall: "MISSED_CALL",
   confirmWithoutCall: "CONFIRM_WITHOUT_CALL",
   uncollected: "UNCOLLECTED",
+  notReceived: "NOT_RECEIVED",
   returnOrder: "RETURN_ORDER",
   temp: "TEMP",
 } as const;
