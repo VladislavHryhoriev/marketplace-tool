@@ -2,13 +2,13 @@
 
 const nextConfig = {
   images: {
-    domains: [
-      "rozetka.com.ua",
-      "content.rozetka.com.ua",
-      "content1.rozetka.com.ua",
-      "content2.rozetka.com.ua",
-      "epicentrk.ua",
-      "cdn.27.ua",
+    remotePatterns: [
+      { hostname: "rozetka.com.ua" },
+      { hostname: "content.rozetka.com.ua" },
+      { hostname: "content1.rozetka.com.ua" },
+      { hostname: "content2.rozetka.com.ua" },
+      { hostname: "epicentrk.ua" },
+      { hostname: "cdn.27.ua" },
     ],
   },
   env: {
