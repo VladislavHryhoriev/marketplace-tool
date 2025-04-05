@@ -151,7 +151,7 @@ const Templates = () => {
                 />
                 {!comparedPhone && (
                   <Link
-                    href={`tg://resolve?phone=${activeOrder?.recipient.phone}`}
+                    href={`tg://resolve?phone=${activeOrder?.user.phone}`}
                     target="_blank"
                     rel="noreferrer noopener"
                     onClick={() => copy(areaTextOrder)}
