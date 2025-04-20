@@ -11,9 +11,7 @@ import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const isPolling = usePollingStore((state) => state.isPolling);
-  const startPolling = usePollingStore((state) => state.startPolling);
-  const stopPolling = usePollingStore((state) => state.stopPolling);
+  const { isPolling, startPolling, stopPolling } = usePollingStore();
   const setIsOpenMenu = useGlobalStore((state) => state.setIsOpenMenu);
   const pathname = usePathname();
 

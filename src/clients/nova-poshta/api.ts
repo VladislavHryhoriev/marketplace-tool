@@ -1,73 +1,71 @@
-import { TrackingData, TrackingResult } from "@/clients/nova-poshta/types";
+import { TrackingResult } from "@/clients/nova-poshta/types";
 import API_URLS from "@/consts/API_URLS";
 import { TemplateNames, TEMPLATES } from "@/consts/TEMPLATES";
-export const getDeliveryInfo = (data: TrackingData) => ({
-  time: data.ActualDeliveryDate.split(" ")[1]?.slice(0, 5),
 
-  date: {
-    full: data.ActualDeliveryDate.split(" ")[0],
-    day: data.ActualDeliveryDate.split(" ")[0].split("-")[2],
-    month: data.ActualDeliveryDate.split(" ")[0].split("-")[1],
-    year: data.ActualDeliveryDate.split(" ")[0].split("-")[0],
-  },
-
-  return: {
-    full: data.DateReturnCargo,
-    day: data.DateReturnCargo?.split("-")[2],
-    month: data.DateReturnCargo?.split("-")[1],
-    year: data.DateReturnCargo?.split("-")[0],
-  },
-
-  get dateTemplate() {
-    if (!this.date.day || !this.date.month || !this.date.year) return "";
-    return `${this.date.day}.${this.date.month}.${this.date.year}`;
-  },
-
-  get returnTemplate() {
-    if (!this.return.day || !this.return.month || !this.return.year) return "";
-    return `${+this.return.day - 1}.${this.return.month}.${this.return.year}`;
-  },
-});
+const empty = {
+  date: "",
+  return: "",
+  status: "",
+  statusCode: "",
+};
 
 class NovaPoshtaApiClient {
-  protected async request<T>(options?: RequestInit): Promise<T> {
+  protected async request<T>(url: string, options?: RequestInit): Promise<T> {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };
 
-    const response = await fetch(API_URLS.novaPoshta.route, {
-      headers,
-      next: { revalidate: 10 },
-      ...options,
-    });
+    try {
+      const response = await fetch(url, {
+        headers,
+        next: { revalidate: 10 },
+        ...options,
+      });
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const json = await response.json();
+
+      return json;
+    } catch (error) {
+      console.error(error);
+      throw new Error(`Failed to make API request: ${error}`);
     }
-
-    const json = await response.json();
-
-    return json;
   }
 
   async getTrackingInfo(
     ttn: string,
     phone: string,
     activeTemplate: TemplateNames,
-  ) {
+  ): Promise<TrackingResult> {
     if (activeTemplate === TEMPLATES.uncollected) {
+      if (!ttn) {
+        return { ok: false, ttn, message: "Нету ТТН в заказе", ...empty };
+      }
+
+      if (ttn.startsWith("050")) {
+        return { ok: false, ttn, message: "ТТН от УкрПочты", ...empty };
+      }
+
+      if (!phone) {
+        return { ok: false, ttn, message: "Нету номера телефона", ...empty };
+      }
+
       try {
-        return this.request<TrackingResult>({
-          method: "POST",
-          body: JSON.stringify({ ttn, phone }),
-        });
+        const result = await this.request<TrackingResult>(
+          API_URLS.novaPoshta.tracking,
+          { method: "POST", body: JSON.stringify({ ttn, phone }) },
+        );
+
+        return result;
       } catch (error) {
-        console.error(error);
-        return { ok: false, ttn, date: "", return: "", message: error };
+        return { ok: false, ttn, ...empty, message: error };
       }
     }
 
-    return { ok: true, ttn, date: "", return: "", message: "" };
+    return { ok: true, ttn, message: "", ...empty };
   }
 }
 

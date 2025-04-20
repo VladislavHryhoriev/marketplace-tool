@@ -15,6 +15,11 @@ export async function POST(req: NextRequest) {
     const messages = await Promise.allSettled(
       chats.map(async ({ id, message }) => {
         try {
+          if (!message)
+            return NextResponse.json(
+              { ok: false, message: "Message is empty" },
+              { status: 400 },
+            );
           return await bot.api.sendMessage(id, message, { parse_mode: "HTML" });
         } catch (error) {
           console.error(error);
@@ -24,7 +29,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, message: messages }, { status: 200 });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json({ ok: false, message: error }, { status: 500 });
   }
 }

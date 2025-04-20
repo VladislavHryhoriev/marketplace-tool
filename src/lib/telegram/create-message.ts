@@ -6,22 +6,29 @@ export const createMessage = (
   ordersRozetka: IOrder[],
   ordersEpicentr: Order[],
 ) => {
+  if (ordersRozetka.length === 0 && ordersEpicentr.length === 0) return "";
+
   const messageRozetka = ordersRozetka
-    .map((order) => {
-      const link = `${LINKS.rozetka.new}?page=1&sort=-id&pageSize=50&id=${order.id}`;
-      return `№${order.id} <a href="${link}">${order.recipient_title.full_name}</a> - ${order.amount}`;
-    })
-    .join("\n");
+    ? ordersRozetka
+        .map((order) => {
+          const link = `${LINKS.rozetka.new}?page=1&sort=-id&pageSize=50&id=${order.id}`;
+          return `<a href="${link}">${order.recipient_title.full_name}</a> - ${order.amount}`;
+        })
+        .join("\n")
+    : "";
 
   const messageEpicentr = ordersEpicentr
-    .map((order) => {
-      const link = `https://admin.epicentrm.com.ua/oms/orders/${order.id}`;
-      const fullName = `${order.address.lastName} ${order.address.firstName} ${order.address.patronymic}`;
-      return `№${order.number} <a href="${link}">${fullName}</a> - ${order.subtotal}`;
-    })
-    .join("\n");
+    ? ordersEpicentr
+        .map((order) => {
+          const link = `https://admin.epicentrm.com.ua/oms/orders/${order.id}`;
+          const fullName = `${order.address.lastName} ${order.address.firstName} ${order.address.patronymic}`;
+          return `<a href="${link}">${fullName}</a> - ${order.subtotal}`;
+        })
+        .join("\n")
+    : "";
 
-  const message = `Розетка:\n${messageRozetka}\n\nЭпицентр:\n${messageEpicentr}`;
+  if (messageRozetka.length === 0) return `🔵 Эпицентр:\n${messageEpicentr}`;
+  if (messageEpicentr.length === 0) return `🟢 Розетка:\n${messageRozetka}`;
 
-  return message;
+  return `🟢 Розетка:\n${messageRozetka}\n\n🔵 Эпицентр:\n${messageEpicentr}`;
 };

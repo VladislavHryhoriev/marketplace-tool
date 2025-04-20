@@ -22,4 +22,10 @@ const DELIVERY_STATUSES = {
   112: "Дата доставки перенесена Одержувачем",
 } as const;
 
-export default DELIVERY_STATUSES;
+export type StatusCode = keyof typeof DELIVERY_STATUSES;
+
+const getStatusMessage = (statusCode: number): string => {
+  return DELIVERY_STATUSES[statusCode as StatusCode];
+};
+
+export { DELIVERY_STATUSES, getStatusMessage };

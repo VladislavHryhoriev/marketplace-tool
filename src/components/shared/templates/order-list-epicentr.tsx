@@ -22,6 +22,7 @@ const OrderListEpicentr = ({ orders }: { orders: Order[] }) => {
       alt: item.title,
     })),
     link: `https://admin.epicentrm.com.ua/oms/orders/${order.id}`,
+    ttn: order.address.shipment?.number || null,
   }));
 
   const smallOrders = formattedOrders.filter(

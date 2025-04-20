@@ -40,6 +40,24 @@ const expandNames = [
   "has_kit",
 ] as const;
 
+export const rozetkaSearchTypes = {
+  1: "Все заказы",
+  2: "В обработке",
+  3: "Успешно выполненные",
+  4: "Новые",
+  5: "Доставляются",
+  6: "Неуспешно выполненные",
+} as const;
+
+/**
+ * * 1 - Все заказы
+ * * 2 - В обработке
+ * * 3 - Успешно выполненные
+ * * 4 - Новые
+ * * 5 - Доставляются
+ * * 6 - Неуспешно выполненные
+ */
+export type TRozetkaSearchType = keyof typeof rozetkaSearchTypes;
 export type TExpandNames = (typeof expandNames)[number];
 
 export interface ITokenResponse {
@@ -267,4 +285,10 @@ export interface IOrderResponse {
     IExtendPaymentType &
     IExtendPaymentTypeName;
   errors?: ErrorResponse;
+}
+
+export interface IOrders {
+  success: boolean;
+  orders: IOrder[];
+  token: string;
 }

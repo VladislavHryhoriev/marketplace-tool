@@ -21,9 +21,15 @@ const TemplateButtons = () => {
   return (
     <div className="flex flex-wrap gap-2">
       {BUTTONS_CONFIG.map(({ type, icon, label }) => (
-        <Button key={type} onClick={() => handleClick(type)}>
-          {icon}
-          {label}
+        <Button
+          className="relative"
+          key={type}
+          onClick={() => handleClick(type)}
+        >
+          <span className="absolute top-0 bottom-0 left-0 flex aspect-square items-center justify-center rounded-l-md bg-zinc-800/80 p-1.5">
+            {icon}
+          </span>
+          <span className="pl-8">{label}</span>
         </Button>
       ))}
     </div>

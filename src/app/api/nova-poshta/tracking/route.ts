@@ -1,7 +1,15 @@
-import { getDeliveryInfo } from "@/clients/nova-poshta/api";
+import { getDeliveryInfo } from "@/clients/nova-poshta/lib/get-delivery-info";
 import { TrackingResponse, TrackingResult } from "@/clients/nova-poshta/types";
 import LINKS from "@/consts/LINKS";
 import { NextRequest, NextResponse } from "next/server";
+
+const empty = {
+  ttn: "",
+  date: "",
+  return: "",
+  status: "",
+  statusCode: "",
+};
 
 export async function POST(
   req: NextRequest,
@@ -9,23 +17,18 @@ export async function POST(
   try {
     const { ttn, phone } = await req.json();
 
-    if (!ttn)
-      return NextResponse.json({
-        ok: true,
-        message: "TTN is required",
-        ttn: "",
-        date: "",
-        return: "",
-      });
+    if (!ttn) {
+      return NextResponse.json(
+        { ok: false, message: "TTN is required", ...empty },
+        { status: 400 },
+      );
+    }
 
     if (ttn.startsWith("050")) {
-      return NextResponse.json({
-        ok: true,
-        message: "UkrPoshta TTN",
-        ttn: "",
-        date: "",
-        return: "",
-      });
+      return NextResponse.json(
+        { ok: false, message: "TTN from UkrPoshta", ...empty },
+        { status: 400 },
+      );
     }
 
     const body = {
@@ -40,21 +43,20 @@ export async function POST(
       body: JSON.stringify(body),
     });
 
-    const { data, success, errors }: TrackingResponse = await response.json();
+    const {
+      data: [order],
+      success,
+      errors,
+    }: TrackingResponse = await response.json();
 
-    if (!success)
+    if (!success) {
       return NextResponse.json(
-        {
-          ok: false,
-          message: errors,
-          ttn: "",
-          date: "",
-          return: "",
-        },
+        { ok: false, message: errors, ...empty },
         { status: 400 },
       );
+    }
 
-    const deliveryInfo = getDeliveryInfo(data[0]);
+    const deliveryInfo = getDeliveryInfo(order);
 
     return NextResponse.json<TrackingResult>({
       ok: true,
@@ -62,17 +64,13 @@ export async function POST(
       date: deliveryInfo.dateTemplate,
       return: deliveryInfo.returnTemplate,
       message: "",
+      status: order.Status,
+      statusCode: order.StatusCode,
     });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      {
-        ok: false,
-        message: error,
-        ttn: "",
-        date: "",
-        return: "",
-      },
+      { ok: false, message: error, ...empty },
       { status: 500 },
     );
   }

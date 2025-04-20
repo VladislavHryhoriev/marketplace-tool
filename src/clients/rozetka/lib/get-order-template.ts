@@ -1,19 +1,8 @@
-import {
-  IExtendDelivery,
-  IExtendPaymentType,
-  IExtendPaymentTypeName,
-  IExtendPurchases,
-  IOrder,
-} from "@/clients/rozetka/types";
-import { IOrderTemplate } from "../types/types";
-import fetchOrder from "./fetch-order";
+import { IOrderTemplate } from "@/lib/types/types";
+import { IOrderResponse } from "../types";
 
 const getOrderTemplate = (
-  orderData: IOrder &
-    IExtendDelivery &
-    IExtendPurchases &
-    IExtendPaymentType &
-    IExtendPaymentTypeName,
+  orderData: IOrderResponse["content"],
 ): IOrderTemplate => {
   return {
     id: orderData.id,
@@ -60,36 +49,4 @@ const getOrderTemplate = (
   };
 };
 
-export const getOrderInfoRozetka = async (
-  id: string,
-): Promise<{ order: IOrderTemplate; success: boolean }> => {
-  try {
-    const orderData = await fetchOrder(id, [
-      "delivery",
-      "purchases",
-      "payment_type_name",
-      "payment_type",
-    ]);
-
-    const order = getOrderTemplate(orderData);
-
-    return { order, success: true };
-  } catch (error) {
-    console.error(error);
-    return {
-      order: {
-        id: -1,
-        recipient: { name: "", phone: "" },
-        user: { name: "", phone: "" },
-        products: [],
-        address: "",
-        deliveryName: "",
-        ttn: "",
-        amount: "-1",
-        paymentType: "cash",
-        paymentTypeName: "",
-      },
-      success: false,
-    };
-  }
-};
+export default getOrderTemplate;

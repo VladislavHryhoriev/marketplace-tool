@@ -1,21 +1,20 @@
 "use client";
+import rozetkaApi from "@/clients/rozetka/api";
 import PollingOrdersButton from "@/components/shared/polling-orders-button";
 import OrderListEpicentr from "@/components/shared/templates/order-list-epicentr";
 import OrderListRozetka from "@/components/shared/templates/order-list-rozetka";
 import { Button } from "@/components/ui/button";
-import { getNewOrders } from "@/lib/rozetka/get-new-orders";
-import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import usePollingStore from "@/store/pollingStore";
 
 const MainPage = () => {
-  const ordersRozetka = usePollingStore((state) => state.ordersRozetka);
-  const ordersEpicentr = usePollingStore((state) => state.ordersEpicentr);
-
-  // TODO: Сбросить список после обновления статуса
+  const { isPolling, ordersRozetka, ordersEpicentr, restartPolling } =
+    usePollingStore();
 
   const handleClick = async () => {
-    const { orders, token } = await getNewOrders();
-    await updateOrderStatus({ orders, token, status: 26 });
+    const { orders } = await rozetkaApi.getNewOrders();
+    await rozetkaApi.updateOrderStatus({ orders, status: 26 });
+
+    if (isPolling) restartPolling();
   };
 
   return (

@@ -2,6 +2,7 @@
 import AdminWrapper from "@/components/shared/admin-wrapper";
 import NotificationCard from "@/components/shared/templates/settings/notification-card";
 import OrdersCard from "@/components/shared/templates/settings/orders-card";
+import MarketsCard from "@/components/shared/templates/settings/markets-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
@@ -20,6 +21,9 @@ const SettingsPage = () => {
               <OrdersCard />
             </AdminWrapper>
             <NotificationCard />
+            <AdminWrapper>
+              <MarketsCard />
+            </AdminWrapper>
           </div>
 
           <div className="flex justify-end">

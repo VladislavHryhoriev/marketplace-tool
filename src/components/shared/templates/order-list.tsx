@@ -1,22 +1,17 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import usePollingStore from "@/store/pollingStore";
+import { ROUTES } from "@/config";
 import Image from "next/image";
 import Link from "next/link";
 
 type OrderItem = {
   id: string | number;
   number?: string;
-  user: {
-    phone: string;
-    name: string;
-  };
-  recipient: {
-    phone: string;
-    name: string;
-  };
+  user: { phone: string; name: string };
+  recipient: { phone: string; name: string };
   amount: string | number;
   photos: Array<{ url: string; alt: string }>;
   link: string;
+  ttn: string | null;
 };
 
 type OrderListProps = {
@@ -51,36 +46,37 @@ const OrderList = ({
           {smallOrders.length > 0 && ` (${smallOrders.length} маленьких)`}
         </span>
       </CardHeader>
-      <CardContent className="h-[70vh] overflow-y-auto">
+      <CardContent className="max-h-[70vh] overflow-y-auto">
         <ul className="grid grid-cols-1 gap-2">
           {orders.map((order) => (
             <li key={order.id}>
-              <Link
-                href={order.link}
-                target="_blank"
-                className="flex items-center gap-4 rounded-lg bg-zinc-700/40 p-3 transition-all hover:bg-zinc-700/60"
-              >
+              <div className="flex items-center gap-4 rounded-lg bg-zinc-700/40 p-3">
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-1 text-sm font-medium text-zinc-100">
-                    {title === "Розетка" &&
-                      (order.recipient.name !== order.user.name ? (
-                        <span className="text-red-400">
-                          {order.user.name} {"=>"} {order.recipient.name}
-                        </span>
-                      ) : (
-                        <span>{order.recipient.name}</span>
-                      ))}
+                    <Link href={order.link} target="_blank">
+                      {title === "Розетка" &&
+                        (order.recipient.name !== order.user.name ? (
+                          <span className="text-red-400">
+                            {order.user.name} {"=>"} {order.recipient.name}
+                          </span>
+                        ) : (
+                          <span>{order.recipient.name}</span>
+                        ))}
 
-                    {title === "Розетка" &&
-                      order.recipient.phone !== order.user.phone && (
-                        <div className="text-red-400">
-                          {order.user.phone} {"=>"} {order.recipient.phone}
-                        </div>
-                      )}
+                      {title === "Розетка" &&
+                        order.recipient.phone !== order.user.phone && (
+                          <div className="text-red-400">
+                            {order.user.phone} {"=>"} {order.recipient.phone}
+                          </div>
+                        )}
+                    </Link>
 
-                    <span className="text-xs text-zinc-400">
+                    <Link
+                      href={`${ROUTES[1].path}?orderId=${order.id}`}
+                      className="text-xs text-zinc-400 hover:text-zinc-300"
+                    >
                       ({order.number || order.id})
-                    </span>
+                    </Link>
                   </div>
                   <div className="mt-1 flex items-center gap-2">
                     <span
@@ -107,9 +103,21 @@ const OrderList = ({
                         </div>
                       ))}
                     </div>
+                    <div className="flex gap-2 text-xs text-zinc-400">
+                      {/* !order.ttn.startsWith("050") */}
+                      {order.ttn && (
+                        <Link
+                          href={`https://novaposhtaglobal.ua/track/?Tracking_ID=${order.ttn}`}
+                          target="_blank"
+                          className="text-zinc-400 hover:text-zinc-300"
+                        >
+                          {order.ttn}
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             </li>
           ))}
         </ul>

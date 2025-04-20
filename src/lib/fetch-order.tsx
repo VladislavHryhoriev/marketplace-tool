@@ -1,8 +1,7 @@
 import epicentrApi from "@/clients/epicentr/api";
 import novaPoshtaApi from "@/clients/nova-poshta/api";
-import { IExtendPaymentType } from "@/clients/rozetka/types";
+import rozetkaApi from "@/clients/rozetka/api";
 import { TemplateNames } from "@/consts/TEMPLATES";
-import { getOrderInfoRozetka } from "@/lib/rozetka/get-order-info";
 import { getTemplate } from "@/lib/templates/get-template";
 import { toast } from "react-toastify";
 
@@ -23,7 +22,7 @@ const fetchOrderData = async (
   try {
     const { order, success } =
       inputTextOrder.length === 9
-        ? await getOrderInfoRozetka(inputTextOrder)
+        ? await rozetkaApi.getOrderInfoRozetka(inputTextOrder)
         : await epicentrApi.getOrderInfoEpicentr(inputTextOrder);
 
     if (!success) {
@@ -37,6 +36,14 @@ const fetchOrderData = async (
       order.recipient.phone,
       type,
     );
+
+    if (ttnInfo.statusCode) {
+      toast.warn(ttnInfo.status);
+    }
+
+    if (!ttnInfo.ok) {
+      toast.error(ttnInfo.message as string);
+    }
 
     const template = await getTemplate(
       type,

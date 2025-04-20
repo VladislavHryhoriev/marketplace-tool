@@ -2,10 +2,7 @@ import { Message } from "@/app/api/telegram/send-message/route";
 import API_URLS from "@/consts/API_URLS";
 
 export type ResponseMessage = {
-  message: {
-    msg_id: number;
-    chat_id: number;
-  };
+  message: { msg_id: number; chat_id: number };
 };
 
 export const sendMessage = async (chats: Message[]) => {

@@ -1,17 +1,15 @@
-import { getNewOrders } from "@/lib/rozetka/get-new-orders";
-import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
+import rozetkaApi from "@/clients/rozetka/api";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const tokenUrl = req.nextUrl.searchParams.get("token");
   const internalToken = "token3301";
-  const { orders, token } = await getNewOrders();
+  const { orders } = await rozetkaApi.getNewOrders();
 
   if (tokenUrl === internalToken) {
     try {
-      const { updatedOrders } = await updateOrderStatus({
+      const { updatedOrders } = await rozetkaApi.updateOrderStatus({
         orders,
-        token,
         status: 26,
       });
 
@@ -20,7 +18,7 @@ export async function GET(req: NextRequest) {
         { status: 200 },
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return NextResponse.json({ ok: false, message: error }, { status: 500 });
     }
   }

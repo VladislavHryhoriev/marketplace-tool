@@ -1,44 +1,62 @@
 import epicentrApi from "@/clients/epicentr/api";
 import { Order } from "@/clients/epicentr/types";
+import rozetkaApi from "@/clients/rozetka/api";
 import { IOrder } from "@/clients/rozetka/types";
 import { config } from "@/config";
 import { differenceByKey } from "@/lib/difference-by-key";
-import { getNewOrders } from "@/lib/rozetka/get-new-orders";
-import { updateOrderStatus } from "@/lib/rozetka/update-order-status";
 import { sendBrowserNotification } from "@/lib/send-browser-notification";
 import { createMessage } from "@/lib/telegram/create-message";
 import { sendMessage } from "@/lib/telegram/send-message";
 import { create } from "zustand";
 import useUserConfigStore from "./userConfigStore";
+import { toast } from "react-toastify";
 
-interface PollingState {
+interface State {
   ordersRozetka: IOrder[];
   ordersEpicentr: Order[];
   isPolling: boolean;
   maxSum: number;
   progress: number;
+}
 
+interface Actions {
   setMaxSum: (maxSum: string) => void;
-
   getSmallOrdersRozetka: (orders: IOrder[]) => IOrder[];
   getSmallOrdersEpicentr: (orders: Order[]) => Order[];
-
   startPolling: () => void;
   stopPolling: () => void;
+  resetOrders: () => void;
+  restartPolling: () => void;
 }
 
 let intervalPollingId = null as NodeJS.Timeout | null;
-
 let intervalProgressId = null as NodeJS.Timeout | null;
+
 const step = 100 / (config.fetchInterval / config.interval);
 
-const usePollingStore = create<PollingState>((set, get) => ({
+const fetchData = async () => {
+  const { orders: newOrdersRozetka, success } =
+    await rozetkaApi.getOrdersByType(
+      useUserConfigStore.getState().market.rozetkaSearchType,
+    );
+
+  const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
+    useUserConfigStore.getState().market.epicenterSearchType,
+  );
+
+  return { newOrdersRozetka, newOrdersEpicentr, success };
+};
+
+const initialState: State = {
   ordersRozetka: [],
   ordersEpicentr: [],
   isPolling: false,
   maxSum: 100,
   progress: 0,
+};
 
+const usePollingStore = create<State & Actions>((set, get) => ({
+  ...initialState,
   setMaxSum: (maxSum: string) => {
     set({
       isPolling: false,
@@ -60,11 +78,12 @@ const usePollingStore = create<PollingState>((set, get) => ({
     if (intervalPollingId) return;
 
     const pollingOrders = async () => {
+      const { browser, telegram } = useUserConfigStore.getState().notifications;
+      const { sendToProcess } = useUserConfigStore.getState().orders;
+
       try {
-        const { orders: newOrdersRozetka, success } = await getNewOrders();
-        const { items: newOrdersEpicentr } = await epicentrApi.fetchOrders(
-          config.epicentr.searchType,
-        );
+        const { newOrdersRozetka, newOrdersEpicentr, success } =
+          await fetchData();
 
         if (!success) {
           get().stopPolling();
@@ -87,46 +106,54 @@ const usePollingStore = create<PollingState>((set, get) => ({
           ordersRozetka: newOrdersRozetka,
         });
 
-        // Кинуть в обработку заказы до 100 грн
-        if (useUserConfigStore.getState().notifications.sendToProcess) {
-          await updateOrderStatus({
-            orders: get().getSmallOrdersRozetka(newOrdersRozetka),
-          });
+        const smallRozetka = get().getSmallOrdersRozetka(newOrdersRozetka);
+        const smallEpicentr = get().getSmallOrdersEpicentr(newOrdersEpicentr);
+
+        // Кинуть в обработку заказы до <maxSum> грн
+        if (sendToProcess) {
+          await rozetkaApi.updateOrderStatus({ orders: smallRozetka });
         }
 
         if (uniqueOrdersRozetka.length > 0 || uniqueOrdersEpicentr.length > 0) {
-          if (useUserConfigStore.getState().notifications.browser) {
-            sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
-          }
+          if (browser) sendBrowserNotification(uniqueOrdersRozetka); // Отправить уведомление в браузере
 
-          const rozetkaCount =
-            get().getSmallOrdersRozetka(newOrdersRozetka).length;
-          const epicentrCount =
-            get().getSmallOrdersEpicentr(newOrdersEpicentr).length;
+          if (telegram) {
+            const message = await sendMessage([
+              {
+                id: config.botUserIds.ukrstore,
+                message: createMessage([], newOrdersEpicentr),
+              },
+            ]);
 
-          if (rozetkaCount > 0 || epicentrCount > 0) {
-            const messageOwner = createMessage(
-              get().getSmallOrdersRozetka(newOrdersRozetka),
-              get().getSmallOrdersEpicentr(newOrdersEpicentr),
-            );
+            if (!message) {
+              toast.error("Ошибка при отправке сообщения");
+            }
 
-            if (useUserConfigStore.getState().notifications.telegram) {
-              await sendMessage([
-                { id: config.botUserIds.owner, message: messageOwner },
+            if (smallRozetka.length > 0 || smallEpicentr.length > 0) {
+              const message = await sendMessage([
+                {
+                  id: config.botUserIds.owner,
+                  message: createMessage(smallRozetka, smallEpicentr),
+                },
               ]);
+
+              if (!message) {
+                toast.error("Ошибка при отправке сообщения");
+              }
             }
           }
         }
+        set({ progress: 0 });
       } catch (error) {
         console.error(error);
       }
     };
 
     const progress = () => {
-      if (get().progress < 100) {
-        set((prev) => ({ progress: prev.progress + step }));
-      } else {
+      if (get().progress + step >= 100) {
         set({ progress: 0 });
+      } else {
+        set({ progress: get().progress + step });
       }
     };
 
@@ -142,6 +169,15 @@ const usePollingStore = create<PollingState>((set, get) => ({
     set({ isPolling: false, progress: 0 });
     intervalPollingId = null;
     intervalProgressId = null;
+  },
+
+  restartPolling: () => {
+    get().stopPolling();
+    get().startPolling();
+  },
+
+  resetOrders: () => {
+    set({ ordersRozetka: [], ordersEpicentr: [] });
   },
 }));
 
