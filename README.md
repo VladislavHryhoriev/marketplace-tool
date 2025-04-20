@@ -48,15 +48,29 @@ npm install
 ## 📁 Структура проекта
 
 ```
-├── src/              # Исходный код
-├── public/           # Статические файлы
-├── .next/            # Сборка Next.js
-├── node_modules/     # Зависимости
-├── .env              # Шаблон переменных окружения
-├── .env.local        # Локальные переменные окружения
-├── next.config.mjs   # Конфигурация Next.js
-├── tsconfig.json     # Конфигурация TypeScript
-└── package.json      # Зависимости и скрипты
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── api/               # API роуты
+│   │   ├── login/             # Страница авторизации
+│   │   ├── menu/              # Основное меню приложения
+│   │   ├── layout.tsx         # Корневой layout
+│   │   ├── page.tsx           # Главная страница
+│   │   └── globals.css        # Глобальные стили
+│   ├── components/            # React компоненты
+│   ├── hooks/                 # Кастомные хуки
+│   ├── lib/                   # Утилиты и хелперы
+│   ├── store/                 # Zustand сторы
+│   ├── types/                 # TypeScript типы
+│   ├── consts/                # Константы
+│   ├── clients/               # API клиенты
+│   ├── middleware.ts          # Next.js middleware
+│   ├── config.tsx             # Конфигурация приложения
+│   └── users.ts               # Логика работы с пользователями
+├── .env                       # Шаблон переменных окружения
+├── .env.local                 # Локальные переменные окружения
+├── next.config.mjs            # Конфигурация Next.js
+├── tsconfig.json              # Конфигурация TypeScript
+└── package.json               # Зависимости и скрипты
 ```
 
 ## 🔐 Переменные окружения
